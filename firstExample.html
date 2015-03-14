@@ -37,41 +37,68 @@
 <body>
 
     <h1>Sankey Diagrams</h1>
+    <div id="buttons"></div>
     <p id="chart">
         <!--This is where the diagram is placed-->
     </p>
 
     <script>
-        var margin = {top: 1, right: 1, bottom: 6, left: 1},
-                width = 960 - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
+        var margin = {top: 1, right: 1, bottom: 6, left: 1};
+        var width = 960 - margin.left - margin.right;
+        var height = 500 - margin.top - margin.bottom;
 
-        var formatNumber = d3.format(",.0f"),
-                format = function(d) { return formatNumber(d) + " TWh"; },
-                color = d3.scale.category20();
+        var formatNumber = d3.format(",.2f");
+        var format = function(d) { return formatNumber(d) + " TWh"; };
+        var color = d3.scale.category20();
 
         var svg = d3.select("#chart").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
-                .append("g")
+                .append("g").attr("id", "sankey")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var sankey = d3.sankey()
-                .nodeWidth(15)
+                .nodeWidth(40)
                 .nodePadding(10)
                 .size([width, height]);
 
         var path = sankey.link();
 
-        d3.json("energy.json", function(energy) {
+        d3.json("data_generated.json", function(error, graph) {
+            if (error) console.warn(error);
+            var years = [];
+            for (var i = 0; i < graph.data.length; i++) {
+                years[i] = graph.data[i].year;
+            }
+            years.forEach(function(year) {
+                d3.select("#buttons").append("button")
+                        .attr("width", 200)
+                        .attr("height", 50)
+                        .attr("name", year)
+                        .on("click", function() {
+                            for (var i = 0; i < graph.data.length; i++) {
+                                if (graph.data[i].year == year) {
+                                    console.log("Debug: creating sankey from " + year);
+                                    createSankey(graph.data[i]);
+                                    break;
+                                }
+                            }
+                        }).html(year);
+            });
+        });
 
+
+        function createSankey(graph) {
+
+            svg.selectAll(".node").remove();
+            svg.selectAll(".link").remove();
             sankey
-                    .nodes(energy.nodes)
-                    .links(energy.links)
+                    .nodes(graph["nodes"])
+                    .links(graph["links"])
                     .layout(32);
 
             var link = svg.append("g").selectAll(".link")
-                    .data(energy.links)
+                    .data(graph.links)
                     .enter().append("path")
                     .attr("class", "link")
                     .attr("d", path)
@@ -82,7 +109,7 @@
                     .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + format(d.value); });
 
             var node = svg.append("g").selectAll(".node")
-                    .data(energy.nodes)
+                    .data(graph.nodes)
                     .enter().append("g")
                     .attr("class", "node")
                     .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
@@ -115,7 +142,7 @@
                 sankey.relayout();
                 link.attr("d", path);
             }
-        });
+        }
     </script>
 </body>
 </html>
