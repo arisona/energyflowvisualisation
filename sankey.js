@@ -54,6 +54,39 @@ d3.sankey = function() {
         return sankey;
     };
 
+    // Creates two SVG paths that enclose the path created with the function "link"
+    // The variable d are the link objects. d.source.y is the upper y-coordinate of the source node (same for s.target).
+    // d.sy is the shift of the link in y direction along the right side of the source node (same with d.ty for target).
+    // This shift is a result of the calculated layout of the diagram. d.dy is the breadth of the path, respectively
+    // the size of the flow.
+    sankey.linkborder = function() {
+        var curvature = .5;
+
+        function linkborder(d) {
+            var x0 = d.source.x + d.source.dx,
+                x1 = d.target.x,
+                xi = d3.interpolateNumber(x0, x1),
+                x2 = xi(curvature),
+                x3 = xi(1 - curvature),
+                y01 = d.source.y + d.sy,
+                y02 = d.source.y + d.sy + d.dy,
+                y11 = d.target.y + d.ty,
+                y12 = d.target.y + d.ty + d.dy;
+            return "M " + x0 + ", " + y01
+                + " C " + x2 + ", " + y01
+                + " " + x3 + ", " + y11
+                + " " + x1 + ", " + y11
+
+                + " M " + x0 + ", " + y02
+                + " C " + x2 + ", " + y02
+                + " " + x3 + ", " + y12
+                + " " + x1 + ", " + y12
+        }
+
+        return linkborder;
+    };
+
+    // For Explanations, see function "linkborder".
     sankey.link = function() {
         var curvature = .5;
 
@@ -68,8 +101,9 @@ d3.sankey = function() {
             return "M" + x0 + "," + y0
                 + "C" + x2 + "," + y0
                 + " " + x3 + "," + y1
-                + " " + x1 + "," + y1;
+                + " " + x1 + "," + y1
         }
+
 
         link.curvature = function(_) {
             if (!arguments.length) return curvature;

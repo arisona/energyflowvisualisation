@@ -1,1 +1,1979 @@
-{"data":[{"year":1990,"nodes":[{"name":"Agricultural 'waste'"},{"name":"Bio-conversion"},{"name":"Liquid"},{"name":"Losses"},{"name":"Solid"},{"name":"Gas"},{"name":"Biofuel imports"},{"name":"Biomass imports"},{"name":"Coal imports"},{"name":"Coal"},{"name":"Coal reserves"},{"name":"District heating"},{"name":"Industry"},{"name":"Heating and cooling - commercial"},{"name":"Heating and cooling - homes"},{"name":"Electricity grid"},{"name":"Over generation / exports"},{"name":"H2 conversion"},{"name":"Road transport"},{"name":"Agriculture"},{"name":"Rail transport"},{"name":"Lighting & appliances - commercial"},{"name":"Lighting & appliances - homes"},{"name":"Gas imports"},{"name":"Ngas"},{"name":"Gas reserves"},{"name":"Thermal generation"},{"name":"Geothermal"},{"name":"H2"},{"name":"Hydro"},{"name":"International shipping"},{"name":"Domestic aviation"},{"name":"International aviation"},{"name":"National navigation"},{"name":"Marine algae"},{"name":"Nuclear"},{"name":"Oil imports"},{"name":"Oil"},{"name":"Oil reserves"},{"name":"Other waste"},{"name":"Pumped heat"},{"name":"Solar PV"},{"name":"Solar Thermal"},{"name":"Solar"},{"name":"Tidal"},{"name":"UK land based bioenergy"},{"name":"Wave"},{"name":"Wind"}],"links":[{"source":0,"target":1,"value":124.729},{"source":1,"target":2,"value":0.597},{"source":1,"target":3,"value":26.862},{"source":1,"target":4,"value":280.322},{"source":1,"target":5,"value":81.144},{"source":6,"target":2,"value":35.0},{"source":7,"target":4,"value":35.0},{"source":8,"target":9,"value":11.606},{"source":10,"target":9,"value":63.965},{"source":9,"target":4,"value":75.571},{"source":11,"target":12,"value":10.639},{"source":11,"target":13,"value":22.505},{"source":11,"target":14,"value":46.184},{"source":15,"target":16,"value":104.453},{"source":15,"target":14,"value":113.726},{"source":15,"target":17,"value":27.14},{"source":15,"target":12,"value":342.165},{"source":15,"target":18,"value":37.797},{"source":15,"target":19,"value":4.412},{"source":15,"target":13,"value":40.858},{"source":15,"target":3,"value":56.691},{"source":15,"target":20,"value":7.863},{"source":15,"target":21,"value":90.008},{"source":15,"target":22,"value":93.494},{"source":23,"target":24,"value":40.719},{"source":25,"target":24,"value":82.233},{"source":5,"target":13,"value":0.129},{"source":5,"target":3,"value":1.401},{"source":5,"target":26,"value":151.891},{"source":5,"target":19,"value":2.096},{"source":5,"target":12,"value":48.58},{"source":27,"target":15,"value":7.013},{"source":17,"target":28,"value":20.897},{"source":17,"target":3,"value":6.242},{"source":28,"target":18,"value":20.897},{"source":29,"target":15,"value":6.995},{"source":2,"target":12,"value":121.066},{"source":2,"target":30,"value":128.69},{"source":2,"target":18,"value":135.835},{"source":2,"target":31,"value":14.458},{"source":2,"target":32,"value":206.267},{"source":2,"target":19,"value":3.64},{"source":2,"target":33,"value":33.218},{"source":2,"target":20,"value":4.413},{"source":34,"target":1,"value":4.375},{"source":24,"target":5,"value":122.952},{"source":35,"target":26,"value":839.978},{"source":36,"target":37,"value":504.287},{"source":38,"target":37,"value":107.703},{"source":37,"target":2,"value":611.99},{"source":39,"target":4,"value":56.587},{"source":39,"target":1,"value":77.81},{"source":40,"target":14,"value":193.026},{"source":40,"target":13,"value":70.672},{"source":41,"target":15,"value":59.901},{"source":42,"target":14,"value":19.263},{"source":43,"target":42,"value":19.263},{"source":43,"target":41,"value":59.901},{"source":4,"target":19,"value":0.882},{"source":4,"target":26,"value":400.12},{"source":4,"target":12,"value":46.477},{"source":26,"target":15,"value":525.531},{"source":26,"target":3,"value":787.129},{"source":26,"target":11,"value":79.329},{"source":44,"target":15,"value":9.452},{"source":45,"target":1,"value":182.01},{"source":46,"target":15,"value":19.013},{"source":47,"target":15,"value":289.366}]},{"year":1991,"nodes":[{"name":"Agricultural 'waste'"},{"name":"Bio-conversion"},{"name":"Liquid"},{"name":"Losses"},{"name":"Solid"},{"name":"Gas"},{"name":"Biofuel imports"},{"name":"Biomass imports"},{"name":"Coal imports"},{"name":"Coal"},{"name":"Coal reserves"},{"name":"District heating"},{"name":"Industry"},{"name":"Heating and cooling - commercial"},{"name":"Heating and cooling - homes"},{"name":"Electricity grid"},{"name":"Over generation / exports"},{"name":"H2 conversion"},{"name":"Road transport"},{"name":"Agriculture"},{"name":"Rail transport"},{"name":"Lighting & appliances - commercial"},{"name":"Lighting & appliances - homes"},{"name":"Gas imports"},{"name":"Ngas"},{"name":"Gas reserves"},{"name":"Thermal generation"},{"name":"Geothermal"},{"name":"H2"},{"name":"Hydro"},{"name":"International shipping"},{"name":"Domestic aviation"},{"name":"International aviation"},{"name":"National navigation"},{"name":"Marine algae"},{"name":"Nuclear"},{"name":"Oil imports"},{"name":"Oil"},{"name":"Oil reserves"},{"name":"Other waste"},{"name":"Pumped heat"},{"name":"Solar PV"},{"name":"Solar Thermal"},{"name":"Solar"},{"name":"Tidal"},{"name":"UK land based bioenergy"},{"name":"Wave"},{"name":"Wind"}],"links":[{"source":0,"target":1,"value":144.72899999999998},{"source":1,"target":2,"value":20.597},{"source":1,"target":3,"value":46.861999999999995},{"source":1,"target":4,"value":300.322},{"source":1,"target":5,"value":101.144},{"source":6,"target":2,"value":55.0},{"source":7,"target":4,"value":55.0},{"source":8,"target":9,"value":31.606},{"source":10,"target":9,"value":83.965},{"source":9,"target":4,"value":95.571},{"source":11,"target":12,"value":30.639},{"source":11,"target":13,"value":42.504999999999995},{"source":11,"target":14,"value":66.184},{"source":15,"target":16,"value":124.453},{"source":15,"target":14,"value":133.726},{"source":15,"target":17,"value":47.14},{"source":15,"target":12,"value":362.165},{"source":15,"target":18,"value":57.797},{"source":15,"target":19,"value":24.412},{"source":15,"target":13,"value":60.858},{"source":15,"target":3,"value":76.691},{"source":15,"target":20,"value":27.863},{"source":15,"target":21,"value":110.008},{"source":15,"target":22,"value":113.494},{"source":23,"target":24,"value":60.719},{"source":25,"target":24,"value":102.233},{"source":5,"target":13,"value":20.129},{"source":5,"target":3,"value":21.401},{"source":5,"target":26,"value":171.891},{"source":5,"target":19,"value":22.096},{"source":5,"target":12,"value":68.58},{"source":27,"target":15,"value":27.012999999999998},{"source":17,"target":28,"value":40.897},{"source":17,"target":3,"value":26.242},{"source":28,"target":18,"value":40.897},{"source":29,"target":15,"value":26.995},{"source":2,"target":12,"value":141.066},{"source":2,"target":30,"value":148.69},{"source":2,"target":18,"value":155.835},{"source":2,"target":31,"value":34.458},{"source":2,"target":32,"value":226.267},{"source":2,"target":19,"value":23.64},{"source":2,"target":33,"value":53.218},{"source":2,"target":20,"value":24.413},{"source":34,"target":1,"value":24.375},{"source":24,"target":5,"value":142.952},{"source":35,"target":26,"value":859.978},{"source":36,"target":37,"value":524.287},{"source":38,"target":37,"value":127.703},{"source":37,"target":2,"value":631.99},{"source":39,"target":4,"value":76.587},{"source":39,"target":1,"value":97.81},{"source":40,"target":14,"value":213.026},{"source":40,"target":13,"value":90.672},{"source":41,"target":15,"value":79.90100000000001},{"source":42,"target":14,"value":39.263000000000005},{"source":43,"target":42,"value":39.263000000000005},{"source":43,"target":41,"value":79.90100000000001},{"source":4,"target":19,"value":20.882},{"source":4,"target":26,"value":420.12},{"source":4,"target":12,"value":66.477},{"source":26,"target":15,"value":545.531},{"source":26,"target":3,"value":807.129},{"source":26,"target":11,"value":99.329},{"source":44,"target":15,"value":29.451999999999998},{"source":45,"target":1,"value":202.01},{"source":46,"target":15,"value":39.013000000000005},{"source":47,"target":15,"value":309.366}]},{"year":1992,"nodes":[{"name":"Agricultural 'waste'"},{"name":"Bio-conversion"},{"name":"Liquid"},{"name":"Losses"},{"name":"Solid"},{"name":"Gas"},{"name":"Biofuel imports"},{"name":"Biomass imports"},{"name":"Coal imports"},{"name":"Coal"},{"name":"Coal reserves"},{"name":"District heating"},{"name":"Industry"},{"name":"Heating and cooling - commercial"},{"name":"Heating and cooling - homes"},{"name":"Electricity grid"},{"name":"Over generation / exports"},{"name":"H2 conversion"},{"name":"Road transport"},{"name":"Agriculture"},{"name":"Rail transport"},{"name":"Lighting & appliances - commercial"},{"name":"Lighting & appliances - homes"},{"name":"Gas imports"},{"name":"Ngas"},{"name":"Gas reserves"},{"name":"Thermal generation"},{"name":"Geothermal"},{"name":"H2"},{"name":"Hydro"},{"name":"International shipping"},{"name":"Domestic aviation"},{"name":"International aviation"},{"name":"National navigation"},{"name":"Marine algae"},{"name":"Nuclear"},{"name":"Oil imports"},{"name":"Oil"},{"name":"Oil reserves"},{"name":"Other waste"},{"name":"Pumped heat"},{"name":"Solar PV"},{"name":"Solar Thermal"},{"name":"Solar"},{"name":"Tidal"},{"name":"UK land based bioenergy"},{"name":"Wave"},{"name":"Wind"}],"links":[{"source":0,"target":1,"value":164.72899999999998},{"source":1,"target":2,"value":40.597},{"source":1,"target":3,"value":66.862},{"source":1,"target":4,"value":320.322},{"source":1,"target":5,"value":121.144},{"source":6,"target":2,"value":75.0},{"source":7,"target":4,"value":75.0},{"source":8,"target":9,"value":51.606},{"source":10,"target":9,"value":103.965},{"source":9,"target":4,"value":115.571},{"source":11,"target":12,"value":50.638999999999996},{"source":11,"target":13,"value":62.504999999999995},{"source":11,"target":14,"value":86.184},{"source":15,"target":16,"value":144.453},{"source":15,"target":14,"value":153.726},{"source":15,"target":17,"value":67.14},{"source":15,"target":12,"value":382.165},{"source":15,"target":18,"value":77.797},{"source":15,"target":19,"value":44.412},{"source":15,"target":13,"value":80.858},{"source":15,"target":3,"value":96.691},{"source":15,"target":20,"value":47.863},{"source":15,"target":21,"value":130.00799999999998},{"source":15,"target":22,"value":133.494},{"source":23,"target":24,"value":80.719},{"source":25,"target":24,"value":122.233},{"source":5,"target":13,"value":40.129},{"source":5,"target":3,"value":41.401},{"source":5,"target":26,"value":191.891},{"source":5,"target":19,"value":42.096000000000004},{"source":5,"target":12,"value":88.58},{"source":27,"target":15,"value":47.013},{"source":17,"target":28,"value":60.897},{"source":17,"target":3,"value":46.242},{"source":28,"target":18,"value":60.897},{"source":29,"target":15,"value":46.995},{"source":2,"target":12,"value":161.066},{"source":2,"target":30,"value":168.69},{"source":2,"target":18,"value":175.835},{"source":2,"target":31,"value":54.458},{"source":2,"target":32,"value":246.267},{"source":2,"target":19,"value":43.64},{"source":2,"target":33,"value":73.218},{"source":2,"target":20,"value":44.413},{"source":34,"target":1,"value":44.375},{"source":24,"target":5,"value":162.952},{"source":35,"target":26,"value":879.978},{"source":36,"target":37,"value":544.287},{"source":38,"target":37,"value":147.703},{"source":37,"target":2,"value":651.99},{"source":39,"target":4,"value":96.587},{"source":39,"target":1,"value":117.81},{"source":40,"target":14,"value":233.026},{"source":40,"target":13,"value":110.672},{"source":41,"target":15,"value":99.90100000000001},{"source":42,"target":14,"value":59.263000000000005},{"source":43,"target":42,"value":59.263000000000005},{"source":43,"target":41,"value":99.90100000000001},{"source":4,"target":19,"value":40.882},{"source":4,"target":26,"value":440.12},{"source":4,"target":12,"value":86.477},{"source":26,"target":15,"value":565.531},{"source":26,"target":3,"value":827.129},{"source":26,"target":11,"value":119.329},{"source":44,"target":15,"value":49.452},{"source":45,"target":1,"value":222.01},{"source":46,"target":15,"value":59.013000000000005},{"source":47,"target":15,"value":329.366}]},{"year":1993,"nodes":[{"name":"Agricultural 'waste'"},{"name":"Bio-conversion"},{"name":"Liquid"},{"name":"Losses"},{"name":"Solid"},{"name":"Gas"},{"name":"Biofuel imports"},{"name":"Biomass imports"},{"name":"Coal imports"},{"name":"Coal"},{"name":"Coal reserves"},{"name":"District heating"},{"name":"Industry"},{"name":"Heating and cooling - commercial"},{"name":"Heating and cooling - homes"},{"name":"Electricity grid"},{"name":"Over generation / exports"},{"name":"H2 conversion"},{"name":"Road transport"},{"name":"Agriculture"},{"name":"Rail transport"},{"name":"Lighting & appliances - commercial"},{"name":"Lighting & appliances - homes"},{"name":"Gas imports"},{"name":"Ngas"},{"name":"Gas reserves"},{"name":"Thermal generation"},{"name":"Geothermal"},{"name":"H2"},{"name":"Hydro"},{"name":"International shipping"},{"name":"Domestic aviation"},{"name":"International aviation"},{"name":"National navigation"},{"name":"Marine algae"},{"name":"Nuclear"},{"name":"Oil imports"},{"name":"Oil"},{"name":"Oil reserves"},{"name":"Other waste"},{"name":"Pumped heat"},{"name":"Solar PV"},{"name":"Solar Thermal"},{"name":"Solar"},{"name":"Tidal"},{"name":"UK land based bioenergy"},{"name":"Wave"},{"name":"Wind"}],"links":[{"source":0,"target":1,"value":184.72899999999998},{"source":1,"target":2,"value":60.597},{"source":1,"target":3,"value":86.862},{"source":1,"target":4,"value":340.322},{"source":1,"target":5,"value":141.144},{"source":6,"target":2,"value":95.0},{"source":7,"target":4,"value":95.0},{"source":8,"target":9,"value":71.606},{"source":10,"target":9,"value":123.965},{"source":9,"target":4,"value":135.571},{"source":11,"target":12,"value":70.639},{"source":11,"target":13,"value":82.505},{"source":11,"target":14,"value":106.184},{"source":15,"target":16,"value":164.453},{"source":15,"target":14,"value":173.726},{"source":15,"target":17,"value":87.14},{"source":15,"target":12,"value":402.165},{"source":15,"target":18,"value":97.797},{"source":15,"target":19,"value":64.412},{"source":15,"target":13,"value":100.858},{"source":15,"target":3,"value":116.691},{"source":15,"target":20,"value":67.863},{"source":15,"target":21,"value":150.00799999999998},{"source":15,"target":22,"value":153.494},{"source":23,"target":24,"value":100.719},{"source":25,"target":24,"value":142.233},{"source":5,"target":13,"value":60.129},{"source":5,"target":3,"value":61.401},{"source":5,"target":26,"value":211.891},{"source":5,"target":19,"value":62.096000000000004},{"source":5,"target":12,"value":108.58},{"source":27,"target":15,"value":67.013},{"source":17,"target":28,"value":80.89699999999999},{"source":17,"target":3,"value":66.242},{"source":28,"target":18,"value":80.89699999999999},{"source":29,"target":15,"value":66.995},{"source":2,"target":12,"value":181.066},{"source":2,"target":30,"value":188.69},{"source":2,"target":18,"value":195.835},{"source":2,"target":31,"value":74.458},{"source":2,"target":32,"value":266.267},{"source":2,"target":19,"value":63.64},{"source":2,"target":33,"value":93.218},{"source":2,"target":20,"value":64.413},{"source":34,"target":1,"value":64.375},{"source":24,"target":5,"value":182.952},{"source":35,"target":26,"value":899.978},{"source":36,"target":37,"value":564.287},{"source":38,"target":37,"value":167.703},{"source":37,"target":2,"value":671.99},{"source":39,"target":4,"value":116.587},{"source":39,"target":1,"value":137.81},{"source":40,"target":14,"value":253.026},{"source":40,"target":13,"value":130.672},{"source":41,"target":15,"value":119.90100000000001},{"source":42,"target":14,"value":79.263},{"source":43,"target":42,"value":79.263},{"source":43,"target":41,"value":119.90100000000001},{"source":4,"target":19,"value":60.882},{"source":4,"target":26,"value":460.12},{"source":4,"target":12,"value":106.477},{"source":26,"target":15,"value":585.531},{"source":26,"target":3,"value":847.129},{"source":26,"target":11,"value":139.329},{"source":44,"target":15,"value":69.452},{"source":45,"target":1,"value":242.01},{"source":46,"target":15,"value":79.013},{"source":47,"target":15,"value":349.366}]},{"year":1994,"nodes":[{"name":"Agricultural 'waste'"},{"name":"Bio-conversion"},{"name":"Liquid"},{"name":"Losses"},{"name":"Solid"},{"name":"Gas"},{"name":"Biofuel imports"},{"name":"Biomass imports"},{"name":"Coal imports"},{"name":"Coal"},{"name":"Coal reserves"},{"name":"District heating"},{"name":"Industry"},{"name":"Heating and cooling - commercial"},{"name":"Heating and cooling - homes"},{"name":"Electricity grid"},{"name":"Over generation / exports"},{"name":"H2 conversion"},{"name":"Road transport"},{"name":"Agriculture"},{"name":"Rail transport"},{"name":"Lighting & appliances - commercial"},{"name":"Lighting & appliances - homes"},{"name":"Gas imports"},{"name":"Ngas"},{"name":"Gas reserves"},{"name":"Thermal generation"},{"name":"Geothermal"},{"name":"H2"},{"name":"Hydro"},{"name":"International shipping"},{"name":"Domestic aviation"},{"name":"International aviation"},{"name":"National navigation"},{"name":"Marine algae"},{"name":"Nuclear"},{"name":"Oil imports"},{"name":"Oil"},{"name":"Oil reserves"},{"name":"Other waste"},{"name":"Pumped heat"},{"name":"Solar PV"},{"name":"Solar Thermal"},{"name":"Solar"},{"name":"Tidal"},{"name":"UK land based bioenergy"},{"name":"Wave"},{"name":"Wind"}],"links":[{"source":0,"target":1,"value":204.72899999999998},{"source":1,"target":2,"value":80.597},{"source":1,"target":3,"value":106.862},{"source":1,"target":4,"value":360.322},{"source":1,"target":5,"value":161.144},{"source":6,"target":2,"value":115.0},{"source":7,"target":4,"value":115.0},{"source":8,"target":9,"value":91.606},{"source":10,"target":9,"value":143.965},{"source":9,"target":4,"value":155.571},{"source":11,"target":12,"value":90.639},{"source":11,"target":13,"value":102.505},{"source":11,"target":14,"value":126.184},{"source":15,"target":16,"value":184.453},{"source":15,"target":14,"value":193.726},{"source":15,"target":17,"value":107.14},{"source":15,"target":12,"value":422.165},{"source":15,"target":18,"value":117.797},{"source":15,"target":19,"value":84.412},{"source":15,"target":13,"value":120.858},{"source":15,"target":3,"value":136.691},{"source":15,"target":20,"value":87.863},{"source":15,"target":21,"value":170.00799999999998},{"source":15,"target":22,"value":173.494},{"source":23,"target":24,"value":120.719},{"source":25,"target":24,"value":162.233},{"source":5,"target":13,"value":80.129},{"source":5,"target":3,"value":81.401},{"source":5,"target":26,"value":231.891},{"source":5,"target":19,"value":82.096},{"source":5,"target":12,"value":128.57999999999998},{"source":27,"target":15,"value":87.013},{"source":17,"target":28,"value":100.89699999999999},{"source":17,"target":3,"value":86.242},{"source":28,"target":18,"value":100.89699999999999},{"source":29,"target":15,"value":86.995},{"source":2,"target":12,"value":201.066},{"source":2,"target":30,"value":208.69},{"source":2,"target":18,"value":215.835},{"source":2,"target":31,"value":94.458},{"source":2,"target":32,"value":286.267},{"source":2,"target":19,"value":83.64},{"source":2,"target":33,"value":113.218},{"source":2,"target":20,"value":84.413},{"source":34,"target":1,"value":84.375},{"source":24,"target":5,"value":202.952},{"source":35,"target":26,"value":919.978},{"source":36,"target":37,"value":584.287},{"source":38,"target":37,"value":187.703},{"source":37,"target":2,"value":691.99},{"source":39,"target":4,"value":136.587},{"source":39,"target":1,"value":157.81},{"source":40,"target":14,"value":273.026},{"source":40,"target":13,"value":150.672},{"source":41,"target":15,"value":139.901},{"source":42,"target":14,"value":99.263},{"source":43,"target":42,"value":99.263},{"source":43,"target":41,"value":139.901},{"source":4,"target":19,"value":80.882},{"source":4,"target":26,"value":480.12},{"source":4,"target":12,"value":126.477},{"source":26,"target":15,"value":605.531},{"source":26,"target":3,"value":867.129},{"source":26,"target":11,"value":159.329},{"source":44,"target":15,"value":89.452},{"source":45,"target":1,"value":262.01},{"source":46,"target":15,"value":99.013},{"source":47,"target":15,"value":369.366}]}]}
+{
+  "data": [
+    {
+      "year": 1990,
+      "nodes": [
+        {"name": "Agricultural 'waste'"},
+        {"name": "Bio-conversion"},
+        {"name": "Liquid"},
+        {"name": "Losses"},
+        {"name": "Solid"},
+        {"name": "Gas"},
+        {"name": "Biofuel imports"},
+        {"name": "Biomass imports"},
+        {"name": "Coal imports"},
+        {"name": "Coal"},
+        {"name": "Coal reserves"},
+        {"name": "District heating"},
+        {"name": "Industry"},
+        {"name": "Heating and cooling - commercial"},
+        {"name": "Heating and cooling - homes"},
+        {"name": "Electricity grid"},
+        {"name": "Over generation / exports"},
+        {"name": "H2 conversion"},
+        {"name": "Road transport"},
+        {"name": "Agriculture"},
+        {"name": "Rail transport"},
+        {"name": "Lighting & appliances - commercial"},
+        {"name": "Lighting & appliances - homes"},
+        {"name": "Gas imports"},
+        {"name": "Ngas"},
+        {"name": "Gas reserves"},
+        {"name": "Thermal generation"},
+        {"name": "Geothermal"},
+        {"name": "H2"},
+        {"name": "Hydro"},
+        {"name": "International shipping"},
+        {"name": "Domestic aviation"},
+        {"name": "International aviation"},
+        {"name": "National navigation"},
+        {"name": "Marine algae"},
+        {"name": "Nuclear"},
+        {"name": "Oil imports"},
+        {"name": "Oil"},
+        {"name": "Oil reserves"},
+        {"name": "Other waste"},
+        {"name": "Pumped heat"},
+        {"name": "Solar PV"},
+        {"name": "Solar Thermal"},
+        {"name": "Solar"},
+        {"name": "Tidal"},
+        {"name": "UK land based bioenergy"},
+        {"name": "Wave"},
+        {"name": "Wind"}
+      ],
+      "links": [
+        {
+          "source": 0,
+          "target": 1,
+          "value": 124.729
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "value": 0.597
+        },
+        {
+          "source": 1,
+          "target": 3,
+          "value": 26.862
+        },
+        {
+          "source": 1,
+          "target": 4,
+          "value": 280.322
+        },
+        {
+          "source": 1,
+          "target": 5,
+          "value": 81.144
+        },
+        {
+          "source": 6,
+          "target": 2,
+          "value": 35.0
+        },
+        {
+          "source": 7,
+          "target": 4,
+          "value": 35.0
+        },
+        {
+          "source": 8,
+          "target": 9,
+          "value": 58.03
+        },
+        {
+          "source": 10,
+          "target": 9,
+          "value": 63.965
+        },
+        {
+          "source": 9,
+          "target": 4,
+          "value": 75.571
+        },
+        {
+          "source": 11,
+          "target": 12,
+          "value": 10.639
+        },
+        {
+          "source": 11,
+          "target": 13,
+          "value": 22.505
+        },
+        {
+          "source": 11,
+          "target": 14,
+          "value": 46.184
+        },
+        {
+          "source": 15,
+          "target": 16,
+          "value": 104.453
+        },
+        {
+          "source": 15,
+          "target": 14,
+          "value": 113.726
+        },
+        {
+          "source": 15,
+          "target": 17,
+          "value": 27.14
+        },
+        {
+          "source": 15,
+          "target": 12,
+          "value": 342.165
+        },
+        {
+          "source": 15,
+          "target": 18,
+          "value": 37.797
+        },
+        {
+          "source": 15,
+          "target": 19,
+          "value": 4.412
+        },
+        {
+          "source": 15,
+          "target": 13,
+          "value": 40.858
+        },
+        {
+          "source": 15,
+          "target": 3,
+          "value": 56.691
+        },
+        {
+          "source": 15,
+          "target": 20,
+          "value": 7.863
+        },
+        {
+          "source": 15,
+          "target": 21,
+          "value": 90.008
+        },
+        {
+          "source": 15,
+          "target": 22,
+          "value": 93.494
+        },
+        {
+          "source": 23,
+          "target": 24,
+          "value": 40.719
+        },
+        {
+          "source": 25,
+          "target": 24,
+          "value": 82.233
+        },
+        {
+          "source": 5,
+          "target": 13,
+          "value": 0.129
+        },
+        {
+          "source": 5,
+          "target": 3,
+          "value": 1.401
+        },
+        {
+          "source": 5,
+          "target": 26,
+          "value": 151.891
+        },
+        {
+          "source": 5,
+          "target": 19,
+          "value": 2.096
+        },
+        {
+          "source": 5,
+          "target": 12,
+          "value": 48.58
+        },
+        {
+          "source": 27,
+          "target": 15,
+          "value": 7.013
+        },
+        {
+          "source": 17,
+          "target": 28,
+          "value": 20.897
+        },
+        {
+          "source": 17,
+          "target": 3,
+          "value": 6.242
+        },
+        {
+          "source": 28,
+          "target": 18,
+          "value": 20.897
+        },
+        {
+          "source": 29,
+          "target": 15,
+          "value": 6.995
+        },
+        {
+          "source": 2,
+          "target": 12,
+          "value": 121.066
+        },
+        {
+          "source": 2,
+          "target": 30,
+          "value": 128.69
+        },
+        {
+          "source": 2,
+          "target": 18,
+          "value": 135.835
+        },
+        {
+          "source": 2,
+          "target": 31,
+          "value": 14.458
+        },
+        {
+          "source": 2,
+          "target": 32,
+          "value": 206.267
+        },
+        {
+          "source": 2,
+          "target": 19,
+          "value": 3.64
+        },
+        {
+          "source": 2,
+          "target": 33,
+          "value": 33.218
+        },
+        {
+          "source": 2,
+          "target": 20,
+          "value": 4.413
+        },
+        {
+          "source": 34,
+          "target": 1,
+          "value": 4.375
+        },
+        {
+          "source": 24,
+          "target": 5,
+          "value": 122.952
+        },
+        {
+          "source": 35,
+          "target": 26,
+          "value": 839.978
+        },
+        {
+          "source": 36,
+          "target": 37,
+          "value": 504.287
+        },
+        {
+          "source": 38,
+          "target": 37,
+          "value": 107.703
+        },
+        {
+          "source": 37,
+          "target": 2,
+          "value": 611.99
+        },
+        {
+          "source": 39,
+          "target": 4,
+          "value": 56.587
+        },
+        {
+          "source": 39,
+          "target": 1,
+          "value": 77.81
+        },
+        {
+          "source": 40,
+          "target": 14,
+          "value": 193.026
+        },
+        {
+          "source": 40,
+          "target": 13,
+          "value": 70.672
+        },
+        {
+          "source": 41,
+          "target": 15,
+          "value": 59.901
+        },
+        {
+          "source": 42,
+          "target": 14,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 42,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 41,
+          "value": 59.901
+        },
+        {
+          "source": 4,
+          "target": 19,
+          "value": 0.882
+        },
+        {
+          "source": 4,
+          "target": 26,
+          "value": 400.12
+        },
+        {
+          "source": 4,
+          "target": 12,
+          "value": 46.477
+        },
+        {
+          "source": 26,
+          "target": 15,
+          "value": 525.531
+        },
+        {
+          "source": 26,
+          "target": 3,
+          "value": 787.129
+        },
+        {
+          "source": 26,
+          "target": 11,
+          "value": 79.329
+        },
+        {
+          "source": 44,
+          "target": 15,
+          "value": 9.452
+        },
+        {
+          "source": 45,
+          "target": 1,
+          "value": 182.01
+        },
+        {
+          "source": 46,
+          "target": 15,
+          "value": 19.013
+        },
+        {
+          "source": 47,
+          "target": 15,
+          "value": 289.366
+        }
+      ]
+    },
+    {
+      "year": 1991,
+      "nodes": [
+        {"name": "Agricultural 'waste'"},
+        {"name": "Bio-conversion"},
+        {"name": "Liquid"},
+        {"name": "Losses"},
+        {"name": "Solid"},
+        {"name": "Gas"},
+        {"name": "Biofuel imports"},
+        {"name": "Biomass imports"},
+        {"name": "Coal imports"},
+        {"name": "Coal"},
+        {"name": "Coal reserves"},
+        {"name": "District heating"},
+        {"name": "Industry"},
+        {"name": "Heating and cooling - commercial"},
+        {"name": "Heating and cooling - homes"},
+        {"name": "Electricity grid"},
+        {"name": "Over generation / exports"},
+        {"name": "H2 conversion"},
+        {"name": "Road transport"},
+        {"name": "Agriculture"},
+        {"name": "Rail transport"},
+        {"name": "Lighting & appliances - commercial"},
+        {"name": "Lighting & appliances - homes"},
+        {"name": "Gas imports"},
+        {"name": "Ngas"},
+        {"name": "Gas reserves"},
+        {"name": "Thermal generation"},
+        {"name": "Geothermal"},
+        {"name": "H2"},
+        {"name": "Hydro"},
+        {"name": "International shipping"},
+        {"name": "Domestic aviation"},
+        {"name": "International aviation"},
+        {"name": "National navigation"},
+        {"name": "Marine algae"},
+        {"name": "Nuclear"},
+        {"name": "Oil imports"},
+        {"name": "Oil"},
+        {"name": "Oil reserves"},
+        {"name": "Other waste"},
+        {"name": "Pumped heat"},
+        {"name": "Solar PV"},
+        {"name": "Solar Thermal"},
+        {"name": "Solar"},
+        {"name": "Tidal"},
+        {"name": "UK land based bioenergy"},
+        {"name": "Wave"},
+        {"name": "Wind"}
+      ],
+      "links": [
+        {
+          "source": 0,
+          "target": 1,
+          "value": 124.729
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "value": 0.597
+        },
+        {
+          "source": 1,
+          "target": 3,
+          "value": 26.862
+        },
+        {
+          "source": 1,
+          "target": 4,
+          "value": 280.322
+        },
+        {
+          "source": 1,
+          "target": 5,
+          "value": 81.144
+        },
+        {
+          "source": 6,
+          "target": 2,
+          "value": 35.0
+        },
+        {
+          "source": 7,
+          "target": 4,
+          "value": 35.0
+        },
+        {
+          "source": 8,
+          "target": 9,
+          "value": 116.06
+        },
+        {
+          "source": 10,
+          "target": 9,
+          "value": 63.965
+        },
+        {
+          "source": 9,
+          "target": 4,
+          "value": 75.571
+        },
+        {
+          "source": 11,
+          "target": 12,
+          "value": 10.639
+        },
+        {
+          "source": 11,
+          "target": 13,
+          "value": 22.505
+        },
+        {
+          "source": 11,
+          "target": 14,
+          "value": 46.184
+        },
+        {
+          "source": 15,
+          "target": 16,
+          "value": 104.453
+        },
+        {
+          "source": 15,
+          "target": 14,
+          "value": 113.726
+        },
+        {
+          "source": 15,
+          "target": 17,
+          "value": 27.14
+        },
+        {
+          "source": 15,
+          "target": 12,
+          "value": 342.165
+        },
+        {
+          "source": 15,
+          "target": 18,
+          "value": 37.797
+        },
+        {
+          "source": 15,
+          "target": 19,
+          "value": 4.412
+        },
+        {
+          "source": 15,
+          "target": 13,
+          "value": 40.858
+        },
+        {
+          "source": 15,
+          "target": 3,
+          "value": 56.691
+        },
+        {
+          "source": 15,
+          "target": 20,
+          "value": 7.863
+        },
+        {
+          "source": 15,
+          "target": 21,
+          "value": 90.008
+        },
+        {
+          "source": 15,
+          "target": 22,
+          "value": 93.494
+        },
+        {
+          "source": 23,
+          "target": 24,
+          "value": 40.719
+        },
+        {
+          "source": 25,
+          "target": 24,
+          "value": 82.233
+        },
+        {
+          "source": 5,
+          "target": 13,
+          "value": 0.129
+        },
+        {
+          "source": 5,
+          "target": 3,
+          "value": 1.401
+        },
+        {
+          "source": 5,
+          "target": 26,
+          "value": 151.891
+        },
+        {
+          "source": 5,
+          "target": 19,
+          "value": 2.096
+        },
+        {
+          "source": 5,
+          "target": 12,
+          "value": 48.58
+        },
+        {
+          "source": 27,
+          "target": 15,
+          "value": 7.013
+        },
+        {
+          "source": 17,
+          "target": 28,
+          "value": 20.897
+        },
+        {
+          "source": 17,
+          "target": 3,
+          "value": 6.242
+        },
+        {
+          "source": 28,
+          "target": 18,
+          "value": 20.897
+        },
+        {
+          "source": 29,
+          "target": 15,
+          "value": 6.995
+        },
+        {
+          "source": 2,
+          "target": 12,
+          "value": 121.066
+        },
+        {
+          "source": 2,
+          "target": 30,
+          "value": 128.69
+        },
+        {
+          "source": 2,
+          "target": 18,
+          "value": 135.835
+        },
+        {
+          "source": 2,
+          "target": 31,
+          "value": 14.458
+        },
+        {
+          "source": 2,
+          "target": 32,
+          "value": 206.267
+        },
+        {
+          "source": 2,
+          "target": 19,
+          "value": 3.64
+        },
+        {
+          "source": 2,
+          "target": 33,
+          "value": 33.218
+        },
+        {
+          "source": 2,
+          "target": 20,
+          "value": 4.413
+        },
+        {
+          "source": 34,
+          "target": 1,
+          "value": 4.375
+        },
+        {
+          "source": 24,
+          "target": 5,
+          "value": 122.952
+        },
+        {
+          "source": 35,
+          "target": 26,
+          "value": 839.978
+        },
+        {
+          "source": 36,
+          "target": 37,
+          "value": 504.287
+        },
+        {
+          "source": 38,
+          "target": 37,
+          "value": 107.703
+        },
+        {
+          "source": 37,
+          "target": 2,
+          "value": 611.99
+        },
+        {
+          "source": 39,
+          "target": 4,
+          "value": 56.587
+        },
+        {
+          "source": 39,
+          "target": 1,
+          "value": 77.81
+        },
+        {
+          "source": 40,
+          "target": 14,
+          "value": 193.026
+        },
+        {
+          "source": 40,
+          "target": 13,
+          "value": 70.672
+        },
+        {
+          "source": 41,
+          "target": 15,
+          "value": 59.901
+        },
+        {
+          "source": 42,
+          "target": 14,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 42,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 41,
+          "value": 59.901
+        },
+        {
+          "source": 4,
+          "target": 19,
+          "value": 0.882
+        },
+        {
+          "source": 4,
+          "target": 26,
+          "value": 400.12
+        },
+        {
+          "source": 4,
+          "target": 12,
+          "value": 46.477
+        },
+        {
+          "source": 26,
+          "target": 15,
+          "value": 525.531
+        },
+        {
+          "source": 26,
+          "target": 3,
+          "value": 787.129
+        },
+        {
+          "source": 26,
+          "target": 11,
+          "value": 79.329
+        },
+        {
+          "source": 44,
+          "target": 15,
+          "value": 9.452
+        },
+        {
+          "source": 45,
+          "target": 1,
+          "value": 182.01
+        },
+        {
+          "source": 46,
+          "target": 15,
+          "value": 19.013
+        },
+        {
+          "source": 47,
+          "target": 15,
+          "value": 289.366
+        }
+      ]
+    },
+    {
+      "year": 1992,
+      "nodes": [
+        {"name": "Agricultural 'waste'"},
+        {"name": "Bio-conversion"},
+        {"name": "Liquid"},
+        {"name": "Losses"},
+        {"name": "Solid"},
+        {"name": "Gas"},
+        {"name": "Biofuel imports"},
+        {"name": "Biomass imports"},
+        {"name": "Coal imports"},
+        {"name": "Coal"},
+        {"name": "Coal reserves"},
+        {"name": "District heating"},
+        {"name": "Industry"},
+        {"name": "Heating and cooling - commercial"},
+        {"name": "Heating and cooling - homes"},
+        {"name": "Electricity grid"},
+        {"name": "Over generation / exports"},
+        {"name": "H2 conversion"},
+        {"name": "Road transport"},
+        {"name": "Agriculture"},
+        {"name": "Rail transport"},
+        {"name": "Lighting & appliances - commercial"},
+        {"name": "Lighting & appliances - homes"},
+        {"name": "Gas imports"},
+        {"name": "Ngas"},
+        {"name": "Gas reserves"},
+        {"name": "Thermal generation"},
+        {"name": "Geothermal"},
+        {"name": "H2"},
+        {"name": "Hydro"},
+        {"name": "International shipping"},
+        {"name": "Domestic aviation"},
+        {"name": "International aviation"},
+        {"name": "National navigation"},
+        {"name": "Marine algae"},
+        {"name": "Nuclear"},
+        {"name": "Oil imports"},
+        {"name": "Oil"},
+        {"name": "Oil reserves"},
+        {"name": "Other waste"},
+        {"name": "Pumped heat"},
+        {"name": "Solar PV"},
+        {"name": "Solar Thermal"},
+        {"name": "Solar"},
+        {"name": "Tidal"},
+        {"name": "UK land based bioenergy"},
+        {"name": "Wave"},
+        {"name": "Wind"}
+      ],
+      "links": [
+        {
+          "source": 0,
+          "target": 1,
+          "value": 124.729
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "value": 0.597
+        },
+        {
+          "source": 1,
+          "target": 3,
+          "value": 26.862
+        },
+        {
+          "source": 1,
+          "target": 4,
+          "value": 280.322
+        },
+        {
+          "source": 1,
+          "target": 5,
+          "value": 81.144
+        },
+        {
+          "source": 6,
+          "target": 2,
+          "value": 35.0
+        },
+        {
+          "source": 7,
+          "target": 4,
+          "value": 35.0
+        },
+        {
+          "source": 8,
+          "target": 9,
+          "value": 174.09
+        },
+        {
+          "source": 10,
+          "target": 9,
+          "value": 63.965
+        },
+        {
+          "source": 9,
+          "target": 4,
+          "value": 75.571
+        },
+        {
+          "source": 11,
+          "target": 12,
+          "value": 10.639
+        },
+        {
+          "source": 11,
+          "target": 13,
+          "value": 22.505
+        },
+        {
+          "source": 11,
+          "target": 14,
+          "value": 46.184
+        },
+        {
+          "source": 15,
+          "target": 16,
+          "value": 104.453
+        },
+        {
+          "source": 15,
+          "target": 14,
+          "value": 113.726
+        },
+        {
+          "source": 15,
+          "target": 17,
+          "value": 27.14
+        },
+        {
+          "source": 15,
+          "target": 12,
+          "value": 342.165
+        },
+        {
+          "source": 15,
+          "target": 18,
+          "value": 37.797
+        },
+        {
+          "source": 15,
+          "target": 19,
+          "value": 4.412
+        },
+        {
+          "source": 15,
+          "target": 13,
+          "value": 40.858
+        },
+        {
+          "source": 15,
+          "target": 3,
+          "value": 56.691
+        },
+        {
+          "source": 15,
+          "target": 20,
+          "value": 7.863
+        },
+        {
+          "source": 15,
+          "target": 21,
+          "value": 90.008
+        },
+        {
+          "source": 15,
+          "target": 22,
+          "value": 93.494
+        },
+        {
+          "source": 23,
+          "target": 24,
+          "value": 40.719
+        },
+        {
+          "source": 25,
+          "target": 24,
+          "value": 82.233
+        },
+        {
+          "source": 5,
+          "target": 13,
+          "value": 0.129
+        },
+        {
+          "source": 5,
+          "target": 3,
+          "value": 1.401
+        },
+        {
+          "source": 5,
+          "target": 26,
+          "value": 151.891
+        },
+        {
+          "source": 5,
+          "target": 19,
+          "value": 2.096
+        },
+        {
+          "source": 5,
+          "target": 12,
+          "value": 48.58
+        },
+        {
+          "source": 27,
+          "target": 15,
+          "value": 7.013
+        },
+        {
+          "source": 17,
+          "target": 28,
+          "value": 20.897
+        },
+        {
+          "source": 17,
+          "target": 3,
+          "value": 6.242
+        },
+        {
+          "source": 28,
+          "target": 18,
+          "value": 20.897
+        },
+        {
+          "source": 29,
+          "target": 15,
+          "value": 6.995
+        },
+        {
+          "source": 2,
+          "target": 12,
+          "value": 121.066
+        },
+        {
+          "source": 2,
+          "target": 30,
+          "value": 128.69
+        },
+        {
+          "source": 2,
+          "target": 18,
+          "value": 135.835
+        },
+        {
+          "source": 2,
+          "target": 31,
+          "value": 14.458
+        },
+        {
+          "source": 2,
+          "target": 32,
+          "value": 206.267
+        },
+        {
+          "source": 2,
+          "target": 19,
+          "value": 3.64
+        },
+        {
+          "source": 2,
+          "target": 33,
+          "value": 33.218
+        },
+        {
+          "source": 2,
+          "target": 20,
+          "value": 4.413
+        },
+        {
+          "source": 34,
+          "target": 1,
+          "value": 4.375
+        },
+        {
+          "source": 24,
+          "target": 5,
+          "value": 122.952
+        },
+        {
+          "source": 35,
+          "target": 26,
+          "value": 839.978
+        },
+        {
+          "source": 36,
+          "target": 37,
+          "value": 504.287
+        },
+        {
+          "source": 38,
+          "target": 37,
+          "value": 107.703
+        },
+        {
+          "source": 37,
+          "target": 2,
+          "value": 611.99
+        },
+        {
+          "source": 39,
+          "target": 4,
+          "value": 56.587
+        },
+        {
+          "source": 39,
+          "target": 1,
+          "value": 77.81
+        },
+        {
+          "source": 40,
+          "target": 14,
+          "value": 193.026
+        },
+        {
+          "source": 40,
+          "target": 13,
+          "value": 70.672
+        },
+        {
+          "source": 41,
+          "target": 15,
+          "value": 59.901
+        },
+        {
+          "source": 42,
+          "target": 14,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 42,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 41,
+          "value": 59.901
+        },
+        {
+          "source": 4,
+          "target": 19,
+          "value": 0.882
+        },
+        {
+          "source": 4,
+          "target": 26,
+          "value": 400.12
+        },
+        {
+          "source": 4,
+          "target": 12,
+          "value": 46.477
+        },
+        {
+          "source": 26,
+          "target": 15,
+          "value": 525.531
+        },
+        {
+          "source": 26,
+          "target": 3,
+          "value": 787.129
+        },
+        {
+          "source": 26,
+          "target": 11,
+          "value": 79.329
+        },
+        {
+          "source": 44,
+          "target": 15,
+          "value": 9.452
+        },
+        {
+          "source": 45,
+          "target": 1,
+          "value": 182.01
+        },
+        {
+          "source": 46,
+          "target": 15,
+          "value": 19.013
+        },
+        {
+          "source": 47,
+          "target": 15,
+          "value": 289.366
+        }
+      ]
+    },
+    {
+      "year": 1993,
+      "nodes": [
+        {"name": "Agricultural 'waste'"},
+        {"name": "Bio-conversion"},
+        {"name": "Liquid"},
+        {"name": "Losses"},
+        {"name": "Solid"},
+        {"name": "Gas"},
+        {"name": "Biofuel imports"},
+        {"name": "Biomass imports"},
+        {"name": "Coal imports"},
+        {"name": "Coal"},
+        {"name": "Coal reserves"},
+        {"name": "District heating"},
+        {"name": "Industry"},
+        {"name": "Heating and cooling - commercial"},
+        {"name": "Heating and cooling - homes"},
+        {"name": "Electricity grid"},
+        {"name": "Over generation / exports"},
+        {"name": "H2 conversion"},
+        {"name": "Road transport"},
+        {"name": "Agriculture"},
+        {"name": "Rail transport"},
+        {"name": "Lighting & appliances - commercial"},
+        {"name": "Lighting & appliances - homes"},
+        {"name": "Gas imports"},
+        {"name": "Ngas"},
+        {"name": "Gas reserves"},
+        {"name": "Thermal generation"},
+        {"name": "Geothermal"},
+        {"name": "H2"},
+        {"name": "Hydro"},
+        {"name": "International shipping"},
+        {"name": "Domestic aviation"},
+        {"name": "International aviation"},
+        {"name": "National navigation"},
+        {"name": "Marine algae"},
+        {"name": "Nuclear"},
+        {"name": "Oil imports"},
+        {"name": "Oil"},
+        {"name": "Oil reserves"},
+        {"name": "Other waste"},
+        {"name": "Pumped heat"},
+        {"name": "Solar PV"},
+        {"name": "Solar Thermal"},
+        {"name": "Solar"},
+        {"name": "Tidal"},
+        {"name": "UK land based bioenergy"},
+        {"name": "Wave"},
+        {"name": "Wind"}
+      ],
+      "links": [
+        {
+          "source": 0,
+          "target": 1,
+          "value": 124.729
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "value": 0.597
+        },
+        {
+          "source": 1,
+          "target": 3,
+          "value": 26.862
+        },
+        {
+          "source": 1,
+          "target": 4,
+          "value": 280.322
+        },
+        {
+          "source": 1,
+          "target": 5,
+          "value": 81.144
+        },
+        {
+          "source": 6,
+          "target": 2,
+          "value": 35.0
+        },
+        {
+          "source": 7,
+          "target": 4,
+          "value": 35.0
+        },
+        {
+          "source": 8,
+          "target": 9,
+          "value": 232.12
+        },
+        {
+          "source": 10,
+          "target": 9,
+          "value": 63.965
+        },
+        {
+          "source": 9,
+          "target": 4,
+          "value": 75.571
+        },
+        {
+          "source": 11,
+          "target": 12,
+          "value": 10.639
+        },
+        {
+          "source": 11,
+          "target": 13,
+          "value": 22.505
+        },
+        {
+          "source": 11,
+          "target": 14,
+          "value": 46.184
+        },
+        {
+          "source": 15,
+          "target": 16,
+          "value": 104.453
+        },
+        {
+          "source": 15,
+          "target": 14,
+          "value": 113.726
+        },
+        {
+          "source": 15,
+          "target": 17,
+          "value": 27.14
+        },
+        {
+          "source": 15,
+          "target": 12,
+          "value": 342.165
+        },
+        {
+          "source": 15,
+          "target": 18,
+          "value": 37.797
+        },
+        {
+          "source": 15,
+          "target": 19,
+          "value": 4.412
+        },
+        {
+          "source": 15,
+          "target": 13,
+          "value": 40.858
+        },
+        {
+          "source": 15,
+          "target": 3,
+          "value": 56.691
+        },
+        {
+          "source": 15,
+          "target": 20,
+          "value": 7.863
+        },
+        {
+          "source": 15,
+          "target": 21,
+          "value": 90.008
+        },
+        {
+          "source": 15,
+          "target": 22,
+          "value": 93.494
+        },
+        {
+          "source": 23,
+          "target": 24,
+          "value": 40.719
+        },
+        {
+          "source": 25,
+          "target": 24,
+          "value": 82.233
+        },
+        {
+          "source": 5,
+          "target": 13,
+          "value": 0.129
+        },
+        {
+          "source": 5,
+          "target": 3,
+          "value": 1.401
+        },
+        {
+          "source": 5,
+          "target": 26,
+          "value": 151.891
+        },
+        {
+          "source": 5,
+          "target": 19,
+          "value": 2.096
+        },
+        {
+          "source": 5,
+          "target": 12,
+          "value": 48.58
+        },
+        {
+          "source": 27,
+          "target": 15,
+          "value": 7.013
+        },
+        {
+          "source": 17,
+          "target": 28,
+          "value": 20.897
+        },
+        {
+          "source": 17,
+          "target": 3,
+          "value": 6.242
+        },
+        {
+          "source": 28,
+          "target": 18,
+          "value": 20.897
+        },
+        {
+          "source": 29,
+          "target": 15,
+          "value": 6.995
+        },
+        {
+          "source": 2,
+          "target": 12,
+          "value": 121.066
+        },
+        {
+          "source": 2,
+          "target": 30,
+          "value": 128.69
+        },
+        {
+          "source": 2,
+          "target": 18,
+          "value": 135.835
+        },
+        {
+          "source": 2,
+          "target": 31,
+          "value": 14.458
+        },
+        {
+          "source": 2,
+          "target": 32,
+          "value": 206.267
+        },
+        {
+          "source": 2,
+          "target": 19,
+          "value": 3.64
+        },
+        {
+          "source": 2,
+          "target": 33,
+          "value": 33.218
+        },
+        {
+          "source": 2,
+          "target": 20,
+          "value": 4.413
+        },
+        {
+          "source": 34,
+          "target": 1,
+          "value": 4.375
+        },
+        {
+          "source": 24,
+          "target": 5,
+          "value": 122.952
+        },
+        {
+          "source": 35,
+          "target": 26,
+          "value": 839.978
+        },
+        {
+          "source": 36,
+          "target": 37,
+          "value": 504.287
+        },
+        {
+          "source": 38,
+          "target": 37,
+          "value": 107.703
+        },
+        {
+          "source": 37,
+          "target": 2,
+          "value": 611.99
+        },
+        {
+          "source": 39,
+          "target": 4,
+          "value": 56.587
+        },
+        {
+          "source": 39,
+          "target": 1,
+          "value": 77.81
+        },
+        {
+          "source": 40,
+          "target": 14,
+          "value": 193.026
+        },
+        {
+          "source": 40,
+          "target": 13,
+          "value": 70.672
+        },
+        {
+          "source": 41,
+          "target": 15,
+          "value": 59.901
+        },
+        {
+          "source": 42,
+          "target": 14,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 42,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 41,
+          "value": 59.901
+        },
+        {
+          "source": 4,
+          "target": 19,
+          "value": 0.882
+        },
+        {
+          "source": 4,
+          "target": 26,
+          "value": 400.12
+        },
+        {
+          "source": 4,
+          "target": 12,
+          "value": 46.477
+        },
+        {
+          "source": 26,
+          "target": 15,
+          "value": 525.531
+        },
+        {
+          "source": 26,
+          "target": 3,
+          "value": 787.129
+        },
+        {
+          "source": 26,
+          "target": 11,
+          "value": 79.329
+        },
+        {
+          "source": 44,
+          "target": 15,
+          "value": 9.452
+        },
+        {
+          "source": 45,
+          "target": 1,
+          "value": 182.01
+        },
+        {
+          "source": 46,
+          "target": 15,
+          "value": 19.013
+        },
+        {
+          "source": 47,
+          "target": 15,
+          "value": 289.366
+        }
+      ]
+    },
+    {
+      "year": 1994,
+      "nodes": [
+        {"name": "Agricultural 'waste'"},
+        {"name": "Bio-conversion"},
+        {"name": "Liquid"},
+        {"name": "Losses"},
+        {"name": "Solid"},
+        {"name": "Gas"},
+        {"name": "Biofuel imports"},
+        {"name": "Biomass imports"},
+        {"name": "Coal imports"},
+        {"name": "Coal"},
+        {"name": "Coal reserves"},
+        {"name": "District heating"},
+        {"name": "Industry"},
+        {"name": "Heating and cooling - commercial"},
+        {"name": "Heating and cooling - homes"},
+        {"name": "Electricity grid"},
+        {"name": "Over generation / exports"},
+        {"name": "H2 conversion"},
+        {"name": "Road transport"},
+        {"name": "Agriculture"},
+        {"name": "Rail transport"},
+        {"name": "Lighting & appliances - commercial"},
+        {"name": "Lighting & appliances - homes"},
+        {"name": "Gas imports"},
+        {"name": "Ngas"},
+        {"name": "Gas reserves"},
+        {"name": "Thermal generation"},
+        {"name": "Geothermal"},
+        {"name": "H2"},
+        {"name": "Hydro"},
+        {"name": "International shipping"},
+        {"name": "Domestic aviation"},
+        {"name": "International aviation"},
+        {"name": "National navigation"},
+        {"name": "Marine algae"},
+        {"name": "Nuclear"},
+        {"name": "Oil imports"},
+        {"name": "Oil"},
+        {"name": "Oil reserves"},
+        {"name": "Other waste"},
+        {"name": "Pumped heat"},
+        {"name": "Solar PV"},
+        {"name": "Solar Thermal"},
+        {"name": "Solar"},
+        {"name": "Tidal"},
+        {"name": "UK land based bioenergy"},
+        {"name": "Wave"},
+        {"name": "Wind"}
+      ],
+      "links": [
+        {
+          "source": 0,
+          "target": 1,
+          "value": 124.729
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "value": 0.597
+        },
+        {
+          "source": 1,
+          "target": 3,
+          "value": 26.862
+        },
+        {
+          "source": 1,
+          "target": 4,
+          "value": 280.322
+        },
+        {
+          "source": 1,
+          "target": 5,
+          "value": 81.144
+        },
+        {
+          "source": 6,
+          "target": 2,
+          "value": 35.0
+        },
+        {
+          "source": 7,
+          "target": 4,
+          "value": 35.0
+        },
+        {
+          "source": 8,
+          "target": 9,
+          "value": 290.15
+        },
+        {
+          "source": 10,
+          "target": 9,
+          "value": 63.965
+        },
+        {
+          "source": 9,
+          "target": 4,
+          "value": 75.571
+        },
+        {
+          "source": 11,
+          "target": 12,
+          "value": 10.639
+        },
+        {
+          "source": 11,
+          "target": 13,
+          "value": 22.505
+        },
+        {
+          "source": 11,
+          "target": 14,
+          "value": 46.184
+        },
+        {
+          "source": 15,
+          "target": 16,
+          "value": 104.453
+        },
+        {
+          "source": 15,
+          "target": 14,
+          "value": 113.726
+        },
+        {
+          "source": 15,
+          "target": 17,
+          "value": 27.14
+        },
+        {
+          "source": 15,
+          "target": 12,
+          "value": 342.165
+        },
+        {
+          "source": 15,
+          "target": 18,
+          "value": 37.797
+        },
+        {
+          "source": 15,
+          "target": 19,
+          "value": 4.412
+        },
+        {
+          "source": 15,
+          "target": 13,
+          "value": 40.858
+        },
+        {
+          "source": 15,
+          "target": 3,
+          "value": 56.691
+        },
+        {
+          "source": 15,
+          "target": 20,
+          "value": 7.863
+        },
+        {
+          "source": 15,
+          "target": 21,
+          "value": 90.008
+        },
+        {
+          "source": 15,
+          "target": 22,
+          "value": 93.494
+        },
+        {
+          "source": 23,
+          "target": 24,
+          "value": 40.719
+        },
+        {
+          "source": 25,
+          "target": 24,
+          "value": 82.233
+        },
+        {
+          "source": 5,
+          "target": 13,
+          "value": 0.129
+        },
+        {
+          "source": 5,
+          "target": 3,
+          "value": 1.401
+        },
+        {
+          "source": 5,
+          "target": 26,
+          "value": 151.891
+        },
+        {
+          "source": 5,
+          "target": 19,
+          "value": 2.096
+        },
+        {
+          "source": 5,
+          "target": 12,
+          "value": 48.58
+        },
+        {
+          "source": 27,
+          "target": 15,
+          "value": 7.013
+        },
+        {
+          "source": 17,
+          "target": 28,
+          "value": 20.897
+        },
+        {
+          "source": 17,
+          "target": 3,
+          "value": 6.242
+        },
+        {
+          "source": 28,
+          "target": 18,
+          "value": 20.897
+        },
+        {
+          "source": 29,
+          "target": 15,
+          "value": 6.995
+        },
+        {
+          "source": 2,
+          "target": 12,
+          "value": 121.066
+        },
+        {
+          "source": 2,
+          "target": 30,
+          "value": 128.69
+        },
+        {
+          "source": 2,
+          "target": 18,
+          "value": 135.835
+        },
+        {
+          "source": 2,
+          "target": 31,
+          "value": 14.458
+        },
+        {
+          "source": 2,
+          "target": 32,
+          "value": 206.267
+        },
+        {
+          "source": 2,
+          "target": 19,
+          "value": 3.64
+        },
+        {
+          "source": 2,
+          "target": 33,
+          "value": 33.218
+        },
+        {
+          "source": 2,
+          "target": 20,
+          "value": 4.413
+        },
+        {
+          "source": 34,
+          "target": 1,
+          "value": 4.375
+        },
+        {
+          "source": 24,
+          "target": 5,
+          "value": 122.952
+        },
+        {
+          "source": 35,
+          "target": 26,
+          "value": 839.978
+        },
+        {
+          "source": 36,
+          "target": 37,
+          "value": 504.287
+        },
+        {
+          "source": 38,
+          "target": 37,
+          "value": 107.703
+        },
+        {
+          "source": 37,
+          "target": 2,
+          "value": 611.99
+        },
+        {
+          "source": 39,
+          "target": 4,
+          "value": 56.587
+        },
+        {
+          "source": 39,
+          "target": 1,
+          "value": 77.81
+        },
+        {
+          "source": 40,
+          "target": 14,
+          "value": 193.026
+        },
+        {
+          "source": 40,
+          "target": 13,
+          "value": 70.672
+        },
+        {
+          "source": 41,
+          "target": 15,
+          "value": 59.901
+        },
+        {
+          "source": 42,
+          "target": 14,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 42,
+          "value": 19.263
+        },
+        {
+          "source": 43,
+          "target": 41,
+          "value": 59.901
+        },
+        {
+          "source": 4,
+          "target": 19,
+          "value": 0.882
+        },
+        {
+          "source": 4,
+          "target": 26,
+          "value": 400.12
+        },
+        {
+          "source": 4,
+          "target": 12,
+          "value": 46.477
+        },
+        {
+          "source": 26,
+          "target": 15,
+          "value": 525.531
+        },
+        {
+          "source": 26,
+          "target": 3,
+          "value": 787.129
+        },
+        {
+          "source": 26,
+          "target": 11,
+          "value": 79.329
+        },
+        {
+          "source": 44,
+          "target": 15,
+          "value": 9.452
+        },
+        {
+          "source": 45,
+          "target": 1,
+          "value": 182.01
+        },
+        {
+          "source": 46,
+          "target": 15,
+          "value": 19.013
+        },
+        {
+          "source": 47,
+          "target": 15,
+          "value": 289.366
+        }
+      ]
+    }
+  ]
+}

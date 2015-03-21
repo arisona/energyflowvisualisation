@@ -1,0 +1,174 @@
+{
+  "data": [
+    {
+      "year": 1990,
+      "nodes": [
+        {"id":0, "name": "Wood/Coal/Waste"},
+        {"id":1, "name": "Wood/Coal/Waste Production"},
+        {"id":2, "name": "Wood/Coal/Waste Import"},
+        {"id":3, "name": "Wood/Coal/Waste Export"},
+        {"id":4, "name": "Wood/Coal/Waste Change in Stock"},
+
+        {"id":5, "name": "Crude Oil"},
+        {"id":6, "name": "Crude Oil Import"},
+        {"id":7, "name": "Crude Oil Change in Stock"},
+
+        {"id":8, "name": "Petroleum"},
+        {"id":9, "name": "Petroleum Change in Stock"},
+        {"id":10, "name": "Petroleum Import"},
+        {"id":11, "name": "Petroleum Export"},
+
+        {"id":12, "name": "Natural Gas"},
+        {"id":13, "name": "Natural Gas Import"},
+
+        {"id":14, "name": "Nuclear Fuel"},
+        {"id":15, "name": "Nuclear Fuel Import"},
+
+        {"id":16, "name": "Hydropower"},
+        {"id":17, "name": "Hydropower Production"},
+
+        {"id":18, "name": "New Renewables"},
+        {"id":19, "name": "New Renewables Production"},
+        {"id":20, "name": "New Renewables Import"},
+
+        {"id":21, "name": "Electricity"},
+        {"id":22, "name": "Electricity Import"},
+        {"id":23, "name": "Electricity Export"},
+
+        {"id":24, "name": "District Heat"},
+
+        {"id":25, "name": "Households"},
+        {"id":26, "name": "Services"},
+        {"id":27, "name": "Industry"},
+        {"id":28, "name": "Transport"},
+
+        {"id":29, "name": "Thermal"},
+        {"id":30, "name": "Refineries"},
+        {"id":31, "name": "Hydro/Nuclear"},
+        {"id":32, "name": "Gasworks"}
+      ],
+      "links": [
+        {
+          "source": 1,
+          "target": 0,
+          "value": 90460
+        },
+        {
+          "source": 2,
+          "target": 0,
+          "value": 6050
+        },
+        {
+          "source": 4,
+          "target": 0,
+          "value": 1190
+        },
+        {
+          "source": 0,
+          "target": 3,
+          "value": 300
+        },
+        {
+          "source": 0,
+          "target": 29,
+          "value": 47660
+        },
+        {
+          "source": 0,
+          "target": 25,
+          "value": 39740
+        },
+        {
+          "source": 0,
+          "target": 27,
+          "value": 10000
+        }
+        ]
+    },
+    {
+      "year": 1991,
+      "nodes": [
+        {"id":0, "name": "Wood/Coal/Waste"},
+        {"id":1, "name": "Wood/Coal/Waste Production"},
+        {"id":2, "name": "Wood/Coal/Waste Import"},
+        {"id":3, "name": "Wood/Coal/Waste Export"},
+        {"id":4, "name": "Wood/Coal/Waste Change in Stock"},
+
+        {"id":5, "name": "Crude Oil"},
+        {"id":6, "name": "Crude Oil Import"},
+        {"id":7, "name": "Crude Oil Change in Stock"},
+
+        {"id":8, "name": "Petroleum"},
+        {"id":9, "name": "Petroleum Change in Stock"},
+        {"id":10, "name": "Petroleum Import"},
+        {"id":11, "name": "Petroleum Export"},
+
+        {"id":12, "name": "Natural Gas"},
+        {"id":13, "name": "Natural Gas Import"},
+
+        {"id":14, "name": "Nuclear Fuel"},
+        {"id":15, "name": "Nuclear Fuel Import"},
+
+        {"id":16, "name": "Hydropower"},
+        {"id":17, "name": "Hydropower Production"},
+
+        {"id":18, "name": "New Renewables"},
+        {"id":19, "name": "New Renewables Production"},
+        {"id":20, "name": "New Renewables Import"},
+
+        {"id":21, "name": "Electricity"},
+        {"id":22, "name": "Electricity Import"},
+        {"id":23, "name": "Electricity Export"},
+
+        {"id":24, "name": "District Heat"},
+
+        {"id":25, "name": "Households"},
+        {"id":26, "name": "Services"},
+        {"id":27, "name": "Industry"},
+        {"id":28, "name": "Transport"},
+
+        {"id":29, "name": "Thermal"},
+        {"id":30, "name": "Refineries"},
+        {"id":31, "name": "Hydro/Nuclear"},
+        {"id":32, "name": "Gasworks"}
+      ],
+      "links": [
+        {
+          "source": 1,
+          "target": 0,
+          "value": 90460
+        },
+        {
+          "source": 2,
+          "target": 0,
+          "value": 6050
+        },
+        {
+          "source": 0,
+          "target": 4,
+          "value": 1190
+        },
+        {
+          "source": 0,
+          "target": 4,
+          "value": 300
+        },
+        {
+          "source": 0,
+          "target": 29,
+          "value": 47660
+        },
+        {
+          "source": 0,
+          "target": 25,
+          "value": 39740
+        },
+        {
+          "source": 0,
+          "target": 27,
+          "value": 10000
+        }
+      ]
+    }
+  ]
+}
