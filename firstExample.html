@@ -6,7 +6,7 @@
     <script type="text/javascript" src="d3.min.js"></script>
     <script type="text/javascript" src="sankey.js"></script>
     <style>
-        @import url(styles.css);
+        @import url(/styles/styles.css);
 
         #chart {
             height: 500px;
@@ -30,7 +30,7 @@
         }
 
         .link:hover {
-            stroke-opacity: .6;
+            stroke-opacity: .7;
         }
 
         .linkborder {
@@ -40,12 +40,17 @@
             stroke-width: 1;
         }
 
-        #link10, #link20, #link40, #link03, #link029, #link025, #link027 {
-            stroke: #5F021F;
+        .wood-coal-waste {
+            stroke: rgb(97,65,38);
         }
 
-        /*TODO more colors for the different kind of links*/
+        .petroleum {
+            stroke: rgb(255,165,0);
+        }
 
+        .crudeoil {
+            stroke: rgb(255, 0, 0);
+        }
     </style>
 </head>
 <body>
@@ -54,10 +59,53 @@
 
 <div id="buttons"></div>
 <p id="chart">
-    <!--This is where the diagram is placed-->
+    <svg>
+        <defs>
+            <!-- Definitions of patterns with icons for usage in the nodes of the sankey diagram -->
+            <pattern id="thermal" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 20 20">
+                <image height="20" width="20" xlink:href="thermal.png"></image>
+            </pattern>
+            <pattern id="import" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 50 100">
+                <image height="100" width="50" xlink:href="import.png"></image>
+            </pattern>
+            <pattern id="households" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 200 130">
+                <image height="130" width="200" xlink:href="households.png"></image>
+            </pattern>
+            <pattern id="industry" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 230 160">
+                <image height="160" width="230" xlink:href="industry.png"></image>
+            </pattern>
+            <pattern id="transport" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 160 160">
+                <image height="160" width="160" xlink:href="transport.png"></image>
+            </pattern>
+            <pattern id="services" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 150 115">
+                <image height="115" width="150" xlink:href="transport.png"></image>
+            </pattern>
+            <!-- TODO make more patterns with the other images from the example diagram -->
+            <!--<pattern id="..." patternUnits="objectBoundingBox" width="1" height="1"-->
+                     <!--preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 20 20">-->
+                <!--<image height="20" width="20" xlink:href="thermal.png"></image>-->
+            <!--</pattern>-->
+        </defs>
+    </svg>
 </p>
 
 <script>
+
+    // Monitor state of mouse buttons. For usage in displays on hovering over a certain element, which i wanted to
+    // prevent from happening if a mouse button is pressed.
+    var mouseDown = 0;
+    document.body.onmousedown = function() {
+        ++mouseDown;
+    };
+    document.body.onmouseup = function() {
+        --mouseDown;
+    };
 
     var margin = {top: 1, right: 1, bottom: 6, left: 1};
     var width = 960 - margin.left - margin.right;
@@ -65,7 +113,7 @@
 
     var color = d3.scale.category20();
 
-    var svg = d3.select("#chart").append("svg")
+    var svg = d3.select("#chart").select("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g").attr("id", "sankey")
@@ -129,36 +177,66 @@
         var pathGroups = svg.append("g").selectAll(".link")
                 .data(graph.links)
                 .enter().append("g").attr("class", "group");
+
+
         pathGroups
                 .append("path")
-                .attr("class", "link")
-                .attr("id", function (d) {return "link" + d.source.id + d.target.id;})
+                .attr("class", function(d) {
+                    var cls = "link ";
+                    if (d.source.id == 0 || d.target.id == 0) return cls + "wood-coal-waste";
+                    if (d.source.id == 8 || d.target.id == 8) return cls + "petroleum";
+                    if (d.source.id == 5 || d.target.id == 5) return cls + "crudeoil";
+                    return cls;
+                })
                 .attr("d", path)
                 .style("stroke-width", function (d) {return Math.max(1, d.dy);});
 
-        // the text element for showing the value of the flow at the middle of each link.
         pathGroups
                 .append("text")
-                .attr("x", function (d) {return (d.source.x + d.target.x) / 2;})
-                .attr("y", pathtext)
+                .attr("class", "flowvalue")
                 .attr("text-anchor", "middle")
                 .attr("transform", null)
                 .attr("dy", ".35em");
+
+        pathGroups
+                .append("text")
+                .attr("class", "flowname")
+
+        // the text element for showing the value of the flow at the middle of each link.
 
         // On hovering over the link: Show the value of the flow and draw a border around the link.
         // If flows have a strong bend the border does not fit the flow anymore :(
         // Maybe use d3.svg.area()
         pathGroups.on("mouseover", function (d) {
-            d3.select(this).select("text").text(formatNumber(d.value));
-            d3.select(this).append("path")
-                    .attr("class", "linkborder")
-                    .attr("d", pathborder);
+            if (!mouseDown) {
+                d3.select(this).select(".flowvalue")
+                        .attr("x", function (d) {
+                            return (d.source.x + d.target.x) / 2;
+                        })
+                        .attr("y", pathtext)
+                        .text(formatNumber(d.value));
+                d3.select(this).select(".flowname")
+                        .attr("x", d.source.x + 6 + sankey.nodeWidth())
+                        .attr("text-anchor", "start")
+                        .attr("y", function (d) {
+                            return d.source.y;
+                        })
+                        .attr("dy", ".35em")
+                        .attr("transform", null)
+                        .text(function (d) {
+                            return d.source.name;
+                        })
+            }
+//            disabled border drawing on hover
+//            d3.select(this).append("path")
+//                    .attr("class", "linkborder")
+//                    .attr("d", pathborder);
         });
 
         // On leaving the link: Remove value text and the border.
         pathGroups.on("mouseleave", function (d) {
-            d3.select(this).select("text").text(null);
-            d3.select(this).selectAll(".linkborder").remove();
+            d3.select(this).selectAll("text").text(null);
+//            d3.select(this).selectAll(".linkborder").remove();
         });
 
         // Dragging behavior of nodes disabled.
@@ -167,19 +245,39 @@
                 .enter().append("g")
                 .attr("class", "node")
                 .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
-//                .call(d3.behavior.drag()
-//                        .origin(function (d) { return d; })
-//                        .on("dragstart", function () {this.parentNode.appendChild(this);})
-//                        .on("drag", dragmove));
+                .call(d3.behavior.drag()
+                        .origin(function (d) { return d; })
+                        .on("dragstart", function () {this.parentNode.appendChild(this);})
+                        .on("drag", dragmove));
 
         node.append("rect")
                 .attr("height", function (d) {return d.dy;})
                 .attr("width", sankey.nodeWidth())
-                .style("fill", function (d) {return d.color = color(d.name.replace(/ .*/, ""));})
+//                .style("fill", "url(#thermal)")
+                .style("fill", function(d){
+                    var regex  = new RegExp("Import");
+                    if (regex.test(d.name)) return "url(#import)";
+                    regex  = new RegExp("Thermal");
+                    if (regex.test(d.name)) return "url(#thermal)";
+                    regex = new RegExp("Petroleum");
+                    if (regex.test(d.name)) return "rgb(255,165,0)";
+                    regex = new RegExp("Wood");
+                    if (regex.test(d.name)) return "rgb(97,65,38)";
+                    regex = new RegExp("Crude Oil");
+                    if (regex.test(d.name)) return "rgb(255, 0, 0)";
+                    regex = new RegExp("Households");
+                    if (regex.test(d.name)) return "url(#households)";
+                    regex = new RegExp("Industry");
+                    if (regex.test(d.name)) return "url(#industry)";
+                    regex = new RegExp("Transport");
+                    if (regex.test(d.name)) return "url(#transport)";
+                    regex = new RegExp("Services");
+                    if (regex.test(d.name)) return "url(#services)";
+                    return "#ffffff";
+                })
                 .style("stroke", function (d) {return d3.rgb(d.color).darker(2);})
                 .append("title")
                 .text(function (d) {return d.name + "\n" + formatNumber(d.value);});
-
 
         function dragmove(d) {
             d3.select(this).attr("transform", "translate(" + d.x + "," +
@@ -187,18 +285,8 @@
             sankey.relayout();
             pathGroups.select(".link").attr("d", path);
         }
-
-
-//            node.append("text")
-//                    .attr("y", function(d) { return d.dy / 2; })
-//                    .attr("dy", ".35em")
-//                    .attr("text-anchor", "end")
-//                    .attr("transform", null)
-//                    .text(function(d) { return d.name; })
-//                    .filter(function(d) { return d.x < width / 2; })
-//                    .attr("x", sankey.nodeWidth())
-//                    .attr("text-anchor", "start");
     }
 </script>
 </body>
 </html>
+

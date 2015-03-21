@@ -45,7 +45,9 @@
         {"id":29, "name": "Thermal"},
         {"id":30, "name": "Refineries"},
         {"id":31, "name": "Hydro/Nuclear"},
-        {"id":32, "name": "Gasworks"}
+        {"id":32, "name": "Gasworks"},
+
+        {"id":33, "name": "non-energetic"}
       ],
       "links": [
         {
@@ -82,6 +84,71 @@
           "source": 0,
           "target": 27,
           "value": 10000
+        },
+        {
+          "source": 6,
+          "target": 5,
+          "value": 189700
+        },
+        {
+          "source": 5,
+          "target": 30,
+          "value": 189700
+        },
+        {
+          "source": 5,
+          "target": 7,
+          "value": 480
+        },
+        {
+          "source": 30,
+          "target": 8,
+          "value": 175050
+        },
+        {
+          "source": 10,
+          "target": 8,
+          "value": 298959
+        },
+        {
+          "source": 9,
+          "target": 8,
+          "value": 25630
+        },
+        {
+          "source": 8,
+          "target": 11,
+          "value": 18780
+        },
+        {
+          "source": 8,
+          "target": 29,
+          "value": 440
+        },
+        {
+          "source": 8,
+          "target": 33,
+          "value": 22950
+        },
+        {
+          "source": 8,
+          "target": 25,
+          "value": 15860
+        },
+        {
+          "source": 8,
+          "target": 28,
+          "value": 425749
+        },
+        {
+          "source": 8,
+          "target": 27,
+          "value": 5287
+        },
+        {
+          "source": 8,
+          "target": 26,
+          "value": 10573
         }
         ]
     },
@@ -130,7 +197,9 @@
         {"id":29, "name": "Thermal"},
         {"id":30, "name": "Refineries"},
         {"id":31, "name": "Hydro/Nuclear"},
-        {"id":32, "name": "Gasworks"}
+        {"id":32, "name": "Gasworks"},
+
+        {"id":33, "name": "non-energetic"}
       ],
       "links": [
         {
