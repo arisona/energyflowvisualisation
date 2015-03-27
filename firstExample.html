@@ -6,7 +6,7 @@
     <script type="text/javascript" src="d3.min.js"></script>
     <script type="text/javascript" src="sankey.js"></script>
     <style>
-        @import url(/styles/styles.css);
+        @import url(styles/styles.css);
 
         #chart {
             height: 500px;
@@ -63,34 +63,45 @@
         <defs>
             <!-- Definitions of patterns with icons for usage in the nodes of the sankey diagram -->
             <pattern id="thermal" patternUnits="objectBoundingBox" width="1" height="1"
-                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 20 20">
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 20 20">
                 <image height="20" width="20" xlink:href="thermal.png"></image>
             </pattern>
             <pattern id="import" patternUnits="objectBoundingBox" width="1" height="1"
-                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 50 100">
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 50 100">
                 <image height="100" width="50" xlink:href="import.png"></image>
             </pattern>
             <pattern id="households" patternUnits="objectBoundingBox" width="1" height="1"
-                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 200 130">
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 200 130">
                 <image height="130" width="200" xlink:href="households.png"></image>
             </pattern>
             <pattern id="industry" patternUnits="objectBoundingBox" width="1" height="1"
-                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 230 160">
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 230 160">
                 <image height="160" width="230" xlink:href="industry.png"></image>
             </pattern>
             <pattern id="transport" patternUnits="objectBoundingBox" width="1" height="1"
-                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 160 160">
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 160 160">
                 <image height="160" width="160" xlink:href="transport.png"></image>
             </pattern>
             <pattern id="services" patternUnits="objectBoundingBox" width="1" height="1"
-                     preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 150 115">
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 150 115">
                 <image height="115" width="150" xlink:href="transport.png"></image>
             </pattern>
-            <!-- TODO make more patterns with the other images from the example diagram -->
-            <!--<pattern id="..." patternUnits="objectBoundingBox" width="1" height="1"-->
-                     <!--preserveAspectRatio="xMidYMid xMidYMid meet" viewBox="0 0 20 20">-->
-                <!--<image height="20" width="20" xlink:href="thermal.png"></image>-->
-            <!--</pattern>-->
+            <pattern id="refineries" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 220 150">
+                <image height="150" width="220" xlink:href="refineries.png"></image>
+            </pattern>
+            <pattern id="changeinstock" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100">
+                <image height="100" width="100" xlink:href="changeinstock.png"></image>
+            </pattern>
+            <pattern id="production" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 70 140">
+                <image height="140" width="70" xlink:href="production.png"></image>
+            </pattern>
+            <pattern id="export" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 70 170">
+                <image height="170" width="70" xlink:href="export.png"></image>
+            </pattern>
         </defs>
     </svg>
 </p>
@@ -257,22 +268,43 @@
                 .style("fill", function(d){
                     var regex  = new RegExp("Import");
                     if (regex.test(d.name)) return "url(#import)";
+
+                    regex  = new RegExp("Export");
+                    if (regex.test(d.name)) return "url(#export)";
+
                     regex  = new RegExp("Thermal");
                     if (regex.test(d.name)) return "url(#thermal)";
-                    regex = new RegExp("Petroleum");
-                    if (regex.test(d.name)) return "rgb(255,165,0)";
-                    regex = new RegExp("Wood");
-                    if (regex.test(d.name)) return "rgb(97,65,38)";
-                    regex = new RegExp("Crude Oil");
-                    if (regex.test(d.name)) return "rgb(255, 0, 0)";
+
+                    regex  = new RegExp("Refineries");
+                    if (regex.test(d.name)) return "url(#refineries)";
+
+                    regex  = new RegExp("Change in Stock");
+                    if (regex.test(d.name)) return "url(#changeinstock)";
+
+                    regex  = new RegExp("Production");
+                    if (regex.test(d.name)) return "url(#production)";
+
                     regex = new RegExp("Households");
                     if (regex.test(d.name)) return "url(#households)";
+
                     regex = new RegExp("Industry");
                     if (regex.test(d.name)) return "url(#industry)";
+
                     regex = new RegExp("Transport");
                     if (regex.test(d.name)) return "url(#transport)";
+
                     regex = new RegExp("Services");
                     if (regex.test(d.name)) return "url(#services)";
+
+                    regex = new RegExp("Crude Oil");
+                    if (regex.test(d.name)) return "rgb(255, 0, 0)";
+
+                    regex = new RegExp("Petroleum");
+                    if (regex.test(d.name)) return "rgb(255,165,0)";
+
+                    regex = new RegExp("Wood");
+                    if (regex.test(d.name)) return "rgb(97,65,38)";
+
                     return "#ffffff";
                 })
                 .style("stroke", function (d) {return d3.rgb(d.color).darker(2);})
