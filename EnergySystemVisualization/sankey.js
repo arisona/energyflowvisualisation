@@ -1,6 +1,3 @@
-/**
- * Created by Claude on 13.03.2015.
- */
 
 d3.sankey = function() {
     var sankey = {},
