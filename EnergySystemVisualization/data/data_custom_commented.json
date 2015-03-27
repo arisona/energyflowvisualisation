@@ -4,71 +4,63 @@
       "year": 1990,
       "nodes": [
         {"__comment":"forms of energy"},
-        {"id":0, "name": "Wood/Coal/Waste"},
-        {"id":1, "name": "Wood/Coal/Waste Production"},
-        {"id":2, "name": "Wood/Coal/Waste Import"},
-        {"id":3, "name": "Wood/Coal/Waste Export"},
-        {"id":4, "name": "Wood/Coal/Waste Change in Stock"},
+        {"id":1, "name": "import"},
+        {"id":2, "name": "production"},
+        {"id":3, "name": "out_of_stock"},
+        {"id":4, "name": "into_stock"},
+        {"id":5, "name": "export"},
 
-        {"id":5, "name": "Crude Oil"},
-        {"id":6, "name": "Crude Oil Import"},
-        {"id":7, "name": "Crude Oil Change in Stock"},
+        {"id":0, "name": "Wood/Coal/Waste"},
+
+        {"id":6, "name": "Crude Oil"},
 
         {"id":8, "name": "Petroleum"},
-        {"id":9, "name": "Petroleum Change in Stock"},
-        {"id":10, "name": "Petroleum Import"},
-        {"id":11, "name": "Petroleum Export"},
 
         {"id":12, "name": "Natural Gas"},
-        {"id":13, "name": "Natural Gas Import"},
 
         {"id":14, "name": "Nuclear Fuel"},
-        {"id":15, "name": "Nuclear Fuel Import"},
 
         {"id":16, "name": "Hydropower"},
-        {"id":17, "name": "Hydropower Production"},
 
         {"id":18, "name": "New Renewables"},
-        {"id":19, "name": "New Renewables Production"},
-        {"id":20, "name": "New Renewables Import"},
+//        {"id":19, "name": "New Renewables Production"},
+//        {"id":20, "name": "New Renewables Import"},
 
         {"id":21, "name": "Electricity"},
-        {"id":22, "name": "Electricity Import"},
-        {"id":23, "name": "Electricity Export"},
 
         {"id":24, "name": "District Heat"},
 
-        {"__comment":"sinks"},
         {"id":25, "name": "Households"},
         {"id":26, "name": "Services"},
         {"id":27, "name": "Industry"},
         {"id":28, "name": "Transport"},
 
-        {"__comment":"processing"},
         {"id":29, "name": "Thermal"},
         {"id":30, "name": "Refineries"},
-        {"id":31, "name": "Hydro/Nuclear"},
-        {"id":32, "name": "Gasworks"}
+        {"id":31, "name": "hydro/nuclear"},
+        {"id":32, "name": "Gasworks"},
+
+        {"id":33, "name": "non-energetic"}
       ],
       "links": [
         {
-          "source": 1,
+          "source": 2,
           "target": 0,
           "value": 90460
         },
         {
-          "source": 2,
+          "source": 1,
           "target": 0,
           "value": 6050
         },
         {
-          "source": 0,
-          "target": 4,
+          "source": 3,
+          "target": 0,
           "value": 1190
         },
         {
           "source": 0,
-          "target": 4,
+          "target": 5,
           "value": 300
         },
         {
@@ -76,7 +68,6 @@
           "target": 29,
           "value": 47660
         },
-        {"__comment":"49740 units Wood/Coal/Waste into 25 and 27 split randomly."},
         {
           "source": 0,
           "target": 25,
@@ -86,8 +77,206 @@
           "source": 0,
           "target": 27,
           "value": 10000
+        },
+
+        {
+          "source": 1,
+          "target": 6,
+          "value": 189700
+        },
+        {
+          "source": 6,
+          "target": 30,
+          "value": 189700
+        },
+        {
+          "source": 6,
+          "target": 4,
+          "value": 480
+        },
+        {
+          "source": 30,
+          "target": 8,
+          "value": 175050
+        },
+        {
+          "source": 1,
+          "target": 8,
+          "value": 298959
+        },
+        {
+          "source": 3,
+          "target": 8,
+          "value": 25630
+        },
+        {
+          "source": 8,
+          "target": 5,
+          "value": 18780
+        },
+        {
+          "source": 8,
+          "target": 29,
+          "value": 440
+        },
+        {
+          "source": 8,
+          "target": 33,
+          "value": 22950
+        },
+        {
+          "source": 8,
+          "target": 25,
+          "value": 15860
+        },
+        {
+          "source": 8,
+          "target": 28,
+          "value": 425749
+        },
+        {
+          "source": 8,
+          "target": 27,
+          "value": 5287
+        },
+        {
+          "source": 8,
+          "target": 26,
+          "value": 10573
+        },
+        {"__comment":"Thermal into district heat. Value made up"},
+        {
+          "source": 29,
+          "target": 24,
+          "value": 1290
+        },
+        {"__comment":"Thermal into electricity."},
+        {
+          "source": 29,
+          "target": 21,
+          "value": 400
+        },
+        {"__comment":"Import into Natural Gas."},
+        {
+          "source": 1,
+          "target": 13,
+          "value": 111770
+        },
+        {"__comment":"Natural Gas into Thermal."},
+        {
+          "source": 13,
+          "target": 29,
+          "value": 7580
+        },
+        {"__comment":"Natural Gas into Household. Value = 103700/3"},
+        {
+          "source": 13,
+          "target": 25,
+          "value": 34567
+        },
+        {"__comment":"Natural Gas into Services. Value = 103700/3"},
+        {
+          "source": 13,
+          "target": 26,
+          "value": 34567
+        },
+        {"__comment":"Natural Gas into Industries. Value = 103700/3/3*2"},
+        {
+          "source": 13,
+          "target": 27,
+          "value": 23044
+        },
+        {"__comment":"Natural Gas into Transport. Value = 103700/3/3*1"},
+        {
+          "source": 13,
+          "target": 27,
+          "value": 11522
+        },
+        {"__comment":"Import into Nuclear Fuel."},
+        {
+          "source": 1,
+          "target": 14,
+          "value": 278840
+        },
+        {"__comment":"Nuclear Fuel into Hydro/Nuclear."},
+        {
+          "source": 14,
+          "target": 31,
+          "value": 278840
+        },
+        {"__comment":"Hydro/Nuclear into Electicity."},
+        {
+          "source": 31,
+          "target": 21,
+          "value": 201650
+        },
+        {"__comment":"Import into Electricity."},
+        {
+          "source": 1,
+          "target": 21,
+          "value": 299870
+        },
+        {"__comment":"Electricity into Export."},
+        {
+          "source": 21,
+          "target": 5,
+          "value": 290560
+        },
+        {"__comment":"Electricity into households. Value = 210960/3"},
+        {
+          "source": 21,
+          "target": 25,
+          "value": 70320
+        },
+        {"__comment":"Electricity into services. Value = 210960/3"},
+        {
+          "source": 21,
+          "target": 26,
+          "value": 70320
+        },
+        {"__comment":"Electricity into industries. Value = 210960/3"},
+        {
+          "source": 21,
+          "target": 27,
+          "value": 70320
+        },
+        {"__comment":"Production into Hydropower."},
+        {
+          "source": 2,
+          "target": 16,
+          "value": 121660
+        },
+        {"__comment": "Hydropower into hudro/nuclear"},
+        {
+          "source": 16,
+          "target": 31,
+          "value": 121660
+        },
+        {"__comment": "hudro/nuclear into district heat"},
+        {
+          "source": 31,
+          "target": 24,
+          "value": 1290
+        },
+        {"__comment": "district heat into housholds"},
+        {
+          "source": 24,
+          "target": 25,
+          "value": 860
+        },
+        {"__comment": "district heat into services"},
+        {
+          "source": 24,
+          "target": 26,
+          "value": 860
+        },
+        {"__comment": "district heat into industry"},
+        {
+          "source": 24,
+          "target": 27,
+          "value": 860
         }
-        ]
+      ]
     },
     {
       "year": 1991,
