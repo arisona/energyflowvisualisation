@@ -4,11 +4,11 @@
       "year": 1990,
       "nodes": [
         {"id":0, "name": "Wood/Coal/Waste"},
-        {"id":1, "name": "import"},
-        {"id":2, "name": "production"},
-        {"id":3, "name": "out_of_stock"},
-        {"id":4, "name": "into_stock"},
-        {"id":5, "name": "export"},
+        {"id":1, "name": "Import"},
+        {"id":2, "name": "Production"},
+        {"id":3, "name": "Out of Stock"},
+        {"id":4, "name": "Into Stock"},
+        {"id":5, "name": "Export"},
         {"id":6, "name": "Crude Oil"},
         {"id":7, "name": "Petroleum"},
         {"id":8, "name": "Natural Gas"},
@@ -24,7 +24,7 @@
 
         {"id":18, "name": "Thermal"},
         {"id":19, "name": "Refineries"},
-        {"id":20, "name": "hydro/nuclear"},
+        {"id":20, "name": "Hydro/Nuclear"},
         {"id":21, "name": "Gasworks"},
 
         {"id":22, "name": "non-energetic"}

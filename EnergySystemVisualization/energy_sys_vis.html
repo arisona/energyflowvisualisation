@@ -8,16 +8,6 @@
     <style>
         @import url(styles/styles.css);
 
-        #chart {
-            height: 500px;
-        }
-
-        .node rect {
-            cursor: move;
-            fill-opacity: .9;
-            shape-rendering: crispEdges;
-        }
-
         .node text {
             pointer-events: none;
             text-shadow: 0 1px 0 #fff;
@@ -40,22 +30,146 @@
             stroke-width: 1;
         }
 
+
+        /****************/
+        /* Energy types */
+        /****************/
+        rect.energytype {
+            stroke-width: 0;
+            fill-opacity: .5;
+        }
+
         .wood-coal-waste {
             stroke: rgb(97,65,38);
+        }
+
+        rect.wood-coal-waste {
+            fill: rgb(97,65,38);
+        }
+
+        .districtheat {
+            stroke: rgb(120,120,120);
+        }
+
+        rect.districtheat {
+            fill: rgb(120,120,120);
         }
 
         .petroleum {
             stroke: rgb(255,165,0);
         }
 
+        rect.petroleum {
+            fill: rgb(255,165,0);
+        }
+
         .crudeoil {
             stroke: rgb(255, 0, 0);
+        }
+
+        rect.crudeoil {
+            fill: rgb(255, 0, 0);
+        }
+
+        .naturalgas {
+            stroke: rgb(255, 255, 0);
+        }
+
+        rect.naturalgas {
+            fill: rgb(255, 255, 0);
+        }
+
+        .electricity {
+            stroke: rgb(0, 255, 255);
+        }
+
+        rect.electricity {
+            fill: rgb(0, 255, 255);
+        }
+
+        .nuclearfuel {
+            stroke: rgb(0, 255, 0);
+        }
+
+        rect.nuclearfuel {
+            fill: rgb(0, 255, 0);
+        }
+
+        .hydropower {
+            stroke: rgb(51, 102, 204);
+        }
+
+        rect.hydropower {
+            fill: rgb(51, 102, 204);
+        }
+
+        /*******************/
+        /*Sources and sinks*/
+        /*******************/
+        rect.source-sink {
+            stroke: rgb(100, 100, 100);
+        }
+
+        rect.services {
+            fill: url(#services);
+        }
+
+        rect.transport {
+            fill: url(#transport);
+        }
+
+        rect.households {
+            fill: url(#households);
+        }
+
+        rect.industry {
+            fill: url(#industry);
+        }
+
+        rect.import {
+            fill: url(#import);
+        }
+
+        rect.export {
+            fill: url(#export);
+        }
+
+
+        rect.production {
+            fill: url(#production);
+        }
+
+        rect.changeinstock {
+            fill: url(#changeinstock);
+        }
+
+
+        rect.nonenergetic{
+            fill: url(#nonenergetic);
+        }
+        /******************/
+        /*processing steps*/
+        /******************/
+        rect.processing {
+            stroke: rgb(100, 100, 100);
+        }
+
+        rect.hydro-nuclear {
+            fill: url(#hydro-nuclear);
+        }
+
+        rect.refineries {
+            fill: url(#refineries);
+        }
+
+        rect.thermal {
+            fill: url(#thermal);
         }
     </style>
 </head>
 <body>
 
-<h1>Sankey Diagrams</h1>
+<h2>Energy System Visualization</h2>
 
 <div id="buttons"></div>
 <p id="chart">
@@ -84,7 +198,7 @@
             </pattern>
             <pattern id="services" patternUnits="objectBoundingBox" width="1" height="1"
                      preserveAspectRatio="xMidYMid meet" viewBox="0 0 150 115">
-                <image height="115" width="150" xlink:href="images/transport.png"></image>
+                <image height="115" width="150" xlink:href="images/services.png"></image>
             </pattern>
             <pattern id="refineries" patternUnits="objectBoundingBox" width="1" height="1"
                      preserveAspectRatio="xMidYMid meet" viewBox="0 0 220 150">
@@ -101,6 +215,14 @@
             <pattern id="export" patternUnits="objectBoundingBox" width="1" height="1"
                      preserveAspectRatio="xMidYMid meet" viewBox="0 0 70 170">
                 <image height="170" width="70" xlink:href="images/export.png"></image>
+            </pattern>
+            <pattern id="hydro-nuclear" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 240">
+                <image height="240" width="100" xlink:href="images/hydro-nuclear.png"></image>
+            </pattern>
+            <pattern id="nonenergetic" patternUnits="objectBoundingBox" width="1" height="1"
+                     preserveAspectRatio="xMidYMid meet" viewBox="0 0 77 76">
+                <image height="76" width="77" xlink:href="images/nonenergetic.png"></image>
             </pattern>
         </defs>
     </svg>
@@ -132,7 +254,7 @@
 
     var sankey = d3.sankey()
             .nodeWidth(40)
-            .nodePadding(10)
+            .nodePadding(30)
             .size([width, height]);
 
     var path = sankey.link();
@@ -189,14 +311,26 @@
                 .data(graph.links)
                 .enter().append("g").attr("class", "group");
 
-
         pathGroups
                 .append("path")
                 .attr("class", function(d) {
                     var cls = "link ";
-                    if (d.source.id == 0 || d.target.id == 0) return cls + "wood-coal-waste";
-                    if (d.source.id == 8 || d.target.id == 8) return cls + "petroleum";
-                    if (d.source.id == 5 || d.target.id == 5) return cls + "crudeoil";
+                    var regex  = new RegExp("Wood");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "wood-coal-waste";
+                    regex  = new RegExp("Petroleum");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "petroleum";
+                    regex  = new RegExp("Crude Oil");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "crudeoil";
+                    regex  = new RegExp("Natural Gas");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "naturalgas";
+                    regex  = new RegExp("Electricity");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "electricity";
+                    regex  = new RegExp("Nuclear Fuel");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "nuclearfuel";
+                    regex  = new RegExp("Hydropower");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "hydropower";
+                    regex  = new RegExp("District Heat");
+                    if (regex.test(d.target.name) || regex.test(d.source.name)) return cls + "districtheat";
                     return cls;
                 })
                 .attr("d", path)
@@ -213,7 +347,6 @@
                 .append("text")
                 .attr("class", "flowname")
 
-        // the text element for showing the value of the flow at the middle of each link.
 
         // On hovering over the link: Show the value of the flow and draw a border around the link.
         // If flows have a strong bend the border does not fit the flow anymore :(
@@ -250,7 +383,6 @@
 //            d3.select(this).selectAll(".linkborder").remove();
         });
 
-        // Dragging behavior of nodes disabled.
         var node = svg.append("g").selectAll(".node")
                 .data(graph.nodes)
                 .enter().append("g")
@@ -264,52 +396,86 @@
         node.append("rect")
                 .attr("height", function (d) {return d.dy;})
                 .attr("width", sankey.nodeWidth())
-//                .style("fill", "url(#thermal)")
-                .style("fill", function(d){
-                    var regex  = new RegExp("Import");
-                    if (regex.test(d.name)) return "url(#import)";
-
-                    regex  = new RegExp("Export");
-                    if (regex.test(d.name)) return "url(#export)";
-
-                    regex  = new RegExp("Thermal");
-                    if (regex.test(d.name)) return "url(#thermal)";
-
-                    regex  = new RegExp("Refineries");
-                    if (regex.test(d.name)) return "url(#refineries)";
-
-                    regex  = new RegExp("Change in Stock");
-                    if (regex.test(d.name)) return "url(#changeinstock)";
-
-                    regex  = new RegExp("Production");
-                    if (regex.test(d.name)) return "url(#production)";
-
-                    regex = new RegExp("Households");
-                    if (regex.test(d.name)) return "url(#households)";
-
-                    regex = new RegExp("Industry");
-                    if (regex.test(d.name)) return "url(#industry)";
+                .attr("class", function (d) {
+                    var regex = new RegExp("Services");
+                    if (regex.test(d.name)) return "services source-sink";
 
                     regex = new RegExp("Transport");
-                    if (regex.test(d.name)) return "url(#transport)";
+                    if (regex.test(d.name)) return "transport source-sink";
 
-                    regex = new RegExp("Services");
-                    if (regex.test(d.name)) return "url(#services)";
+                    regex = new RegExp("Households");
+                    if (regex.test(d.name)) return "households source-sink";
 
-                    regex = new RegExp("Crude Oil");
-                    if (regex.test(d.name)) return "rgb(255, 0, 0)";
+                    regex = new RegExp("Industry");
+                    if (regex.test(d.name)) return "industry source-sink";
 
-                    regex = new RegExp("Petroleum");
-                    if (regex.test(d.name)) return "rgb(255,165,0)";
+                    regex = new RegExp("Export");
+                    if (regex.test(d.name)) return "export source-sink";
 
-                    regex = new RegExp("Wood");
-                    if (regex.test(d.name)) return "rgb(97,65,38)";
+                    regex = new RegExp("Import");
+                    if (regex.test(d.name)) return "import source-sink";
 
-                    return "#ffffff";
+                    regex = new RegExp("Production");
+                    if (regex.test(d.name)) return "production source-sink";
+
+                    regex = new RegExp("Stock");
+                    if (regex.test(d.name)) return "changeinstock source-sink";
+
+                    regex = new RegExp("non-energetic");
+                    if (regex.test(d.name)) return "nonenergetic source-sink";
+
+                    regex  = new RegExp("Wood");
+                    if (regex.test(d.name)) return "wood-coal-waste energytype";
+
+                    regex  = new RegExp("District Heat");
+                    if (regex.test(d.name)) return "districtheat energytype";
+
+                    regex  = new RegExp("Petroleum");
+                    if (regex.test(d.name)) return "petroleum energytype";
+
+                    regex  = new RegExp("Crude Oil");
+                    if (regex.test(d.name)) return "crudeoil energytype";
+
+                    regex  = new RegExp("Natural Gas");
+                    if (regex.test(d.name)) return "naturalgas energytype";
+
+                    regex  = new RegExp("Electricity");
+                    if (regex.test(d.name)) return "electricity energytype";
+
+                    regex  = new RegExp("Nuclear Fuel");
+                    if (regex.test(d.name)) return "nuclearfuel energytype";
+
+                    regex  = new RegExp("Hydropower");
+                    if (regex.test(d.name)) return "hydropower energytype";
+
+                    regex = new RegExp("Hydro/Nuclear");
+                    if (regex.test(d.name)) return "hydro-nuclear processing";
+
+                    regex = new RegExp("Thermal");
+                    if (regex.test(d.name)) return "thermal processing";
+
+                    regex = new RegExp("Refineries");
+                    if (regex.test(d.name)) return "refineries processing";
                 })
-                .style("stroke", function (d) {return d3.rgb(d.color).darker(2);})
                 .append("title")
                 .text(function (d) {return d.name + "\n" + formatNumber(d.value);});
+
+
+//        node.select("rect").append("text").attr("class", "nodename");
+//        node.select("rect")
+//                .on("mouseover", function (d) {
+//                    if (!mouseDown) {
+//                        d3.select(this).select(".nodename")
+//                                .attr("x", d.x + 6 + sankey.nodeWidth())
+//                                .attr("y", d.y)
+//                                .attr("text-anchor", "start")
+//                                .attr("dy", ".35em")
+//                                .attr("transform", null)
+//                                .text(function(d) {return d.name;});
+//                        console.log("here");
+//                    }
+//                });
+
 
         function dragmove(d) {
             d3.select(this).attr("transform", "translate(" + d.x + "," +
