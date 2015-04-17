@@ -1,3 +1,28 @@
+/**
+ * The possible node types.
+ * ORIGIN: the nodes that have only target links.
+ * ENERGYTYPE: the nodes that represent an energy type.
+ * PROCESS: the nodes that represent stages in which the energytypes are processed.
+ * SINK: the nodes that have only source links.
+ * @type {{ORIGIN: string, ENERGYTYPE: string, PROCESS: string, SINK: string}}
+ */
+var NODETYPES = {
+    ORIGIN : "origin",
+    ENERGYTYPE : "energytype",
+    PROCESS : "process",
+    SINK : "sink"
+};
+
+/* Properties of the node objects: */
+// name
+// type, One of the types from enum NODETYPES.
+// value, The energy value of the node
+// sourceLinks
+// targetLinks
+// x, The position of the node in x-direction
+// y, The postion of the node in y-direction
+// dx, the node's width.
+// dy, The node's height
 
 d3.sankey = function() {
     var sankey = {},
@@ -19,9 +44,9 @@ d3.sankey = function() {
         return sankey;
     };
 
-    sankey.nodes = function(_) {
+    sankey.nodes = function(n) {
         if (!arguments.length) return nodes;
-        nodes = _;
+        nodes = d3.map(n, function(d) { return d.name; });
         return sankey;
     };
 
@@ -51,39 +76,39 @@ d3.sankey = function() {
         return sankey;
     };
 
-    // Creates two SVG paths that enclose the path created with the function "link"
-    // The variable d are the link objects. d.source.y is the upper y-coordinate of the source node (same for s.target).
+    //sankey.linkborder = function() {
+    //    var curvature = .5;
+    //
+    //    function linkborder(d) {
+    //        var x0 = d.source.x + d.source.dx,
+    //            x1 = d.target.x,
+    //            xi = d3.interpolateNumber(x0, x1),
+    //            x2 = xi(curvature),
+    //            x3 = xi(1 - curvature),
+    //            y01 = d.source.y + d.sy,
+    //            y02 = d.source.y + d.sy + d.dy,
+    //            y11 = d.target.y + d.ty,
+    //            y12 = d.target.y + d.ty + d.dy;
+    //        return "M " + x0 + ", " + y01
+    //            + " C " + x2 + ", " + y01
+    //            + " " + x3 + ", " + y11
+    //            + " " + x1 + ", " + y11
+    //
+    //            + " M " + x0 + ", " + y02
+    //            + " C " + x2 + ", " + y02
+    //            + " " + x3 + ", " + y12
+    //            + " " + x1 + ", " + y12
+    //    }
+    //
+    //    return linkborder;
+    //};
+
+    // The variable d are the link objects. d.source.y is the upper y-coordinate of the source node (same for s.target.y).
+    // d.source.x is the most left x-coordinate of the source node (same for s.target.x).
+    // d.source.dx is the width of the source node (same for s.target.dx).
     // d.sy is the shift of the link in y direction along the right side of the source node (same with d.ty for target).
     // This shift is a result of the calculated layout of the diagram. d.dy is the breadth of the path, respectively
     // the size of the flow.
-    sankey.linkborder = function() {
-        var curvature = .5;
-
-        function linkborder(d) {
-            var x0 = d.source.x + d.source.dx,
-                x1 = d.target.x,
-                xi = d3.interpolateNumber(x0, x1),
-                x2 = xi(curvature),
-                x3 = xi(1 - curvature),
-                y01 = d.source.y + d.sy,
-                y02 = d.source.y + d.sy + d.dy,
-                y11 = d.target.y + d.ty,
-                y12 = d.target.y + d.ty + d.dy;
-            return "M " + x0 + ", " + y01
-                + " C " + x2 + ", " + y01
-                + " " + x3 + ", " + y11
-                + " " + x1 + ", " + y11
-
-                + " M " + x0 + ", " + y02
-                + " C " + x2 + ", " + y02
-                + " " + x3 + ", " + y12
-                + " " + x1 + ", " + y12
-        }
-
-        return linkborder;
-    };
-
-    // For Explanations, see function "linkborder".
     sankey.link = function() {
         var curvature = .5;
 
@@ -114,15 +139,13 @@ d3.sankey = function() {
     // Populate the sourceLinks and targetLinks for each node.
     // Also, if the source and target are not objects, assume they are indices.
     function computeNodeLinks() {
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             node.sourceLinks = [];
             node.targetLinks = [];
         });
         links.forEach(function(link) {
-            var source = link.source,
-                target = link.target;
-            if (typeof source === "number") source = link.source = nodes[link.source];
-            if (typeof target === "number") target = link.target = nodes[link.target];
+            var source = link.source = nodes.get(link.source);
+            var target = link.target = nodes.get(link.target);
             source.sourceLinks.push(link);
             target.targetLinks.push(link);
         });
@@ -130,7 +153,7 @@ d3.sankey = function() {
 
     // Compute the value (size) of each node by summing the associated links.
     function computeNodeValues() {
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             node.value = Math.max(
                 d3.sum(node.sourceLinks, value),
                 d3.sum(node.targetLinks, value)
@@ -143,9 +166,9 @@ d3.sankey = function() {
     // nodes with no incoming links are assigned breadth zero, while
     // nodes with no outgoing links are assigned the maximum breadth.
     function computeNodeBreadths() {
-        var remainingNodes = nodes,
-            nextNodes,
-            x = 0;
+        var remainingNodes = nodes.values();
+        var nextNodes;
+        var x = 0;
 
         while (remainingNodes.length) {
             nextNodes = [];
@@ -162,13 +185,12 @@ d3.sankey = function() {
             ++x;
         }
 
-        //
         moveSinksRight(x);
         scaleNodeBreadths((size[0] - nodeWidth) / (x - 1));
     }
 
     function moveSourcesRight() {
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             if (!node.targetLinks.length) {
                 node.x = d3.min(node.sourceLinks, function(d) { return d.target.x; }) - 1;
             }
@@ -176,7 +198,7 @@ d3.sankey = function() {
     }
 
     function moveSinksRight(x) {
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             if (!node.sourceLinks.length) {
                 node.x = x - 1;
             }
@@ -184,7 +206,7 @@ d3.sankey = function() {
     }
 
     function scaleNodeBreadths(kx) {
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             node.x *= kx;
         });
     }
@@ -193,7 +215,7 @@ d3.sankey = function() {
         var nodesByBreadth = d3.nest()
             .key(function(d) { return d.x; })
             .sortKeys(d3.ascending)
-            .entries(nodes)
+            .entries(nodes.values())
             .map(function(d) { return d.values; });
 
         //
@@ -292,11 +314,11 @@ d3.sankey = function() {
     }
 
     function computeLinkDepths() {
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             node.sourceLinks.sort(ascendingTargetDepth);
             node.targetLinks.sort(ascendingSourceDepth);
         });
-        nodes.forEach(function(node) {
+        nodes.values().forEach(function(node) {
             var sy = 0, ty = 0;
             node.sourceLinks.forEach(function(link) {
                 link.sy = sy;

@@ -1,247 +1,239 @@
 {
-  "data": [
+  "nodes": [
+    {"name": "Wood/Coal/Waste"},
+    {"name": "Import"},
+    {"name": "Production"},
+    {"name": "Out of Stock"},
+    {"name": "Into Stock"},
+    {"name": "Export"},
+    {"name": "Crude Oil"},
+    {"name": "Petroleum"},
+    {"name": "Natural Gas"},
+    {"name": "Nuclear Fuel"},
+    {"name": "Hydropower"},
+    {"name": "New Renewables"},
+    {"name": "Electricity"},
+    {"name": "District Heat"},
+    {"name": "Households"},
+    {"name": "Services"},
+    {"name": "Industry"},
+    {"name": "Transport"},
+    {"name": "Thermal"},
+    {"name": "Refineries"},
+    {"name": "Hydro/Nuclear"},
+    {"name": "Gasworks"},
+    {"name": "non-energetic"}
+  ],
+  "links": [
     {
-      "year": 1990,
-      "nodes": [
-        {"id":0, "name": "Wood/Coal/Waste"},
-        {"id":1, "name": "Import"},
-        {"id":2, "name": "Production"},
-        {"id":3, "name": "Out of Stock"},
-        {"id":4, "name": "Into Stock"},
-        {"id":5, "name": "Export"},
-        {"id":6, "name": "Crude Oil"},
-        {"id":7, "name": "Petroleum"},
-        {"id":8, "name": "Natural Gas"},
-        {"id":9, "name": "Nuclear Fuel"},
-        {"id":10, "name": "Hydropower"},
-        {"id":11, "name": "New Renewables"},
-        {"id":12, "name": "Electricity"},
-        {"id":13, "name": "District Heat"},
-        {"id":14, "name": "Households"},
-        {"id":15, "name": "Services"},
-        {"id":16, "name": "Industry"},
-        {"id":17, "name": "Transport"},
-
-        {"id":18, "name": "Thermal"},
-        {"id":19, "name": "Refineries"},
-        {"id":20, "name": "Hydro/Nuclear"},
-        {"id":21, "name": "Gasworks"},
-
-        {"id":22, "name": "non-energetic"}
-      ],
-      "links": [
-        {
-          "source": 2,
-          "target": 0,
-          "value": 90460
-        },
-        {
-          "source": 1,
-          "target": 0,
-          "value": 6050
-        },
-        {
-          "source": 3,
-          "target": 0,
-          "value": 1190
-        },
-        {
-          "source": 0,
-          "target": 5,
-          "value": 300
-        },
-        {
-          "source": 0,
-          "target": 18,
-          "value": 47660
-        },
-        {
-          "source": 0,
-          "target": 14,
-          "value": 39740
-        },
-        {
-          "source": 0,
-          "target": 16,
-          "value": 10000
-        },
-
-        {
-          "source": 1,
-          "target": 6,
-          "value": 189700
-        },
-        {
-          "source": 6,
-          "target": 19,
-          "value": 189700
-        },
-        {
-          "source": 6,
-          "target": 4,
-          "value": 480
-        },
-        {
-          "source": 19,
-          "target": 7,
-          "value": 175050
-        },
-        {
-          "source": 1,
-          "target": 7,
-          "value": 298959
-        },
-        {
-          "source": 3,
-          "target": 7,
-          "value": 25630
-        },
-        {
-          "source": 7,
-          "target": 5,
-          "value": 18780
-        },
-        {
-          "source": 7,
-          "target": 18,
-          "value": 440
-        },
-        {
-          "source": 7,
-          "target": 22,
-          "value": 22950
-        },
-        {
-          "source": 7,
-          "target": 14,
-          "value": 15860
-        },
-        {
-          "source": 7,
-          "target": 17,
-          "value": 425749
-        },
-        {
-          "source": 7,
-          "target": 16,
-          "value": 5287
-        },
-        {
-          "source": 7,
-          "target": 15,
-          "value": 10573
-        },
-        {
-          "source": 18,
-          "target": 13,
-          "value": 1290
-        },
-        {
-          "source": 18,
-          "target": 12,
-          "value": 400
-        },
-        {
-          "source": 1,
-          "target": 8,
-          "value": 111770
-        },
-        {
-          "source": 8,
-          "target": 18,
-          "value": 7580
-        },
-        {
-          "source": 8,
-          "target": 14,
-          "value": 34567
-        },
-        {
-          "source": 8,
-          "target": 15,
-          "value": 34567
-        },
-        {
-          "source": 8,
-          "target": 16,
-          "value": 23044
-        },
-        {
-          "source": 8,
-          "target": 17,
-          "value": 11522
-        },
-        {
-          "source": 1,
-          "target": 9,
-          "value": 278840
-        },
-        {
-          "source": 9,
-          "target": 20,
-          "value": 278840
-        },
-        {
-          "source": 20,
-          "target": 12,
-          "value": 201650
-        },
-        {
-          "source": 1,
-          "target": 12,
-          "value": 299870
-        },
-        {
-          "source": 12,
-          "target": 5,
-          "value": 290560
-        },
-        {
-          "source": 12,
-          "target": 14,
-          "value": 70320
-        },
-        {
-          "source": 12,
-          "target": 15,
-          "value": 70320
-        },
-        {
-          "source": 12,
-          "target": 16,
-          "value": 70320
-        },
-        {
-          "source": 2,
-          "target": 10,
-          "value": 121660
-        },
-        {
-          "source": 10,
-          "target": 20,
-          "value": 121660
-        },
-        {
-          "source": 20,
-          "target": 13,
-          "value": 1290
-        },
-        {
-          "source": 13,
-          "target": 14,
-          "value": 860
-        },
-        {
-          "source": 13,
-          "target": 15,
-          "value": 860
-        },
-        {
-          "source": 13,
-          "target": 16,
-          "value": 860
-        }
-      ]
+      "source": "Production",
+      "target": "Wood/Coal/Waste",
+      "value": 90460
+    },
+    {
+      "source": "Import",
+      "target": "Wood/Coal/Waste",
+      "value": 6050
+    },
+    {
+      "source": "Out of Stock",
+      "target": "Wood/Coal/Waste",
+      "value": 1190
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Export",
+      "value": 300
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Thermal",
+      "value": 47660
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Households",
+      "value": 39740
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Industry",
+      "value": 10000
+    },
+    {
+      "source": "Import",
+      "target": "Crude Oil",
+      "value": 189700
+    },
+    {
+      "source": "Crude Oil",
+      "target": "Refineries",
+      "value": 189700
+    },
+    {
+      "source": "Crude Oil",
+      "target": "Into Stock",
+      "value": 480
+    },
+    {
+      "source": "Refineries",
+      "target": "Petroleum",
+      "value": 175050
+    },
+    {
+      "source": "Import",
+      "target": "Petroleum",
+      "value": 298959
+    },
+    {
+      "source": "Out of Stock",
+      "target": "Petroleum",
+      "value": 25630
+    },
+    {
+      "source": "Petroleum",
+      "target": "Export",
+      "value": 18780
+    },
+    {
+      "source": "Petroleum",
+      "target": "Thermal",
+      "value": 440
+    },
+    {
+      "source": "Petroleum",
+      "target": "non-energetic",
+      "value": 22950
+    },
+    {
+      "source": "Petroleum",
+      "target": "Households",
+      "value": 15860
+    },
+    {
+      "source": "Petroleum",
+      "target": "Transport",
+      "value": 425749
+    },
+    {
+      "source": "Petroleum",
+      "target": "Industry",
+      "value": 5287
+    },
+    {
+      "source": "Petroleum",
+      "target": "Services",
+      "value": 10573
+    },
+    {
+      "source": "Thermal",
+      "target": "District Heat",
+      "value": 1290
+    },
+    {
+      "source": "Thermal",
+      "target": "Electricity",
+      "value": 400
+    },
+    {
+      "source": "Import",
+      "target": "Natural Gas",
+      "value": 111770
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Thermal",
+      "value": 7580
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Households",
+      "value": 34567
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Services",
+      "value": 34567
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Industry",
+      "value": 23044
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Transport",
+      "value": 11522
+    },
+    {
+      "source": "Import",
+      "target": "Nuclear Fuel",
+      "value": 278840
+    },
+    {
+      "source": "Nuclear Fuel",
+      "target": "Hydro/Nuclear",
+      "value": 278840
+    },
+    {
+      "source": "Hydro/Nuclear",
+      "target": "Electricity",
+      "value": 201650
+    },
+    {
+      "source": "Import",
+      "target": "Electricity",
+      "value": 299870
+    },
+    {
+      "source": "Electricity",
+      "target": "Export",
+      "value": 290560
+    },
+    {
+      "source": "Electricity",
+      "target": "Households",
+      "value": 70320
+    },
+    {
+      "source": "Electricity",
+      "target": "Services",
+      "value": 70320
+    },
+    {
+      "source": "Electricity",
+      "target": "Industry",
+      "value": 70320
+    },
+    {
+      "source": "Production",
+      "target": "Hydropower",
+      "value": 121660
+    },
+    {
+      "source": "Hydropower",
+      "target": "Hydro/Nuclear",
+      "value": 121660
+    },
+    {
+      "source": "Hydro/Nuclear",
+      "target": "District Heat",
+      "value": 1290
+    },
+    {
+      "source": "District Heat",
+      "target": "Households",
+      "value": 860
+    },
+    {
+      "source": "District Heat",
+      "target": "Services",
+      "value": 860
+    },
+    {
+      "source": "District Heat",
+      "target": "Industry",
+      "value": 860
     }
   ]
 }

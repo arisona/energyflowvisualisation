@@ -5,8 +5,15 @@
     <title>first Example</title>
     <script type="text/javascript" src="d3.min.js"></script>
     <script type="text/javascript" src="sankey.js"></script>
+    <script type="text/javascript" src="dataQueries.js"></script>
     <style>
         @import url(styles/styles.css);
+
+        #chart {
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
+        }
 
         .node text {
             pointer-events: none;
@@ -169,11 +176,7 @@
 </head>
 <body>
 
-<h2>Energy System Visualization</h2>
-
-<div id="buttons"></div>
-<p id="chart">
-    <svg>
+<svg id="chart">
         <defs>
             <!-- Definitions of patterns with icons for usage in the nodes of the sankey diagram -->
             <pattern id="thermal" patternUnits="objectBoundingBox" width="1" height="1"
@@ -226,7 +229,6 @@
             </pattern>
         </defs>
     </svg>
-</p>
 
 <script>
 
@@ -240,25 +242,40 @@
         --mouseDown;
     };
 
-    var margin = {top: 1, right: 1, bottom: 6, left: 1};
-    var width = 960 - margin.left - margin.right;
-    var height = 500 - margin.top - margin.bottom;
+    var theData;
+
+    // example when changing the sankey data:
+//    var imports = theData.nodes[1]
+//    d3.selectAll(".node")
+//            .data(theData.nodes).transition()
+//            .attr("class", "node")
+//            .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
+
+    // A good aspect ratio for the diagrams is 1.9.
+    // Calculated from the canvas width and height of Mike Bostock's Sankey Diagram example.
+    var aspectRatio = 1.9;
+    var canvasPadding = 10;
+    var canvasMargin = 30; // margin on the right and bottom
+    var canvasWidth = window.innerWidth - canvasMargin;
+    var canvasHeight = window.innerHeight - canvasMargin;
 
     var color = d3.scale.category20();
 
-    var svg = d3.select("#chart").select("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+    var svg = d3.select("#chart")
+            .attr("width", canvasWidth)
+            .attr("height", canvasHeight)
+            .style("margin-right", canvasMargin + "px")
+            .style("margin-bottom", canvasMargin + "px")
             .append("g").attr("id", "sankey")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + canvasPadding + "," + canvasPadding + ")");
 
     var sankey = d3.sankey()
             .nodeWidth(40)
             .nodePadding(30)
-            .size([width, height]);
+            .size([canvasWidth - 2*canvasPadding, canvasHeight - 2*canvasPadding]);
 
     var path = sankey.link();
-    var pathborder = sankey.linkborder();
+//    var pathborder = sankey.linkborder();
     var pathtext = function(d) {
         var ys = d.source.y + d.sy + d.dy / 2;
         var yt = d.target.y + d.ty + d.dy / 2;
@@ -269,34 +286,10 @@
         return d3.format(">,d")(number);
     }
 
-    d3.json("data/data_custom.json", function (error, graph) {
-        if (error) console.warn("Error occurred while parsing JSON file" + error);
-        var years = [];
-        for (var i = 0; i < graph.data.length; i++) {
-            years[i] = graph.data[i].year;
-        }
-        years.forEach(function (year) {
-            // Create a button for each year found in the JSON data.
-            // The buttons click action searches for the data corresponding to the year and creates the Sankey
-            // diagram from that years data.
-            d3.select("#buttons").append("button")
-                    .attr("width", 200)
-                    .attr("height", 50)
-                    .attr("name", year)
-                    .on("click", function () {
-                        for (var i = 0; i < graph.data.length; i++) {
-                            if (graph.data[i].year == year) {
-                                createSankey(graph.data[i]);
-                                break;
-                            }
-                        }
-                    }).html(year);
-        });
-    });
+    loadEnergyData(createDiagram);
 
-
-    function createSankey(graph) {
-
+    function createDiagram(graph) {
+        theData = graph;
         // Clear the svg elements
         svg.selectAll(".node").remove();
         svg.selectAll(".link").remove();
@@ -305,10 +298,10 @@
                 .links(graph["links"])
                 .layout(32);
 
-        // Each path is set in a group element for easier manipulation possibilities, like hovering.
-        // Each path gets an CSS id with consists of the word link followed by the ids of the source and the target.
+//        Each path is set in a group element for easier manipulation possibilities, like hovering.
+//        Each path gets an CSS id with consists of the word link followed by the ids of the source and the target.
         var pathGroups = svg.append("g").selectAll(".link")
-                .data(graph.links)
+                .data(sankey.links())
                 .enter().append("g").attr("class", "group");
 
         pathGroups
@@ -384,7 +377,7 @@
         });
 
         var node = svg.append("g").selectAll(".node")
-                .data(graph.nodes)
+                .data(sankey.nodes().values())
                 .enter().append("g")
                 .attr("class", "node")
                 .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
@@ -460,7 +453,6 @@
                 .append("title")
                 .text(function (d) {return d.name + "\n" + formatNumber(d.value);});
 
-
 //        node.select("rect").append("text").attr("class", "nodename");
 //        node.select("rect")
 //                .on("mouseover", function (d) {
@@ -476,10 +468,9 @@
 //                    }
 //                });
 
-
         function dragmove(d) {
             d3.select(this).attr("transform", "translate(" + d.x + "," +
-                    (d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ")");
+                    (d.y = Math.max(0, Math.min(canvasHeight - d.dy, d3.event.y))) + ")");
             sankey.relayout();
             pathGroups.select(".link").attr("d", path);
         }
