@@ -11,7 +11,7 @@ function loadEnergyData(createDiagram) {
             if (error) {
                 console.log("Error ocurred while loading energy data: " + error);
                 console.log("Loading data from local file 'data_custom.json'");
-                d3.json("data/data_custom.json", function (error, json) {
+                d3.json("data/data_generated.json", function (error, json) {
                     createDiagram(json);
                 })
             } else {

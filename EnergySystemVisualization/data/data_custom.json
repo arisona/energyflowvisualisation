@@ -1,7 +1,7 @@
 {
   "nodes": [
-    {"name": "Wood/Coal/Waste"},
-    {"name": "Import"},
+    {"name": "Wood/Coal/Waste", "type": "energytype", "color":"#f00000"},
+    {"name": "Import", "type": "origin", "imgUrl": "images/import.png" },
     {"name": "Production"},
     {"name": "Out of Stock"},
     {"name": "Into Stock"},
