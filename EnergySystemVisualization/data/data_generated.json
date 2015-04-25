@@ -1,1 +1,366 @@
-{"nodes":[{"name":"Non-energetic","type":"sink","imgUrl":"images/non-energetic.png"},{"name":"District Heat","type":"energytype","color":"#787878"},{"name":"Import","type":"origin","imgUrl":"images/import.png "},{"name":"Households","type":"sink","imgUrl":"images/households.png"},{"name":"Gasworks","type":"process","imgUrl":"images/gasworks.png"},{"name":"New Renewables","type":"energytype","color":"#8A5895"},{"name":"Petroleum ","type":"energytype","color":"#FFA500"},{"name":"Into Stock","type":"sink","imgUrl":"images/into_stock.png"},{"name":"Industry","type":"sink","imgUrl":"images/industry.png"},{"name":"Out of Stock","type":"origin","imgUrl":"images/out_of_stock.png"},{"name":"Hydropower","type":"energytype","color":"#3366CC"},{"name":"Services","type":"sink","imgUrl":"images/services.png"},{"name":"Crude Oil","type":"energytype","color":"#FF0000"},{"name":"Wood/Coal/Waste","type":"energytype","color":"#614126"},{"name":"Electricity","type":"energytype","color":"#00FFFF"},{"name":"Hydro/Nuclear","type":"process","imgUrl":"images/hydro_nuclear.png"},{"name":"Production","type":"origin","imgUrl":"images/production.png"},{"name":"Refineries","type":"process","imgUrl":"images/refineries.png"},{"name":"Export","type":"sink","imgUrl":"images/export.png"},{"name":"Nuclear Fuel","type":"energytype","color":"#00FF00"},{"name":"Transport","type":"sink","imgUrl":"images/transport.png"},{"name":"Natural Gas","type":"energytype","color":"#FFFF00"},{"name":"Thermal","type":"process","imgUrl":"images/thermal.png"}],"links":[{"source":"District Heat","target":"Households","value":35620},{"source":"District Heat","target":"Services","value":35619},{"source":"District Heat","target":"Industry","value":35619},{"source":"Import","target":"Crude Oil","value":50000},{"source":"Import","target":"Wood/Coal/Waste","value":50000},{"source":"Import","target":"Electricity","value":50000},{"source":"Import","target":"Nuclear Fuel","value":50000},{"source":"Import","target":"Petroleum ","value":50000},{"source":"Import","target":"Natural Gas","value":50000},{"source":"Petroleum ","target":"Thermal","value":6358},{"source":"Petroleum ","target":"Export","value":6358},{"source":"Petroleum ","target":"Non-energetic","value":6357},{"source":"Petroleum ","target":"Households","value":6357},{"source":"Petroleum ","target":"Transport","value":6357},{"source":"Petroleum ","target":"Industry","value":6357},{"source":"Petroleum ","target":"Services","value":6357},{"source":"Petroleum ","target":"Export","value":6358},{"source":"Petroleum ","target":"Non-energetic","value":6357},{"source":"Petroleum ","target":"Households","value":6357},{"source":"Petroleum ","target":"Transport","value":6357},{"source":"Petroleum ","target":"Industry","value":6357},{"source":"Petroleum ","target":"Services","value":6357},{"source":"Petroleum ","target":"Thermal","value":6358},{"source":"Out of Stock","target":"Wood/Coal/Waste","value":14000},{"source":"Out of Stock","target":"Petroleum ","value":14000},{"source":"Hydropower","target":"Hydro/Nuclear","value":100000},{"source":"Crude Oil","target":"Refineries","value":25000},{"source":"Crude Oil","target":"Into Stock","value":25000},{"source":"Wood/Coal/Waste","target":"Export","value":41000},{"source":"Wood/Coal/Waste","target":"Households","value":41000},{"source":"Wood/Coal/Waste","target":"Industry","value":41000},{"source":"Wood/Coal/Waste","target":"Thermal","value":41000},{"source":"Electricity","target":"Export","value":39215},{"source":"Electricity","target":"Households","value":39214},{"source":"Electricity","target":"Services","value":39214},{"source":"Electricity","target":"Industry","value":39214},{"source":"Hydro/Nuclear","target":"Electricity","value":75000},{"source":"Hydro/Nuclear","target":"District Heat","value":75000},{"source":"Production","target":"Wood/Coal/Waste","value":100000},{"source":"Production","target":"Hydropower","value":100000},{"source":"Refineries","target":"Petroleum ","value":25000},{"source":"Nuclear Fuel","target":"Hydro/Nuclear","value":50000},{"source":"Natural Gas","target":"Thermal","value":10000},{"source":"Natural Gas","target":"Households","value":10000},{"source":"Natural Gas","target":"Services","value":10000},{"source":"Natural Gas","target":"Industry","value":10000},{"source":"Natural Gas","target":"Transport","value":10000},{"source":"Thermal","target":"District Heat","value":31858},{"source":"Thermal","target":"Electricity","value":31857}]}
+{
+  "nodes": [
+    {
+      "name": "Non-energetic",
+      "type": "sink",
+      "imgUrl": "images/non-energetic.png"
+    },
+    {
+      "name": "District Heat",
+      "type": "energytype",
+      "color": "#787878"
+    },
+    {
+      "name": "Import",
+      "type": "origin",
+      "imgUrl": "images/import.png "
+    },
+    {
+      "name": "Households",
+      "type": "sink",
+      "imgUrl": "images/households.png"
+    },
+    {
+      "name": "Gasworks",
+      "type": "process",
+      "imgUrl": "images/gasworks.png"
+    },
+    {
+      "name": "New Renewables",
+      "type": "energytype",
+      "color": "#8A5895"
+    },
+    {
+      "name": "Into Stock",
+      "type": "sink",
+      "imgUrl": "images/into_stock.png"
+    },
+    {
+      "name": "Industry",
+      "type": "sink",
+      "imgUrl": "images/industry.png"
+    },
+    {
+      "name": "Out of Stock",
+      "type": "origin",
+      "imgUrl": "images/out_of_stock.png"
+    },
+    {
+      "name": "Hydropower",
+      "type": "energytype",
+      "color": "#3366CC"
+    },
+    {
+      "name": "Services",
+      "type": "sink",
+      "imgUrl": "images/services.png"
+    },
+    {
+      "name": "Crude Oil",
+      "type": "energytype",
+      "color": "#FF0000"
+    },
+    {
+      "name": "Wood/Coal/Waste",
+      "type": "energytype",
+      "color": "#614126"
+    },
+    {
+      "name": "Electricity",
+      "type": "energytype",
+      "color": "#00FFFF"
+    },
+    {
+      "name": "Hydro/Nuclear",
+      "type": "process",
+      "imgUrl": "images/hydro_nuclear.png"
+    },
+    {
+      "name": "Production",
+      "type": "origin",
+      "imgUrl": "images/production.png"
+    },
+    {
+      "name": "Refineries",
+      "type": "process",
+      "imgUrl": "images/refineries.png"
+    },
+    {
+      "name": "Export",
+      "type": "sink",
+      "imgUrl": "images/export.png"
+    },
+    {
+      "name": "Nuclear Fuel",
+      "type": "energytype",
+      "color": "#00FF00"
+    },
+    {
+      "name": "Transport",
+      "type": "sink",
+      "imgUrl": "images/transport.png"
+    },
+    {
+      "name": "Natural Gas",
+      "type": "energytype",
+      "color": "#FFFF00"
+    },
+    {
+      "name": "Petroleum ",
+      "type": "energytype",
+      "color": "#FFA500"
+    },
+    {
+      "name": "Thermal",
+      "type": "process",
+      "imgUrl": "images/thermal.png"
+    }
+  ],
+  "links": [
+    {
+      "source": "District Heat",
+      "target": "Households",
+      "value": 20580
+    },
+    {
+      "source": "District Heat",
+      "target": "Services",
+      "value": 20579
+    },
+    {
+      "source": "District Heat",
+      "target": "Industry",
+      "value": 20579
+    },
+    {
+      "source": "Import",
+      "target": "Crude Oil",
+      "value": 33334
+    },
+    {
+      "source": "Import",
+      "target": "Wood/Coal/Waste",
+      "value": 33334
+    },
+    {
+      "source": "Import",
+      "target": "Electricity",
+      "value": 33333
+    },
+    {
+      "source": "Import",
+      "target": "Nuclear Fuel",
+      "value": 33333
+    },
+    {
+      "source": "Import",
+      "target": "Petroleum ",
+      "value": 33333
+    },
+    {
+      "source": "Import",
+      "target": "Natural Gas",
+      "value": 33333
+    },
+    {
+      "source": "Out of Stock",
+      "target": "Wood/Coal/Waste",
+      "value": 14000
+    },
+    {
+      "source": "Out of Stock",
+      "target": "Petroleum ",
+      "value": 14000
+    },
+    {
+      "source": "Hydropower",
+      "target": "Hydro/Nuclear",
+      "value": 50000
+    },
+    {
+      "source": "Crude Oil",
+      "target": "Refineries",
+      "value": 16667
+    },
+    {
+      "source": "Crude Oil",
+      "target": "Into Stock",
+      "value": 16667
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Export",
+      "value": 24334
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Households",
+      "value": 24334
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Industry",
+      "value": 24333
+    },
+    {
+      "source": "Wood/Coal/Waste",
+      "target": "Thermal",
+      "value": 24333
+    },
+    {
+      "source": "Electricity",
+      "target": "Export",
+      "value": 23768
+    },
+    {
+      "source": "Electricity",
+      "target": "Households",
+      "value": 23768
+    },
+    {
+      "source": "Electricity",
+      "target": "Services",
+      "value": 23768
+    },
+    {
+      "source": "Electricity",
+      "target": "Industry",
+      "value": 23767
+    },
+    {
+      "source": "Hydro/Nuclear",
+      "target": "Electricity",
+      "value": 41667
+    },
+    {
+      "source": "Hydro/Nuclear",
+      "target": "District Heat",
+      "value": 41666
+    },
+    {
+      "source": "Production",
+      "target": "Wood/Coal/Waste",
+      "value": 50000
+    },
+    {
+      "source": "Production",
+      "target": "Hydropower",
+      "value": 50000
+    },
+    {
+      "source": "Refineries",
+      "target": "Petroleum ",
+      "value": 16667
+    },
+    {
+      "source": "Nuclear Fuel",
+      "target": "Hydro/Nuclear",
+      "value": 33333
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Thermal",
+      "value": 6667
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Households",
+      "value": 6667
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Services",
+      "value": 6667
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Industry",
+      "value": 6666
+    },
+    {
+      "source": "Natural Gas",
+      "target": "Transport",
+      "value": 6666
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Thermal",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Export",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Non-energetic",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Households",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Transport",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Industry",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Services",
+      "value": 4571
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Export",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Non-energetic",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Households",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Transport",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Industry",
+      "value": 4572
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Services",
+      "value": 4571
+    },
+    {
+      "source": "Petroleum ",
+      "target": "Thermal",
+      "value": 4572
+    },
+    {
+      "source": "Thermal",
+      "target": "District Heat",
+      "value": 20072
+    },
+    {
+      "source": "Thermal",
+      "target": "Electricity",
+      "value": 20071
+    }
+  ]
+}

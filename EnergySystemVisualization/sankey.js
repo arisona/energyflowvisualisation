@@ -30,7 +30,8 @@ d3.sankey = function() {
         nodePadding = 8,
         size = [1, 1],
         nodes = [],
-        links = [];
+        links = [],
+        linkCurvature = 0.5;
 
     sankey.nodeWidth = function(_) {
         if (!arguments.length) return nodeWidth;
@@ -59,6 +60,12 @@ d3.sankey = function() {
     sankey.size = function(_) {
         if (!arguments.length) return size;
         size = _;
+        return sankey;
+    };
+
+    sankey.linkCurvature = function(_) {
+        if (!arguments.length) return linkCurvature;
+        linkCurvature = _;
         return sankey;
     };
 
@@ -103,37 +110,19 @@ d3.sankey = function() {
     //    return linkborder;
     //};
 
-    // The variable d are the link objects. d.source.y is the upper y-coordinate of the source node (same for s.target.y).
-    // d.source.x is the most left x-coordinate of the source node (same for s.target.x).
-    // d.source.dx is the width of the source node (same for s.target.dx).
-    // d.sy is the shift of the link in y direction along the right side of the source node (same with d.ty for target).
-    // This shift is a result of the calculated layout of the diagram. d.dy is the breadth of the path, respectively
-    // the size of the flow.
-    sankey.link = function() {
-        var curvature = .5;
 
-        function link(d) {
-            var x0 = d.source.x + d.source.dx,
-                x1 = d.target.x,
-                xi = d3.interpolateNumber(x0, x1),
-                x2 = xi(curvature),
-                x3 = xi(1 - curvature),
-                y0 = d.source.y + d.sy + d.dy / 2,
-                y1 = d.target.y + d.ty + d.dy / 2;
-            return "M" + x0 + "," + y0
-                + "C" + x2 + "," + y0
-                + " " + x3 + "," + y1
-                + " " + x1 + "," + y1
-        }
-
-
-        link.curvature = function(_) {
-            if (!arguments.length) return curvature;
-            curvature = +_;
-            return link;
-        };
-
-        return link;
+    sankey.calcPath = function(d) {
+        var x0 = d.source.x + d.source.dx,
+            x1 = d.target.x,
+            xi = d3.interpolateNumber(x0, x1),
+            x2 = xi(linkCurvature),
+            x3 = xi(1 - linkCurvature),
+            y0 = d.source.y + d.sy + d.dy / 2,
+            y1 = d.target.y + d.ty + d.dy / 2;
+        return "M" + x0 + "," + y0
+            + "C" + x2 + "," + y0
+            + " " + x3 + "," + y1
+            + " " + x1 + "," + y1
     };
 
     // Populate the sourceLinks and targetLinks for each node.

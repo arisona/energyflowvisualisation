@@ -5,19 +5,34 @@
     <title>first Example</title>
     <script type="text/javascript" src="d3.min.js"></script>
     <script type="text/javascript" src="sankey.js"></script>
+    <script type="text/javascript" src="d3.slider.js"></script>
     <script type="text/javascript" src="dataQueries.js"></script>
     <style>
         @import url(styles/styles.css);
+        @import url(styles/d3.slider.css);
+
+
+        body {
+            font-family: Verdana,Arial,sans-serif;
+        }
+
+        #slider {
+            margin-left: 20px;
+            margin-right: 20px;
+        }
 
         #chart {
-            border-style: solid;
-            border-width: 1px;
-            border-color: black;
+            border: solid 1px black;
         }
 
         .node text {
             pointer-events: none;
             text-shadow: 0 1px 0 #fff;
+        }
+
+        rect.node {
+            stroke-width: 1px;
+            stroke: black;
         }
 
         .link {
@@ -46,6 +61,8 @@
 <body>
 
 <svg id="chart"></svg>
+
+<div id="slider"></div>
 
 <script>
 
@@ -90,7 +107,7 @@
             .nodePadding(30)
             .size([canvasWidth - 2*canvasPadding, canvasHeight - 2*canvasPadding]);
 
-    var path = sankey.link();
+//    var calcPath = sankey.link();
 //    var pathborder = sankey.linkborder();
     var pathtext = function(d) {
         var ys = d.source.y + d.sy + d.dy / 2;
@@ -102,7 +119,34 @@
         return d3.format(">,d")(number);
     }
 
-    loadEnergyData(createDiagram);
+    var startYear = 0;
+    getYearsAvailable(createTimeSlider);
+    getMaxTotalValue(printMaxTotalValue);
+    var intvl = setInterval(function() {
+        if (startYear) {
+            clearInterval(intvl);
+            loadEnergyData(startYear, createDiagram);
+        }
+    }, 100);
+
+
+    function createTimeSlider(years) {
+        startYear = years[0];
+        d3.select('#slider').call(
+        d3.slider()
+                .axis(d3.svg.axis().orient("top").tickFormat(d3.format()).tickPadding(10))
+                .min(startYear)
+                .max(years[years.length-1])
+                .step(1)
+                .on("slide", function(event, value) {
+                    loadEnergyData(value, createDiagram);
+                })
+        );
+    }
+
+    function printMaxTotalValue(maxTotalValue) {
+        console.log(maxTotalValue);
+    }
 
     function createDiagram(graph) {
         theData = graph;
@@ -112,7 +156,7 @@
         sankey
                 .nodes(graph["nodes"])
                 .links(graph["links"])
-                .layout(32);
+                .layout(300);
 
         // create patterns in the chart's defs element.
         d3.select("#chart").append("defs").selectAll(".pattern")
@@ -144,7 +188,7 @@
                    if (d.target.color) return d.target.color;
                    else return d.source.color;
                 })
-                .attr("d", path)
+                .attr("d", sankey.calcPath)
                 .style("stroke-width", function (d) {return Math.max(1, d.dy);});
 
         pathGroups
@@ -208,9 +252,8 @@
                 .attr("height", function(d) {return d.dy;})
                 .attr("width", sankey.nodeWidth())
                 .attr("class", function(d) {
-                    if (d.color) {
-                       return "energytype";
-                    }
+                    if (d.color) return "energytype";
+                    else return "node";
                 })
                 .attr("fill", function(d) {
                     if (d.color) {
@@ -237,11 +280,12 @@
 //                    }
 //                });
 
+
         function dragmove(d) {
             d3.select(this).attr("transform", "translate(" + d.x + "," +
                     (d.y = Math.max(0, Math.min(canvasHeight - d.dy, d3.event.y))) + ")");
             sankey.relayout();
-            pathGroups.select(".link").attr("d", path);
+            pathGroups.select(".link").attr("d", sankey.calcPath);
         }
     }
 </script>

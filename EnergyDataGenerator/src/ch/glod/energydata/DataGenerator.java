@@ -5,23 +5,146 @@ import javax.json.stream.JsonGenerator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Claude on 19.04.2015.
  */
 public class DataGenerator {
     static Random r = new Random();
+    static final int startYear = 1950;
+    static final int years = 10;
+    static final String folder = "C:/wamp/www/energysysvis/data/";
 
     public static void main(String[] args) {
+
+        LinkedList<Integer> yearsAvailable = new LinkedList<>();
+        int imp = 200_000;
+        int prod = 100_000;
+        int stock = 20_000;
+
+        int maxTotalValue = 0;
+
+        for (int i = 0; i < years; i++) {
+            imp *= (r.nextFloat() + 0.5);
+            prod *= (r.nextFloat() + 0.5);
+            stock *= (r.nextFloat() + 0.5);
+            if (imp + prod + stock > maxTotalValue) maxTotalValue = imp + prod + stock;
+            generateData(imp, prod, stock, startYear + i);
+            yearsAvailable.add(startYear + i);
+        }
+
+        File maxValue = new File(folder + "maxTotalValue.json");
+        try {
+            JsonGenerator gen = Json.createGenerator(new FileOutputStream(maxValue));
+            gen.writeStartObject()
+                    .write("maxTotalValue", maxTotalValue)
+            .writeEnd();
+            gen.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        File yearsAvail = new File(folder + "yearsAvailable.json");
+        try {
+            JsonGenerator gen = Json.createGenerator(new FileOutputStream(yearsAvail));
+            gen.writeStartArray();
+                for (Integer i : yearsAvailable) {
+                    gen.write(i);
+                }
+            gen.writeEnd();
+            gen.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void generateData(int imp, int prod, int stock, int year) {
+        Map<String,Node> allNodes = setUpGraph(imp, prod, stock);
+        for (Node n : allNodes.values()) {
+            for (Node t : n.targetNodes) {
+                t.sources++;
+            }
+        }
+
+        // Calculate values for the links.
+        Map<String,Node> calcedNodes = new HashMap<String, Node>();
+        while (allNodes.size() > 0) {
+            Iterator<Node> it = allNodes.values().iterator();
+            while (it.hasNext()) {
+                Node n = it.next();
+                if (n.allSourcesVisited()) {
+                    calcTargetLinks(n);
+                    it.remove();
+                    calcedNodes.put(n.name, n);
+                }
+            }
+        }
+
+        generateJson(calcedNodes, year);
+    }
+
+    static void generateJson(Map<String, Node> allNodes, int year) {
+        File generated = new File(folder + "data_" + year + ".json");
+        try {
+            JsonGenerator gen = Json.createGenerator(new FileOutputStream(generated));
+            gen.writeStartObject();
+
+            gen.writeStartArray("nodes");
+            for (Node n : allNodes.values()) {
+                gen.writeStartObject()
+                        .write("name", n.name)
+                        .write("type", n.type)
+                        .write(n.attrType.attrType, n.attr)
+                        .writeEnd();
+            }
+            gen.writeEnd();
+
+            gen.writeStartArray("links");
+            for (Node n : allNodes.values()) {
+                for (Node t : n.targetNodes) {
+                    gen.writeStartObject()
+                            .write("source", n.name)
+                            .write("target", t.name)
+                            .write("value", n.flows.get(t))
+                            .writeEnd();
+                }
+            }
+            gen.writeEnd();
+
+            gen.writeStartArray("info");
+                gen.writeStartObject()
+                    .write("year", year)
+                    .writeEnd();
+            gen.writeEnd();
+            gen.writeEnd();
+            gen.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    static void calcTargetLinks(Node node) {
+        int remaining = node.value;
+        for (int i = node.targetNodes.size(); i > 0; i--) {
+            Node t = node.targetNodes.get(i - 1);
+            t.sourcesVisited++;
+            float flow = remaining / i;
+//            if (i > 1) flow *= r.nextFloat() + 1;
+            t.value += flow;
+            remaining -= flow;
+            node.flows.put(t, (int)flow);
+        }
+    }
+
+    static Map<String, Node> setUpGraph(int imp, int production, int outOfStock) {
         Map<String, Node> origins = new HashMap<>();
-        origins.put("Import", new Node("Import", "origin", AttrType.imgUrl, "images/import.png ", 300_000));
-        origins.put("Production", new Node("Production", "origin", AttrType.imgUrl, "images/production.png", 200_000));
+        origins.put("Import", new Node("Import", "origin", AttrType.imgUrl, "images/import.png ", imp));
+        origins.put("Production", new Node("Production", "origin", AttrType.imgUrl, "images/production.png",
+                production));
         origins.put("Out of Stock", new Node("Out of Stock", "origin", AttrType.imgUrl, "images/out_of_stock.png",
-                28_000));
+                outOfStock));
 
         Map<String, Node> sinks = new HashMap<>();
         sinks.put("Export", new Node("Export", "sink", AttrType.imgUrl, "images/export.png", 0));
@@ -40,7 +163,6 @@ public class DataGenerator {
         processes.put("Gasworks", new Node("Gasworks", "process", AttrType.imgUrl, "images/gasworks.png", 0));
 
         Map<String, Node> energytypes = new HashMap<>();
-        // TDOD: Set the colors.
         energytypes.put("Wood/Coal/Waste", new Node("Wood/Coal/Waste", "energytype", AttrType.color, "#614126", 0));
         energytypes.put("Crude Oil", new Node("Crude Oil", "energytype", AttrType.color, "#FF0000", 0));
         energytypes.put("Petroleum", new Node("Petroleum ", "energytype", AttrType.color, "#FFA500", 0));
@@ -123,77 +245,6 @@ public class DataGenerator {
         allNodes.putAll(processes);
         allNodes.putAll(energytypes);
         allNodes.putAll(sinks);
-
-        for (Node n : allNodes.values()) {
-            for (Node t : n.targetNodes) {
-               t.sources++;
-            }
-        }
-
-        while (allNodes.size() > 0) {
-            Iterator<Node> it = allNodes.values().iterator();
-            while (it.hasNext()) {
-                Node n = it.next();
-                if (n.allSourcesVisited()) {
-                    calcTargetLinks(n);
-                    it.remove();
-                    System.out.println("Calculated Target link values for: " + n.name);
-                }
-            }
-        }
-
-        for (Node n : sinks.values()) {
-            System.out.println(n.name + " has value " + n.value);
-        }
-
-        allNodes.putAll(origins);
-        allNodes.putAll(processes);
-        allNodes.putAll(energytypes);
-        allNodes.putAll(sinks);
-
-        File generated = new File("data_generated.json");
-        try {
-            JsonGenerator gen = Json.createGenerator(new FileOutputStream(generated));
-            gen.writeStartObject();
-
-            gen.writeStartArray("nodes");
-            for (Node n : allNodes.values()) {
-                gen.writeStartObject()
-                        .write("name", n.name)
-                        .write("type", n.type)
-                        .write(n.attrType.attrType, n.attr)
-                .writeEnd();
-            }
-            gen.writeEnd();
-
-            gen.writeStartArray("links");
-            for (Node n : allNodes.values()) {
-                for (Node t : n.targetNodes) {
-                    gen.writeStartObject()
-                            .write("source", n.name)
-                            .write("target", t.name)
-                            .write("value", n.flows.get(t))
-                    .writeEnd();
-                }
-            }
-            gen.writeEnd();
-            gen.writeEnd();
-            gen.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static void calcTargetLinks(Node node) {
-        int remaining = node.value;
-        for (int i = node.targetNodes.size(); i > 0; i--) {
-            Node t = node.targetNodes.get(i - 1);
-            t.sourcesVisited++;
-            float flow = remaining / i;
-//            if (i > 1) flow *= r.nextFloat() + 1;
-            t.value += flow;
-            remaining -= flow;
-            node.flows.put(t, (int)flow);
-        }
+        return allNodes;
     }
 }
