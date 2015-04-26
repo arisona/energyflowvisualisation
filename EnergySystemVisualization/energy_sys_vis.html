@@ -21,41 +21,33 @@
             margin-right: 20px;
         }
 
-        #chart {
-            border: solid 1px black;
-        }
-
-        .node text {
-            pointer-events: none;
-            text-shadow: 0 1px 0 #fff;
-        }
-
         rect.node {
             stroke-width: 1px;
             stroke: black;
         }
 
-        .link {
+        path.linkPath {
             fill: none;
             stroke: #000;
             stroke-opacity: .5;
         }
 
-        .link:hover {
+        path.linkPath:hover {
             stroke-opacity: .7;
         }
 
-        .linkborder {
-            fill: none;
-            stroke: #000;
-            stroke-opacity: 1;
-            stroke-width: 1;
-        }
+        /*path.linkborder {*/
+            /*fill: none;*/
+            /*stroke: #000;*/
+            /*stroke-opacity: 1;*/
+            /*stroke-width: 1;*/
+        /*}*/
 
         rect.energytype {
             stroke-width: 0;
             fill-opacity: .5;
         }
+
     </style>
 </head>
 <body>
@@ -69,14 +61,14 @@
     // Monitor state of mouse buttons. For usage in displays on hovering over a certain element, which i wanted to
     // prevent from happening if a mouse button is pressed.
     var mouseDown = 0;
-    document.body.onmousedown = function() {
-        ++mouseDown;
-    };
-    document.body.onmouseup = function() {
-        --mouseDown;
-    };
+    document.body.onmousedown = function() { ++mouseDown; };
+    document.body.onmouseup = function() { --mouseDown; };
 
-    var theData;
+    /* unused */
+//    var mouseover = 0;
+//    document.body.onmouseover = function() { ++mouseover; };
+//    document.body.onmouseover = function() { --mouseover; };
+
     // example when changing the sankey data:
 //    var imports = theData.nodes[1]
 //    d3.selectAll(".node")
@@ -90,7 +82,12 @@
     var canvasPadding = 10;
     var canvasMargin = 30; // margin on the right and bottom
     var canvasWidth = window.innerWidth - canvasMargin;
-    var canvasHeight = window.innerHeight - canvasMargin;
+    var canvasHeight = (canvasWidth / aspectRatio )- canvasMargin;
+    if (canvasHeight > window.innerHeight) {
+        canvasHeight = window.innerHeight - canvasMargin;
+        canvasWidth = canvasHeight * aspectRatio;
+
+    }
 
     var color = d3.scale.category20();
 
@@ -99,6 +96,7 @@
             .attr("height", canvasHeight)
             .style("margin-right", canvasMargin + "px")
             .style("margin-bottom", canvasMargin + "px")
+            .style("border", "solid 1px balck")
             .append("g").attr("id", "sankey")
             .attr("transform", "translate(" + canvasPadding + "," + canvasPadding + ")");
 
@@ -107,8 +105,6 @@
             .nodePadding(30)
             .size([canvasWidth - 2*canvasPadding, canvasHeight - 2*canvasPadding]);
 
-//    var calcPath = sankey.link();
-//    var pathborder = sankey.linkborder();
     var pathtext = function(d) {
         var ys = d.source.y + d.sy + d.dy / 2;
         var yt = d.target.y + d.ty + d.dy / 2;
@@ -118,6 +114,7 @@
     function formatNumber(number) {
         return d3.format(">,d")(number);
     }
+
 
     var startYear = 0;
     getYearsAvailable(createTimeSlider);
@@ -129,7 +126,6 @@
         }
     }, 100);
 
-
     function createTimeSlider(years) {
         startYear = years[0];
         d3.select('#slider').call(
@@ -139,7 +135,7 @@
                 .max(years[years.length-1])
                 .step(1)
                 .on("slide", function(event, value) {
-                    loadEnergyData(value, createDiagram);
+                    loadEnergyData(value, updateDiagram);
                 })
         );
     }
@@ -148,16 +144,150 @@
         console.log(maxTotalValue);
     }
 
-    function createDiagram(graph) {
-        theData = graph;
-        // Clear the svg elements
-        svg.selectAll(".node").remove();
-        svg.selectAll(".link").remove();
-        sankey
-                .nodes(graph["nodes"])
-                .links(graph["links"])
-                .layout(300);
+    function updateDiagram(graph) {
+        sankey.links(graph["links"]);
+        sankey.nodes(graph["nodes"]);
+        sankey.layout(300);
 
+        /* update links */
+        var links = svg.select(".links")
+                .selectAll(".link")
+                .data(sankey.links());
+
+        /* transition updated links */
+        links.select(".linkPath").transition()
+                .attr("d", sankey.calcPath)
+                .style("stroke-width", function (d) {return Math.max(1, d.dy);});
+
+        /* remove links that are not present in the new data */
+        links.exit().remove();
+
+        /* create links that are in the new and not in the old data*/
+        createNewLinks(links.enter());
+
+        /* update nodes */
+        var nodeJoin = svg.select(".nodes")
+                .selectAll(".node")
+                .data(sankey.nodes().values(), function(d) { return d.name; });
+
+        /* transition updated links */
+        nodeJoin.transition()
+                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
+                .select("rect")
+                .attr("height", function(d) {return d.dy;});
+    }
+
+    function createNewLinks(links) {
+        links
+                .append("g")
+                .attr("class", "link")
+                .on("mouseover", function (d) {
+                    if (!mouseDown) {
+                        d3.select(this).append("text")
+                                .attr("text-anchor", "middle")
+                                .attr("dy", ".35em")
+                                .attr("x", function (d) {
+                                    return (d.source.x + d.target.x) / 2;
+                                })
+                                .attr("y", pathtext)
+                                .text(formatNumber(d.value));
+                    }
+                })
+                .on("mouseleave", function (d) {
+                    d3.select(this).selectAll("text").remove();
+                })
+                .append("path")
+                .attr("class", "linkPath")
+                .style("stroke", function(d) {
+                    if (d.target.color) return d.target.color;
+                    else return d.source.color;
+                })
+                .attr("d", sankey.calcPath)
+                .style("stroke-width", function (d) {return Math.max(1, d.dy);});
+
+//                d3.select(this).append("text")
+//                        .attr("x", d.source.x + 6 + sankey.nodeWidth())
+//                        .attr("text-anchor", "start")
+//                        .attr("y", function (d) {
+//                            return d.source.y;
+//                        })
+//                        .attr("dy", ".35em")
+//                        .attr("transform", null)
+//                        .text(function (d) {
+//                            return d.source.name;
+//                        })
+
+    }
+
+    function createNewNodes(nodes) {
+        nodes.append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
+                .call(d3.behavior.drag()
+                        .origin(function (d) { return d; })
+                        .on("dragstart", function () {this.parentNode.appendChild(this);})
+                        .on("drag", dragmove))
+                .append("rect")
+                .attr("height", function(d) {return d.dy;})
+                .attr("width", sankey.nodeWidth())
+                .attr("class", function(d) {
+                    if (d.color) return "energytype";
+                    else return "node";
+                })
+                .attr("fill", function(d) {
+                    if (d.color) return d.color;
+                    else return "url(#" + d.name + ")";
+                })
+                .append("title")
+                .text(function (d) {return d.name + "\n" + formatNumber(d.value);});
+
+        function dragmove(d) {
+            d3.select(this).attr("transform", "translate(" + d.x + "," +
+            (d.y = Math.max(0, Math.min(canvasHeight - d.dy, d3.event.y))) + ")");
+            sankey.relayout();
+            d3.selectAll(".linkPath")
+                    .attr("d", sankey.calcPath);
+        }
+
+//        nodes.select("rect").append("text").attr("class", "nodename");
+//        nodes.select("rect")
+//                .on("mouseover", function (d) {
+//                    if (!mouseDown) {
+//                        d3.select(this).select(".nodename")
+//                                .attr("x", d.x + 6 + sankey.nodeWidth())
+//                                .attr("y", d.y)
+//                                .attr("text-anchor", "start")
+//                                .attr("dy", ".35em")
+//                                .attr("transform", null)
+//                                .text(function(d) {return d.name;});
+//                    }
+//                });
+    }
+
+    function createDiagram(graph) {
+        sankey.nodes(graph["nodes"]);
+        sankey.links(graph["links"]);
+        sankey.layout(300);
+
+        createSVGPatterns();
+
+        /* create links */
+        var links = svg.append("g").attr("class", "links")
+                .selectAll(".link")
+                .data(sankey.links());
+
+        createNewLinks(links.enter());
+
+        /* create nodes */
+        var nodes = svg.append("g").attr("class", "nodes")
+                .selectAll(".node")
+                .data(sankey.nodes().values());
+
+        createNewNodes(nodes.enter());
+
+    }
+
+    function createSVGPatterns() {
         // create patterns in the chart's defs element.
         d3.select("#chart").append("defs").selectAll(".pattern")
                 .data(sankey.nodes().values())
@@ -174,120 +304,8 @@
                 .attr("xlink:href", function(d) { return d.imgUrl; })
                 .attr("width", 1)
                 .attr("height", 1);
-
-//        Each path is set in a group element for easier manipulation possibilities, like hovering.
-//        Each path gets an CSS id with consists of the word link followed by the ids of the source and the target.
-        var pathGroups = svg.append("g").selectAll(".link")
-                .data(sankey.links())
-                .enter().append("g").attr("class", "group");
-
-        pathGroups
-                .append("path")
-                .attr("class", "link")
-                .style("stroke", function(d) {
-                   if (d.target.color) return d.target.color;
-                   else return d.source.color;
-                })
-                .attr("d", sankey.calcPath)
-                .style("stroke-width", function (d) {return Math.max(1, d.dy);});
-
-        pathGroups
-                .append("text")
-                .attr("class", "flowvalue")
-                .attr("text-anchor", "middle")
-                .attr("transform", null)
-                .attr("dy", ".35em");
-
-        pathGroups
-                .append("text")
-                .attr("class", "flowname")
-
-
-        // On hovering over the link: Show the value of the flow and draw a border around the link.
-        // If flows have a strong bend the border does not fit the flow anymore :(
-        // Maybe use d3.svg.area()
-        pathGroups.on("mouseover", function (d) {
-            if (!mouseDown) {
-                d3.select(this).select(".flowvalue")
-                        .attr("x", function (d) {
-                            return (d.source.x + d.target.x) / 2;
-                        })
-                        .attr("y", pathtext)
-                        .text(formatNumber(d.value));
-                d3.select(this).select(".flowname")
-                        .attr("x", d.source.x + 6 + sankey.nodeWidth())
-                        .attr("text-anchor", "start")
-                        .attr("y", function (d) {
-                            return d.source.y;
-                        })
-                        .attr("dy", ".35em")
-                        .attr("transform", null)
-                        .text(function (d) {
-                            return d.source.name;
-                        })
-            }
-//            disabled border drawing on hover
-//            d3.select(this).append("path")
-//                    .attr("class", "linkborder")
-//                    .attr("d", pathborder);
-        });
-
-        // On leaving the link: Remove value text and the border.
-        pathGroups.on("mouseleave", function (d) {
-            d3.select(this).selectAll("text").text(null);
-//            d3.select(this).selectAll(".linkborder").remove();
-        });
-
-        var node = svg.append("g").selectAll(".node")
-                .data(sankey.nodes().values())
-                .enter().append("g")
-                .attr("class", "node")
-                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
-                .call(d3.behavior.drag()
-                        .origin(function (d) { return d; })
-                        .on("dragstart", function () {this.parentNode.appendChild(this);})
-                        .on("drag", dragmove));
-
-        node.append("rect")
-                .attr("height", function(d) {return d.dy;})
-                .attr("width", sankey.nodeWidth())
-                .attr("class", function(d) {
-                    if (d.color) return "energytype";
-                    else return "node";
-                })
-                .attr("fill", function(d) {
-                    if (d.color) {
-                        return d.color;
-                    } else {
-                        return "url(#" + d.name + ")";
-                    }
-                })
-                .append("title")
-                .text(function (d) {return d.name + "\n" + formatNumber(d.value);});
-
-//        node.select("rect").append("text").attr("class", "nodename");
-//        node.select("rect")
-//                .on("mouseover", function (d) {
-//                    if (!mouseDown) {
-//                        d3.select(this).select(".nodename")
-//                                .attr("x", d.x + 6 + sankey.nodeWidth())
-//                                .attr("y", d.y)
-//                                .attr("text-anchor", "start")
-//                                .attr("dy", ".35em")
-//                                .attr("transform", null)
-//                                .text(function(d) {return d.name;});
-//                        console.log("here");
-//                    }
-//                });
-
-
-        function dragmove(d) {
-            d3.select(this).attr("transform", "translate(" + d.x + "," +
-                    (d.y = Math.max(0, Math.min(canvasHeight - d.dy, d3.event.y))) + ")");
-            sankey.relayout();
-            pathGroups.select(".link").attr("d", sankey.calcPath);
-        }
     }
+
 </script>
 </body>
 </html>

@@ -51,9 +51,9 @@ d3.sankey = function() {
         return sankey;
     };
 
-    sankey.links = function(_) {
+    sankey.links = function(newLinks) {
         if (!arguments.length) return links;
-        links = _;
+        links = newLinks;
         return sankey;
     };
 
@@ -135,6 +135,7 @@ d3.sankey = function() {
         links.forEach(function(link) {
             var source = link.source = nodes.get(link.source);
             var target = link.target = nodes.get(link.target);
+
             source.sourceLinks.push(link);
             target.targetLinks.push(link);
         });
