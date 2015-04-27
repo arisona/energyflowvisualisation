@@ -194,14 +194,6 @@ public class DataGenerator {
         energytypes.get("Wood/Coal/Waste").targetNodes.add(sinks.get("Industry"));
         energytypes.get("Wood/Coal/Waste").targetNodes.add(processes.get("Thermal"));
 
-        energytypes.get("Petroleum").targetNodes.add(processes.get("Thermal"));
-        energytypes.get("Petroleum").targetNodes.add(sinks.get("Export"));
-        energytypes.get("Petroleum").targetNodes.add(sinks.get("Non-energetic"));
-        energytypes.get("Petroleum").targetNodes.add(sinks.get("Households"));
-        energytypes.get("Petroleum").targetNodes.add(sinks.get("Transport"));
-        energytypes.get("Petroleum").targetNodes.add(sinks.get("Industry"));
-        energytypes.get("Petroleum").targetNodes.add(sinks.get("Services"));
-
         energytypes.get("Natural Gas").targetNodes.add(processes.get("Thermal"));
         energytypes.get("Natural Gas").targetNodes.add(sinks.get("Households"));
         energytypes.get("Natural Gas").targetNodes.add(sinks.get("Services"));

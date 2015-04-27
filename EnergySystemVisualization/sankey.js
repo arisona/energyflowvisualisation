@@ -78,7 +78,12 @@ d3.sankey = function() {
         return sankey;
     };
 
-    sankey.relayout = function() {
+
+    sankey.relayout = function(iterations) {
+        if (arguments.length) {
+            computeNodeBreadths();
+            computeNodeDepths(iterations);
+        }
         computeLinkDepths();
         return sankey;
     };
@@ -111,19 +116,67 @@ d3.sankey = function() {
     //};
 
 
-    sankey.calcPath = function(d) {
-        var x0 = d.source.x + d.source.dx,
-            x1 = d.target.x,
-            xi = d3.interpolateNumber(x0, x1),
-            x2 = xi(linkCurvature),
-            x3 = xi(1 - linkCurvature),
-            y0 = d.source.y + d.sy + d.dy / 2,
-            y1 = d.target.y + d.ty + d.dy / 2;
-        return "M" + x0 + "," + y0
-            + "C" + x2 + "," + y0
-            + " " + x3 + "," + y1
-            + " " + x1 + "," + y1
+    sankey.calcPath = function () {
+        function t(t, n) {
+            var r = n.source.x + n.source.dx, i = n.target.x, s = d3.interpolateNumber(r, i), o = s(e), u = s(1 - e), a = n.source.y + n.sy, f = n.target.y + n.ty, l = n.source.y + n.sy + n.dy, c = n.target.y + n.ty + n.dy;
+            switch (t) {
+                case 0:
+                    return "M" + r + "," + a + "L" + r + "," + (a + n.dy);
+                case 1:
+                    return "M" + r + "," + a + "C" + o + "," + a + " " + u + "," + f + " " + i + "," + f + "L" + i + "," + c + "C" + u + "," + c + " " + o + "," + l + " " + r + "," + l + "Z";
+                case 2:
+                    return "M" + i + "," + f + "L" + i + "," + (f + n.dy)
+            }
+        }
+
+        function n(e, t) {
+            function i(e) {
+                return e.source.y + e.sy > e.target.y + e.ty ? -1 : 1
+            }
+
+            function s(e, t) {
+                return e + "," + t + " "
+            }
+
+            var n = 30;
+            var r = 15;
+            var o = i(t) * r, u = t.source.x + t.source.dx, a = t.source.y + t.sy, f = t.target.x, l = t.target.y + t.ty;
+            switch (e) {
+                case 0:
+                    return "M" + s(u, a) + "C" + s(u, a) + s(u + n, a) + s(u + n, a + o) + "L" + s(u + n, a + o + t.dy) + "C" + s(u + n, a + t.dy) + s(u, a + t.dy) + s(u, a + t.dy) + "Z";
+                case 1:
+                    return "M" + s(u + n, a + o) + "C" + s(u + n, a + 3 * o) + s(f - n, l - 3 * o) + s(f - n, l - o) + "L" + s(f - n, l - o + t.dy) + "C" + s(f - n, l - 3 * o + t.dy) + s(u + n, a + 3 * o + t.dy) + s(u + n, a + o + t.dy) + "Z";
+                case 2:
+                    return "M" + s(f - n, l - o) + "C" + s(f - n, l) + s(f, l) + s(f, l) + "L" + s(f, l + t.dy) + "C" + s(f, l + t.dy) + s(f - n, l + t.dy) + s(f - n, l + t.dy - o) + "Z"
+            }
+        }
+
+        var e = .5;
+        return function (e) {
+            return function (r) {
+                if (r.source.x < r.target.x) {
+                    return t(e, r)
+                } else {
+                    return n(e, r)
+                }
+            }
+        }
     };
+
+    //sankey.calcPath = function(d) {
+    //    var x0 = d.source.x + d.source.dx,
+    //        x1 = d.target.x,
+    //        xi = d3.interpolateNumber(x0, x1),
+    //        x2 = xi(linkCurvature),
+    //        x3 = xi(1 - linkCurvature),
+    //        y0 = d.source.y + d.sy + d.dy / 2,
+    //        y1 = d.target.y + d.ty + d.dy / 2;
+    //    return "M" + x0 + "," + y0
+    //        + "C" + x2 + "," + y0
+    //        + " " + x3 + "," + y1
+    //        + " " + x1 + "," + y1
+    //    }
+    //};
 
     // Populate the sourceLinks and targetLinks for each node.
     // Also, if the source and target are not objects, assume they are indices.
