@@ -70,10 +70,6 @@
             <header></header>
             <div></div>
         </li>
-        <li data-row="1" data-col="3" data-sizex="1" data-sizey="1" class="diagram" style="display: list-item">
-            <header></header>
-            <div></div>
-        </li>
     </ul>
 </div>
 
@@ -85,7 +81,10 @@
     document.body.onmouseup = function() { --mouseDown; };
 
 
-    var nrOfDiagrams = 3;
+    var nrOfDiagrams = 2;
+    var minNodeWidth = 20;
+    var minWidgetWidth = 100;
+
     var headerHeight = 20;
     var sliderHeight = 50;
     var widgetMargin = 30;
@@ -94,7 +93,7 @@
     var diagramMargin = 50; // used for separating the chart from the timeline properly.
     var diagramWidth = widgetWidth ;
     var diagramHeight = widgetHeight - diagramMargin - headerHeight - sliderHeight;
-
+    var nodeWidth = minNodeWidth;
     d3.selectAll("header").style("height", headerHeight + "px").style("background", "grey");
 
     var lowopacity = 0.3;
@@ -113,7 +112,7 @@
             .attr("height", diagramHeight)
             .style("margin-bottom", diagramMargin + "px")
             .style("border", "solid 1px balck")
-            .append("g").attr("id", "sankey")
+            .append("g").attr("id", "sankey");
 
 
     var path = sankey.calcPath();
@@ -237,27 +236,40 @@
 
         /* transition updated nodes */
         nodeJoin.transition()
-                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
-                .select("rect")
-                .attr("height", function(d) {return d.dy;});
+                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";});
+//        nodeJoin.select(".background-rect").transition()
+//                .attr("height", function(d) {return d.dy;})
+//                .attr("width", sankey.nodeWidth());
+        nodeJoin.select(".node").transition()
+                .attr("height", function(d) {return d.dy;})
+                .attr("width", sankey.nodeWidth());
+        nodeJoin.select(".energytype").transition()
+                .attr("height", function(d) {return d.dy;})
+                .attr("width", sankey.nodeWidth());
+
 
         /* not creating any new nodes because all possible nodes should have been provided on first loading the tool */
         /* not removing any new nodes because all possible nodes should be displayed even if they don't have any links */
     }
 
     function redrawDiagram() {
-        svg.select(".links").selectAll(".link")
-                .data(sankey.links(), function(d) { return d.source.name + d.target.name;})
-                .select(".linkPath")
-                .attr("d", sankey.calcPath)
-                .style("stroke-width", function (d) {return Math.max(1, d.dy);});
+        var links = svg.select(".links")
+                .selectAll(".link")
+                // The link data elements are identified by the concatenation of the source and target name.
+                .data(sankey.links(), function(d) { return d.source.name + d.target.name;});
+        /* transition updated links */
+        links.select(".path0").attr("d", path(0));
+        links.select(".path1").attr("d", path(1));
+        links.select(".path2").attr("d", path(2));
 
-        svg.select(".nodes")
+        var nodesToUpdate = svg.select(".nodes")
                 .selectAll(".node")
                 .data(sankey.nodes().values(), function(d) { return d.name; })
-                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
-                .select("rect")
-                .attr("height", function(d) {return d.dy;});
+        nodesToUpdate
+                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";});
+        nodesToUpdate.select("rect")
+                .attr("height", function(d) {return d.dy;})
+                .attr("width", sankey.nodeWidth());
     }
     /* Input for this method should be the enter set of a data join */
     function createNewLinks(links) {
@@ -298,21 +310,29 @@
 
     /* Input for this method should be the enter set of a data join */
     function createNewNodes(nodes) {
-        nodes.append("g")
+        nodes = nodes.append("g")
                 .attr("class", "node")
                 .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
+                .style("background-color", "white")
                 .call(d3.behavior.drag()
                         .origin(function (d) { return d; })
                         .on("dragstart", function () {this.parentNode.appendChild(this);})
-                        .on("drag", dragmove))
-                .append("rect")
+                        .on("drag", dragmove));
+        // first append a rectangle which is making the node's background white
+//       nodes.append("rect")
+//               .attr("class", "background-rect")
+//               .attr("height", function(d) {return d.dy;})
+//               .attr("width", sankey.nodeWidth())
+//                .style("fill", "white");
+        // then append a rectangle with the actual image of the source, sink, process or the color of the energyform.
+       nodes.append("rect")
                 .attr("height", function(d) {return d.dy;})
                 .attr("width", sankey.nodeWidth())
                 .attr("class", function(d) {
                     if (d.color) return "energytype";
                     else return "node";
                 })
-                .attr("fill", function(d) {
+                .style("fill", function(d) {
                     if (d.color) return d.color;
                     else return "url(#" + d.name + ")";
                 })
@@ -332,7 +352,7 @@
 
     function createSVGPatterns() {
         // create patterns in the chart's defs element.
-        d3.select("#chart").append("defs").selectAll(".pattern")
+        var patterns = d3.select("#chart").append("defs").selectAll(".pattern")
                 .data(sankey.nodes().values())
                 .enter()
                 .append("pattern")
@@ -343,10 +363,19 @@
                 .attr("height", 1)
                 .attr("preserveAspectRatio", "xMidYMid meet")
                 .attr("viewBox", "0 0 1 1")
-                .append("image")
+
+        patterns.append("rect")
+                .attr("x","-50%")
+                .attr("y","-50%")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("fill","white");
+        patterns.append("image")
                 .attr("xlink:href", function(d) { return d.imgUrl; })
                 .attr("width", 1)
-                .attr("height", 1);
+                .attr("height", 1)
+                .attr("fill", "white");
+
     }
 
     //        nodes.select("rect").append("text").attr("class", "nodename");
