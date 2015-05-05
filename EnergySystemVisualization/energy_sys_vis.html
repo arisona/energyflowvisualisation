@@ -29,48 +29,29 @@
             stroke: black;
         }
 
-        /*path.linkPath {*/
-            /*fill: none;*/
-            /*stroke: #000;*/
-            /*stroke-opacity: .5;*/
-        /*}*/
-
-        /*path.linkPath:hover {*/
-            /*stroke-opacity: .7;*/
-        /*}*/
-
-        /*path.linkborder {*/
-            /*fill: none;*/
-            /*stroke: #000;*/
-            /*stroke-opacity: 1;*/
-            /*stroke-width: 1;*/
-        /*}*/
-
         rect.energytype {
             stroke-width: 0;
             fill-opacity: .5;
         }
 
         .diagram {
-            background-color: #d3d3d3;
+            background: #efefef;
         }
 
+        header.drag-handle {
+            height: 20px;
+            background: deeppink;
+        }
     </style>
 </head>
 <body>
 
 <div class="gridster">
-    <ul>
-        <li data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="diagram" style="display: list-item">
-            <header></header>
-                <svg id="chart"></svg>
-                <div id="slider"></div>
-        </li>
-        <li data-row="1" data-col="2" data-sizex="1" data-sizey="1" class="diagram" style="display: list-item">
-            <header></header>
-            <div></div>
-        </li>
-    </ul>
+        <!--<div data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="diagram" >-->
+            <!--<header class="drag-handle"></header>-->
+                <!--<svg id="chart"></svg>-->
+                <!--<div id="slider"></div>-->
+        <!--</div>-->
 </div>
 
 <script type="text/javascript" id="code">
@@ -80,338 +61,100 @@
     document.body.onmousedown = function() { ++mouseDown; };
     document.body.onmouseup = function() { --mouseDown; };
 
+    core = function() {
+        var core = {};
+        var maxCols = 2;
+        var maxRows = 2;
+        var maxDiagrams = maxCols * maxRows;
+        var nrOfDiagrams = 0;
+        var minNodeWidth = 10;
+        var minWidgetWidth = 700;
+        var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'.
+        var sliderHeight = 100;
+        var widgetMargin = 30;
+        var widgetWidth = (window.innerWidth / maxDiagrams) - (widgetMargin * (maxCols + 1));
+        if (widgetWidth < minWidgetWidth) widgetWidth = minWidgetWidth;
+        var widgetHeight = window.innerHeight - (widgetMargin * (maxRows + 1));
+        var diagramWidth = widgetWidth;
+        var diagramHeight = widgetHeight - headerHeight - sliderHeight;
+        var nodeWidth = minNodeWidth * widgetWidth/minWidgetWidth;
 
-    var nrOfDiagrams = 2;
-    var minNodeWidth = 20;
-    var minWidgetWidth = 100;
+        core.nrOfDiagrams = function(_) {
+            if (!arguments.length) return nrOfDiagrams;
+            nrOfDiagrams = _;
+            return core;
+        }
+        /**
+         * the list of diagrams
+         */
+        var sankeys = {};
 
-    var headerHeight = 20;
-    var sliderHeight = 50;
-    var widgetMargin = 30;
-    var widgetWidth = (window.innerWidth / nrOfDiagrams) - (widgetMargin * nrOfDiagrams);
-    var widgetHeight = window.innerHeight - (widgetMargin * nrOfDiagrams) ;
-    var diagramMargin = 50; // used for separating the chart from the timeline properly.
-    var diagramWidth = widgetWidth ;
-    var diagramHeight = widgetHeight - diagramMargin - headerHeight - sliderHeight;
-    var nodeWidth = minNodeWidth;
-    d3.selectAll("header").style("height", headerHeight + "px").style("background", "grey");
+        var gridster;
+        /**
+         * Needs a div element with id 'gridster' in which the grid will be set up.
+         */
+        core.createGrid = function() {
+            gridster = $(".gridster").gridster({
+                widget_margins: [widgetMargin, widgetMargin],
+                widget_base_dimensions: [widgetWidth, widgetHeight],
+                max_cols: maxCols,
+                widget_selector: 'div',
+                draggable: {
+                    handle: 'header'
+                },
+                resize: {
+                    enabled: true,
+                    stop: function(e, ui, widget) {
+                        diagramWidth = this.resize_coords.data.width;
+                        diagramHeight = this.resize_coords.data.height - headerHeight - sliderHeight;
+                        // Select the svg element of the resized widget.
+                        d3.select(widget[0])
+                                .select(".chart")
+                                .attr("width", diagramWidth)
+                                .attr("height", diagramHeight);
 
-    var lowopacity = 0.3;
-    var highopacity = 0.7;
+                        var sankey = sankeys[d3.select(widget[0]).attr("id")];
+                        sankey.size([diagramWidth, diagramHeight]);
+                        sankey.relayout(300);
+                        sankey.redrawDiagram();
+                    }
+                }
+            }).data('gridster');
+            return core;
+        };
 
-    var sankey = d3.sankey()
-        // TODO Node width should be depending on diagram width.
-            .nodeWidth(40)
-            .nodePadding(30)
-            .size([diagramWidth , diagramHeight]);
+        core.createSankey = function() {
+            if (nrOfDiagrams < maxDiagrams) {
+                var chartId = "chart" + nrOfDiagrams++;
+                var newDiv = document.createElement("div");
+                var widgetObject = gridster.add_widget(newDiv);
+                newDiv = d3.select(newDiv)
+                        .attr("id", chartId);
+                newDiv.append("header").attr("class", "drag-handle");
+                newDiv.append("svg").attr("class", "chart");
+                newDiv.append("div").attr("class", "slider");
 
+                var newSankey = d3.sankey()
+                        .nodeWidth(nodeWidth)
+                        .nodePadding(30)
+                        .size([diagramWidth, diagramHeight])
+                        .widgetRoot(widgetObject[0]);
 
-    /* set up SVG canvas */
-    var svg = d3.select("#chart")
-            .attr("width", diagramWidth)
-            .attr("height", diagramHeight)
-            .style("margin-bottom", diagramMargin + "px")
-            .style("border", "solid 1px balck")
-            .append("g").attr("id", "sankey");
-
-
-    var path = sankey.calcPath();
-    var pathtext = function(d) {
-        var ys = d.source.y + d.sy + d.dy / 2;
-        var yt = d.target.y + d.ty + d.dy / 2;
-        return (ys + yt) / 2;
+                sankeys[chartId] = newSankey;
+                newSankey.setUpChart();
+                newSankey.createDiagram();
+                return core;
+            } else {
+                alert("can't create more diagrams");
+                return core;
+            }
+        };
+        return core;
     };
 
-    function formatNumber(number) {
-        return d3.format(">,d")(number);
-    }
-
-    var gridster;
-    $(function(){
-        gridster = $(".gridster > ul").gridster({
-            widget_margins: [widgetMargin, widgetMargin],
-            widget_base_dimensions: [widgetWidth, widgetHeight],
-//            widget_selector: 'header',
-            draggable: {
-                handle: 'header'
-            },
-            resize: {
-                enabled: true,
-                stop: function(e, ui, widget) {
-                    console.log("resizeing");
-                    diagramWidth = this.resize_coords.data.width;
-                    diagramHeight = this.resize_coords.data.height - diagramMargin - headerHeight - sliderHeight;
-                    d3.select("#chart").attr("width", diagramWidth)
-                            .attr("height", diagramHeight);
-                    sankey.size([diagramWidth, diagramHeight]);
-                    sankey.relayout(300);
-                    redrawDiagram();
-                }
-            }
-        }).data('gridster');
-
-//        $.each(widgets, function(i, widget){
-//            gridster.add_widget.apply(gridster, widget)
-//        });
-    });
-
-    var startYear = 0;
-    getYearsAvailable(createTimeSlider);
-    getMaxTotalValue(printMaxTotalValue);
-    var intvl = setInterval(function() {
-        if (startYear) {
-            clearInterval(intvl);
-            loadEnergyData(startYear, createDiagram);
-        }
-    }, 100);
-
-    function createTimeSlider(years) {
-        startYear = years[0];
-        d3.select('#slider').call(
-        d3.slider()
-                .axis(d3.svg.axis().orient("top").tickFormat(d3.format()).tickPadding(10))
-                .min(startYear)
-                .max(years[years.length-1])
-                .step(1)
-                .on("slide", function(event, value) {
-                    loadEnergyData(value, updateDiagram);
-                })
-        );
-    }
-
-    function printMaxTotalValue(maxTotalValue) {
-        console.log(maxTotalValue);
-    }
-
-    function createDiagram(graph) {
-        sankey.nodes(graph["nodes"]);
-        sankey.links(graph["links"]);
-        sankey.layout(300);
-
-        createSVGPatterns();
-
-        /* create links */
-        var links = svg.append("g").attr("class", "links")
-                .selectAll(".link")
-                .data(sankey.links());
-
-        createNewLinks(links.enter());
-
-        /* create nodes */
-        var nodes = svg.append("g").attr("class", "nodes")
-                .selectAll(".node")
-                .data(sankey.nodes().values());
-
-        createNewNodes(nodes.enter());
-
-    }
-
-    function updateDiagram(graph) {
-        sankey.links(graph["links"]);
-        sankey.nodes(graph["nodes"]);
-        sankey.layout(300);
-
-        /* update links */
-        var links = svg.select(".links")
-                .selectAll(".link")
-                // The link data elements are identified by the concatenation of the source and target name.
-                .data(sankey.links(), function(d) { return d.source.name + d.target.name;});
-
-        /* transition updated links */
-        links.select(".path0").transition().attr("d", path(0));
-        links.select(".path1").transition().attr("d", path(1));
-        links.select(".path2").transition().attr("d", path(2));
-
-        /* remove links that are not present in the new data */
-        links.exit().remove();
-
-        /* create links that are in the new and not in the old data*/
-        createNewLinks(links.enter());
-
-        /* update nodes */
-        var nodeJoin = svg.select(".nodes")
-                .selectAll(".node")
-                // The node data elements are identified by the name of the node.
-                .data(sankey.nodes().values(), function(d) { return d.name; });
-
-        /* transition updated nodes */
-        nodeJoin.transition()
-                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";});
-//        nodeJoin.select(".background-rect").transition()
-//                .attr("height", function(d) {return d.dy;})
-//                .attr("width", sankey.nodeWidth());
-        nodeJoin.select(".node").transition()
-                .attr("height", function(d) {return d.dy;})
-                .attr("width", sankey.nodeWidth());
-        nodeJoin.select(".energytype").transition()
-                .attr("height", function(d) {return d.dy;})
-                .attr("width", sankey.nodeWidth());
-
-
-        /* not creating any new nodes because all possible nodes should have been provided on first loading the tool */
-        /* not removing any new nodes because all possible nodes should be displayed even if they don't have any links */
-    }
-
-    function redrawDiagram() {
-        var links = svg.select(".links")
-                .selectAll(".link")
-                // The link data elements are identified by the concatenation of the source and target name.
-                .data(sankey.links(), function(d) { return d.source.name + d.target.name;});
-        /* transition updated links */
-        links.select(".path0").attr("d", path(0));
-        links.select(".path1").attr("d", path(1));
-        links.select(".path2").attr("d", path(2));
-
-        var nodesToUpdate = svg.select(".nodes")
-                .selectAll(".node")
-                .data(sankey.nodes().values(), function(d) { return d.name; })
-        nodesToUpdate
-                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";});
-        nodesToUpdate.select("rect")
-                .attr("height", function(d) {return d.dy;})
-                .attr("width", sankey.nodeWidth());
-    }
-    /* Input for this method should be the enter set of a data join */
-    function createNewLinks(links) {
-        links = links
-                .append("g")
-                .attr("class", "link")
-                .on("mouseover", function (d) {
-                    if (!mouseDown) {
-                        d3.select(this).append("text")
-                                .attr("text-anchor", "middle")
-                                .attr("dy", ".35em")
-                                .attr("x", function (d) {
-                                    return (d.source.x + d.target.x) / 2;
-                                })
-                                .attr("y", pathtext)
-                                .text(formatNumber(d.value));
-                    }
-                })
-                .on("mouseleave", function (d) {
-                    d3.select(this).selectAll("text").remove();
-                });
-        links.append("path").attr("class", "path0").attr("d", path(0));
-        links.append("path").attr("class", "path1").attr("d", path(1));
-        links.append("path").attr("class", "path2").attr("d", path(2));
-        links
-                .attr("fill", function (d) {
-                    if (d.target.color) return d.target.color;
-                    else return d.source.color;
-                })
-                .attr("opacity", lowopacity).on("mouseover", function (d) {
-                    d3.select(this).style('opacity', highopacity);
-                })
-                .on("mouseout", function (d) {
-                    d3.select(this).style('opacity', lowopacity);
-                });
-
-    }
-
-    /* Input for this method should be the enter set of a data join */
-    function createNewNodes(nodes) {
-        nodes = nodes.append("g")
-                .attr("class", "node")
-                .attr("transform", function (d) {return "translate(" + d.x + "," + d.y + ")";})
-                .style("background-color", "white")
-                .call(d3.behavior.drag()
-                        .origin(function (d) { return d; })
-                        .on("dragstart", function () {this.parentNode.appendChild(this);})
-                        .on("drag", dragmove));
-        // first append a rectangle which is making the node's background white
-//       nodes.append("rect")
-//               .attr("class", "background-rect")
-//               .attr("height", function(d) {return d.dy;})
-//               .attr("width", sankey.nodeWidth())
-//                .style("fill", "white");
-        // then append a rectangle with the actual image of the source, sink, process or the color of the energyform.
-       nodes.append("rect")
-                .attr("height", function(d) {return d.dy;})
-                .attr("width", sankey.nodeWidth())
-                .attr("class", function(d) {
-                    if (d.color) return "energytype";
-                    else return "node";
-                })
-                .style("fill", function(d) {
-                    if (d.color) return d.color;
-                    else return "url(#" + d.name + ")";
-                })
-                .append("title")
-                .text(function (d) {return d.name + "\n" + formatNumber(d.value);});
-
-        function dragmove(d) {
-            d3.select(this).attr("transform", "translate(" + d.x + "," +
-            (d.y = Math.max(0, Math.min(diagramHeight - d.dy, d3.event.y))) + ")");
-            sankey.relayout();
-            var links = d3.selectAll(".link");
-            links.select(".path0").attr("d", path(0));
-            links.select(".path1").attr("d", path(1));
-            links.select(".path2").attr("d", path(2));
-        }
-    }
-
-    function createSVGPatterns() {
-        // create patterns in the chart's defs element.
-        var patterns = d3.select("#chart").append("defs").selectAll(".pattern")
-                .data(sankey.nodes().values())
-                .enter()
-                .append("pattern")
-                .attr("id", function(d) { return d.name; })
-                .attr("class", "pattern")
-                .attr("patternUnits", 'objectBoundingBox')
-                .attr("width", 1)
-                .attr("height", 1)
-                .attr("preserveAspectRatio", "xMidYMid meet")
-                .attr("viewBox", "0 0 1 1")
-
-        patterns.append("rect")
-                .attr("x","-50%")
-                .attr("y","-50%")
-                .attr("width", "100%")
-                .attr("height", "100%")
-                .attr("fill","white");
-        patterns.append("image")
-                .attr("xlink:href", function(d) { return d.imgUrl; })
-                .attr("width", 1)
-                .attr("height", 1)
-                .attr("fill", "white");
-
-    }
-
-    //        nodes.select("rect").append("text").attr("class", "nodename");
-    //        nodes.select("rect")
-    //                .on("mouseover", function (d) {
-    //                    if (!mouseDown) {
-    //                        d3.select(this).select(".nodename")
-    //                                .attr("x", d.x + 6 + sankey.nodeWidth())
-    //                                .attr("y", d.y)
-    //                                .attr("text-anchor", "start")
-    //                                .attr("dy", ".35em")
-    //                                .attr("transform", null)
-    //                                .text(function(d) {return d.name;});
-    //                    }
-    //                });
-
-    //                d3.select(this).append("text")
-    //                        .attr("x", d.source.x + 6 + sankey.nodeWidth())
-    //                        .attr("text-anchor", "start")
-    //                        .attr("y", function (d) {
-    //                            return d.source.y;
-    //                        })
-    //                        .attr("dy", ".35em")
-    //                        .attr("transform", null)
-    //                        .text(function (d) {
-    //                            return d.source.name;
-    //                        })
-
-    //                .append("path")
-    //                .attr("class", "linkPath")
-    //                .style("stroke", function(d) {
-    //                    if (d.target.color) return d.target.color;
-    //                    else return d.source.color;
-    //                })
-    //                .attr("d", sankey.calcPath)
-    //                .style("stroke-width", function (d) {return Math.max(1, d.dy);});
+    var core = core();
+    core.createGrid();
+//    core.createSankey();
 
 </script>
 </body>
