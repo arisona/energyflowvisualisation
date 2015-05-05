@@ -47,11 +47,6 @@
 <body>
 
 <div class="gridster">
-        <!--<div data-row="1" data-col="1" data-sizex="1" data-sizey="1" class="diagram" >-->
-            <!--<header class="drag-handle"></header>-->
-                <!--<svg id="chart"></svg>-->
-                <!--<div id="slider"></div>-->
-        <!--</div>-->
 </div>
 
 <script type="text/javascript" id="code">
@@ -61,14 +56,78 @@
     document.body.onmousedown = function() { ++mouseDown; };
     document.body.onmouseup = function() { --mouseDown; };
 
-    core = function() {
-        var core = {};
+    d3.scenario = function() {
+        var scenario = {},
+                currentYear,
+                sankey,
+                widgetRoot,
+                id;
+
+        scenario.widgetRoot = function(_) {
+            if (!arguments.length) return widgetRoot;
+            widgetRoot = _;
+            return scenario;
+        };
+
+        scenario.currentYear = function(_) {
+            if (!arguments.length) return currentYear;
+            currentYear = _;
+            return scenario;
+        };
+
+        scenario.id = function(_) {
+            if (!arguments.length) return id;
+            id = _;
+            return scenario;
+        };
+
+        scenario.sankey = function(_) {
+            if (!arguments.length) return sankey;
+            sankey = _;
+            return scenario;
+        };
+
+        scenario.createSankey = function(nodeWidth, diagramWidth, diagramHeight) {
+            sankey = d3.sankey()
+                    .nodeWidth(nodeWidth)
+                    .nodePadding(30)
+                    .size([diagramWidth, diagramHeight])
+                    .widgetRoot(widgetRoot);
+
+            sankey.createDiagram();
+            return scenario;
+        };
+
+        scenario.createTimeSlider = function() {
+            getYearsAvailable(createTimeSlider);
+            function createTimeSlider(years) {
+                d3.select(widgetRoot).select('.slider').call(
+                        d3.slider()
+                                .axis(d3.svg.axis().orient("bottom").tickFormat(d3.format()).tickPadding(10))
+                                .min(years[0])
+                                .max(years[years.length - 1])
+                            // XXX if there's not a data point for every year, this must be replaced by the exact years that the
+                            // backend provided.
+                                .step(1)
+                                .on("slide", function (event, value) {
+                                    loadEnergyData(value, sankey.updateDiagram);
+                                    currentYear = value;
+                                })
+                );
+            }
+        };
+
+        return scenario;
+    };
+
+    tool = function() {
+        var tool = {};
         var maxCols = 2;
         var maxRows = 2;
         var maxDiagrams = maxCols * maxRows;
         var nrOfDiagrams = 0;
         var minNodeWidth = 10;
-        var minWidgetWidth = 700;
+        var minWidgetWidth = 300;
         var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'.
         var sliderHeight = 100;
         var widgetMargin = 30;
@@ -79,21 +138,16 @@
         var diagramHeight = widgetHeight - headerHeight - sliderHeight;
         var nodeWidth = minNodeWidth * widgetWidth/minWidgetWidth;
 
-        core.nrOfDiagrams = function(_) {
-            if (!arguments.length) return nrOfDiagrams;
-            nrOfDiagrams = _;
-            return core;
-        }
         /**
-         * the list of diagrams
+         * the list of the scenarios in use
          */
-        var sankeys = {};
+        var scenarios = {};
 
         var gridster;
         /**
          * Needs a div element with id 'gridster' in which the grid will be set up.
          */
-        core.createGrid = function() {
+        tool.createGrid = function() {
             gridster = $(".gridster").gridster({
                 widget_margins: [widgetMargin, widgetMargin],
                 widget_base_dimensions: [widgetWidth, widgetHeight],
@@ -105,56 +159,61 @@
                 resize: {
                     enabled: true,
                     stop: function(e, ui, widget) {
-                        diagramWidth = this.resize_coords.data.width;
-                        diagramHeight = this.resize_coords.data.height - headerHeight - sliderHeight;
+                        var newWidth = this.resize_coords.data.width;
+                        var newHeight = this.resize_coords.data.height - headerHeight - sliderHeight;
                         // Select the svg element of the resized widget.
                         d3.select(widget[0])
                                 .select(".chart")
-                                .attr("width", diagramWidth)
-                                .attr("height", diagramHeight);
-
-                        var sankey = sankeys[d3.select(widget[0]).attr("id")];
-                        sankey.size([diagramWidth, diagramHeight]);
+                                .attr("width", newWidth)
+                                .attr("height", newHeight);
+                        // Select the sankey object corresponding to the widgets id.
+                        var sankey = scenarios[d3.select(widget[0]).attr("id")].sankey();
+                        sankey.size([newWidth, newHeight]);
+                        sankey.nodeWidth(minNodeWidth * newWidth / minWidgetWidth);
                         sankey.relayout(300);
                         sankey.redrawDiagram();
                     }
                 }
             }).data('gridster');
-            return core;
+            return tool;
         };
 
-        core.createSankey = function() {
+        tool.createScenario = function() {
+            /**
+             * Sets up a widget and adds it to the gridster grid. Add more elements to a widget here (like a parameter
+             * list element).
+             */
+            function createWidget(scenarioId) {
+                    var newDiv = document.createElement("div");
+                    var widgetObject = gridster.add_widget(newDiv);
+                    newDiv = d3.select(newDiv)
+                            .attr("id", scenarioId);
+                    newDiv.append("header").attr("class", "drag-handle");
+                    newDiv.append("svg").attr("class", "chart");
+                    newDiv.append("div").attr("class", "slider");
+                    return widgetObject;
+            }
+
             if (nrOfDiagrams < maxDiagrams) {
-                var chartId = "chart" + nrOfDiagrams++;
-                var newDiv = document.createElement("div");
-                var widgetObject = gridster.add_widget(newDiv);
-                newDiv = d3.select(newDiv)
-                        .attr("id", chartId);
-                newDiv.append("header").attr("class", "drag-handle");
-                newDiv.append("svg").attr("class", "chart");
-                newDiv.append("div").attr("class", "slider");
+                var scenario = d3.scenario();
+                scenario.id("scenario" + nrOfDiagrams++);
+                scenarios[scenario.id()] = scenario;
 
-                var newSankey = d3.sankey()
-                        .nodeWidth(nodeWidth)
-                        .nodePadding(30)
-                        .size([diagramWidth, diagramHeight])
-                        .widgetRoot(widgetObject[0]);
-
-                sankeys[chartId] = newSankey;
-                newSankey.setUpChart();
-                newSankey.createDiagram();
-                return core;
+                scenario.widgetRoot(createWidget(scenario.id())[0]);
+                scenario.createSankey(nodeWidth, diagramWidth, diagramHeight);
+                scenario.createTimeSlider();
             } else {
-                alert("can't create more diagrams");
-                return core;
+                alert("can't create more scenarios");
+                return tool;
             }
         };
-        return core;
+        return tool;
     };
 
-    var core = core();
-    core.createGrid();
-//    core.createSankey();
+    var tool = tool();
+    tool.createGrid();
+    tool.createScenario();
+    tool.createScenario();
 
 </script>
 </body>
