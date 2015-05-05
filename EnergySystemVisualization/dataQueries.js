@@ -2,7 +2,7 @@
  * Created by Claude on 04.04.2015.
  */
 
-var serverUrl = "http://localhost/energysysvis/index.php";
+var serverUrl = "http://localhost:8888/energysysvis/index.php";
 var energyDataQuery = "energyData";
 var yearsAvailableQuery = "yearsAvailable";
 var maxTotalValueQuery = "maxTotalValue";
