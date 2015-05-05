@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>first Example</title>
     <script type="text/javascript" src="d3.min.js"></script>
-    <script type="text/javascript" src="sankey.js"></script>
+    <script type="text/javascript" src="d3.enerqi.js"></script>
+    <script type="text/javascript" src="d3.sankey.js"></script>
     <script type="text/javascript" src="d3.slider.js"></script>
     <script type="text/javascript" src="dataQueries.js"></script>
     <script type="text/javascript" src="jquery-2.1.3.min.js"></script>
@@ -19,29 +20,6 @@
             font-family: Verdana,Arial,sans-serif;
         }
 
-        #slider {
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-
-        rect.node {
-            stroke-width: 1px;
-            stroke: black;
-        }
-
-        rect.energytype {
-            stroke-width: 0;
-            fill-opacity: .5;
-        }
-
-        .diagram {
-            background: #efefef;
-        }
-
-        header.drag-handle {
-            height: 20px;
-            background: deeppink;
-        }
     </style>
 </head>
 <body>
@@ -56,164 +34,10 @@
     document.body.onmousedown = function() { ++mouseDown; };
     document.body.onmouseup = function() { --mouseDown; };
 
-    d3.scenario = function() {
-        var scenario = {},
-                currentYear,
-                sankey,
-                widgetRoot,
-                id;
-
-        scenario.widgetRoot = function(_) {
-            if (!arguments.length) return widgetRoot;
-            widgetRoot = _;
-            return scenario;
-        };
-
-        scenario.currentYear = function(_) {
-            if (!arguments.length) return currentYear;
-            currentYear = _;
-            return scenario;
-        };
-
-        scenario.id = function(_) {
-            if (!arguments.length) return id;
-            id = _;
-            return scenario;
-        };
-
-        scenario.sankey = function(_) {
-            if (!arguments.length) return sankey;
-            sankey = _;
-            return scenario;
-        };
-
-        scenario.createSankey = function(nodeWidth, diagramWidth, diagramHeight) {
-            sankey = d3.sankey()
-                    .nodeWidth(nodeWidth)
-                    .nodePadding(30)
-                    .size([diagramWidth, diagramHeight])
-                    .widgetRoot(widgetRoot);
-
-            sankey.createDiagram();
-            return scenario;
-        };
-
-        scenario.createTimeSlider = function() {
-            getYearsAvailable(createTimeSlider);
-            function createTimeSlider(years) {
-                d3.select(widgetRoot).select('.slider').call(
-                        d3.slider()
-                                .axis(d3.svg.axis().orient("bottom").tickFormat(d3.format()).tickPadding(10))
-                                .min(years[0])
-                                .max(years[years.length - 1])
-                            // XXX if there's not a data point for every year, this must be replaced by the exact years that the
-                            // backend provided.
-                                .step(1)
-                                .on("slide", function (event, value) {
-                                    loadEnergyData(value, sankey.updateDiagram);
-                                    currentYear = value;
-                                })
-                );
-            }
-        };
-
-        return scenario;
-    };
-
-    tool = function() {
-        var tool = {};
-        var maxCols = 2;
-        var maxRows = 2;
-        var maxDiagrams = maxCols * maxRows;
-        var nrOfDiagrams = 0;
-        var minNodeWidth = 10;
-        var minWidgetWidth = 300;
-        var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'.
-        var sliderHeight = 100;
-        var widgetMargin = 30;
-        var widgetWidth = (window.innerWidth / maxDiagrams) - (widgetMargin * (maxCols + 1));
-        if (widgetWidth < minWidgetWidth) widgetWidth = minWidgetWidth;
-        var widgetHeight = window.innerHeight - (widgetMargin * (maxRows + 1));
-        var diagramWidth = widgetWidth;
-        var diagramHeight = widgetHeight - headerHeight - sliderHeight;
-        var nodeWidth = minNodeWidth * widgetWidth/minWidgetWidth;
-
-        /**
-         * the list of the scenarios in use
-         */
-        var scenarios = {};
-
-        var gridster;
-        /**
-         * Needs a div element with id 'gridster' in which the grid will be set up.
-         */
-        tool.createGrid = function() {
-            gridster = $(".gridster").gridster({
-                widget_margins: [widgetMargin, widgetMargin],
-                widget_base_dimensions: [widgetWidth, widgetHeight],
-                max_cols: maxCols,
-                widget_selector: 'div',
-                draggable: {
-                    handle: 'header'
-                },
-                resize: {
-                    enabled: true,
-                    stop: function(e, ui, widget) {
-                        var newWidth = this.resize_coords.data.width;
-                        var newHeight = this.resize_coords.data.height - headerHeight - sliderHeight;
-                        // Select the svg element of the resized widget.
-                        d3.select(widget[0])
-                                .select(".chart")
-                                .attr("width", newWidth)
-                                .attr("height", newHeight);
-                        // Select the sankey object corresponding to the widgets id.
-                        var sankey = scenarios[d3.select(widget[0]).attr("id")].sankey();
-                        sankey.size([newWidth, newHeight]);
-                        sankey.nodeWidth(minNodeWidth * newWidth / minWidgetWidth);
-                        sankey.relayout(300);
-                        sankey.redrawDiagram();
-                    }
-                }
-            }).data('gridster');
-            return tool;
-        };
-
-        tool.createScenario = function() {
-            /**
-             * Sets up a widget and adds it to the gridster grid. Add more elements to a widget here (like a parameter
-             * list element).
-             */
-            function createWidget(scenarioId) {
-                    var newDiv = document.createElement("div");
-                    var widgetObject = gridster.add_widget(newDiv);
-                    newDiv = d3.select(newDiv)
-                            .attr("id", scenarioId);
-                    newDiv.append("header").attr("class", "drag-handle");
-                    newDiv.append("svg").attr("class", "chart");
-                    newDiv.append("div").attr("class", "slider");
-                    return widgetObject;
-            }
-
-            if (nrOfDiagrams < maxDiagrams) {
-                var scenario = d3.scenario();
-                scenario.id("scenario" + nrOfDiagrams++);
-                scenarios[scenario.id()] = scenario;
-
-                scenario.widgetRoot(createWidget(scenario.id())[0]);
-                scenario.createSankey(nodeWidth, diagramWidth, diagramHeight);
-                scenario.createTimeSlider();
-            } else {
-                alert("can't create more scenarios");
-                return tool;
-            }
-        };
-        return tool;
-    };
-
-    var tool = tool();
-    tool.createGrid();
-    tool.createScenario();
-    tool.createScenario();
+    var grid = enerqi.grid();
+    grid.addScenario();
+    grid.addScenario();
+    grid.addScenario();
 
 </script>
 </body>

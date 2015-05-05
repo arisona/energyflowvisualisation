@@ -24,7 +24,7 @@ var NODETYPES = {
 // dx, the node's width.
 // dy, The node's height
 
-d3.sankey = function() {
+enerqi.sankey = function() {
     var sankey = {},
         nodeWidth = 24,
         nodePadding = 8,
@@ -178,6 +178,8 @@ d3.sankey = function() {
                 if (d.color) return "energytype";
                 else return "node";
             })
+            .attr("stroke", function(d) { if(!d.color) return "black";} )
+            //.attr("fill-opacity", function(d) { if(d.color) return highopacity; })
             .style("fill", function(d) {
                 if (d.color) return d.color;
                 else return "url(#" + d.name + ")";
