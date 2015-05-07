@@ -33,6 +33,10 @@ enerqi.grid = function() {
     var scenarios = {};
     var gridster;
 
+    grid.scenarios = function() {
+        return scenarios;
+    };
+
     setUpGrid();
 
     /**
@@ -146,7 +150,7 @@ enerqi.scenario = function () {
         return scenario;
     };
 
-    scenario.createTimeSlider = function () {
+    scenario.createTimeSlider = function() {
         getYearsAvailable(createTimeSlider);
         function createTimeSlider(years) {
             d3.select(widgetRoot).select('.slider').call(
@@ -163,6 +167,27 @@ enerqi.scenario = function () {
                     })
             );
         }
+    };
+
+    // Server-side functionality for this is not working
+    scenario.exportSankeyAsPNG = function() {
+        var serverUrl = "http://localhost:8888/energysysvis/exportSVG.php";
+        var iframeId = "iframeId";     // Change this to fit your code
+        // Create new iframe
+        var iframe = $('<iframe src=""' + serverUrl + '"" name="' + iframeId + '" id="' + iframeId + '"></iframe>')
+            .appendTo(document.body)
+            .hide();
+        // Create input
+        var input = '<input type="hidden" name="data" value="' + encodeURIComponent($(widgetRoot).find("svg").prop('outerHTML')) + '" />';
+        // Create form to send request
+        $('<form action="' + serverUrl + '" method="' + 'POST' + '" target="' + iframeId + '">' + input + '</form>')
+            .appendTo(document.body)
+            .submit()
+            .remove();
+    };
+
+    scenario.exportState = function() {
+
     };
 
     return scenario;
