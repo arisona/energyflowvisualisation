@@ -12,10 +12,13 @@ var enerqi = {
  */
 enerqi.grid = function() {
     var grid = {};
+
+    // Set how many scenarios should be displayed side-by-side.
+    var nrOfDiagrams = 0;
+
     var maxCols = 2;
     var maxRows = 2;
     var maxDiagrams = maxCols * maxRows;
-    var nrOfDiagrams = 0;
     var minNodeWidth = 10;
     var minWidgetWidth = 300;
     var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'.
@@ -84,24 +87,24 @@ enerqi.grid = function() {
             draggable: {
                 handle: 'header'
             },
-            resize: {
-                enabled: true,
-                stop: function(e, ui, widget) {
-                    var newWidth = this.resize_coords.data.width;
-                    var newHeight = this.resize_coords.data.height - headerHeight - sliderHeight;
-                    // Select the svg element of the resized widget.
-                    d3.select(widget[0])
-                        .select(".chart")
-                        .attr("width", newWidth)
-                        .attr("height", newHeight);
-                    // Select the sankey object corresponding to the widgets id.
-                    var sankey = scenarios[d3.select(widget[0]).attr("id")].sankey();
-                    sankey.size([newWidth, newHeight]);
-                    sankey.nodeWidth(minNodeWidth * newWidth / minWidgetWidth);
-                    sankey.relayout(300);
-                    sankey.redrawDiagram();
-                }
-            }
+            //resize: {
+            //    enabled: true,
+            //    stop: function(e, ui, widget) {
+            //        var newWidth = this.resize_coords.data.width;
+            //        var newHeight = this.resize_coords.data.height - headerHeight - sliderHeight;
+            //        // Select the svg element of the resized widget.
+            //        d3.select(widget[0])
+            //            .select(".chart")
+            //            .attr("width", newWidth)
+            //            .attr("height", newHeight);
+            //        // Select the sankey object corresponding to the widgets id.
+            //        var sankey = scenarios[d3.select(widget[0]).attr("id")].sankey();
+            //        sankey.size([newWidth, newHeight]);
+            //        sankey.nodeWidth(minNodeWidth * newWidth / minWidgetWidth);
+            //        sankey.relayout(300);
+            //        sankey.redrawDiagram();
+            //    }
+            //}
         }).data('gridster');
     }
 

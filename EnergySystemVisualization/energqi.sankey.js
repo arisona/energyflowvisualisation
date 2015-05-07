@@ -750,7 +750,8 @@ enerqi.sankey = function () {
                 else return "node";
             })
             .attr("stroke", function (d) {
-                if (!d.color) return "black";
+                if (d.color) return d.color;
+                else return "black";
             })
             .style("fill", function (d) {
                 if (d.color) return d.color;
