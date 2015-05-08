@@ -42,9 +42,6 @@ enerqi.sankey = function () {
         size = [1, 1],
         nodes = [],
         links = [],
-    //exportLinks = [],
-    //exportNodes = [],
-    //exportNode,
         minNodeHeight = nodeWidth,
         minLinkHeight = 3,
     // the d3 selection of the widget that contains this sankey.
@@ -91,11 +88,6 @@ enerqi.sankey = function () {
 
     sankey.links = function (newLinks) {
         if (!arguments.length) return links;
-        //for (var i = 0; i < newLinks.length; i++) {
-        //if (newLinks[i].target == "Export") {
-        //    exportLinks.push(newLinks[i]);
-        //}
-        //}
         links = newLinks;
         return sankey;
     };
@@ -106,37 +98,31 @@ enerqi.sankey = function () {
         return sankey;
     };
 
-    var calcPath = function () {
-        var e = .5;
+    function calcPath() {
+        var curvature = .5;
 
-        function path(pathType, link) {
-            var r = link.source.x + link.source.dx,
-                i = link.target.x,
-                s = d3.interpolateNumber(r, i),
-                o = s(e),
-                u = s(1 - e),
-                a = link.source.y + link.sy,
-                f = link.target.y + link.ty,
-                l = link.source.y + link.sy + link.dy,
-                c = link.target.y + link.ty + link.dy;
-
-            switch (pathType) {
-                case 0:
-                    return "M" + r + "," + a + "L" + r + "," + (a + link.dy);
-                case 1:
-                    return "M" + r + "," + a + "C" + o + "," + a + " " + u + "," + f + " " + i + "," + f +
-                        "L" + i + "," + c + "C" + u + "," + c + " " + o + "," + l + " " + r + "," + l + "Z";
-                case 2:
-                    return "M" + i + "," + f + "L" + i + "," + (f + link.dy)
-            }
+        function calcPath(d) {
+            var x0 = d.source.x + d.source.dx,
+                x1 = d.target.x,
+                xi = d3.interpolateNumber(x0, x1),
+                x2 = xi(curvature),
+                x3 = xi(1 - curvature),
+                y0 = d.source.y + d.sy + d.dy / 2,
+                y1 = d.target.y + d.ty + d.dy / 2;
+            return "M" + x0 + "," + y0
+                + "C" + x2 + "," + y0
+                + " " + x3 + "," + y1
+                + " " + x1 + "," + y1;
         }
 
-        return function (pathType) {
-            return function (link) {
-                return path(pathType, link);
-            }
+        calcPath.curvature = function(_) {
+            if (!arguments.length) return curvature;
+            curvature = +_;
+            return calcPath;
         };
-    };
+
+        return calcPath;
+    }
 
     var path = calcPath();
 
@@ -161,7 +147,7 @@ enerqi.sankey = function () {
         d3.select(widgetRoot).select("svg")
             .attr("width", size[0])
             .attr("height", size[1])
-            .style("border", "solid 1px balck")
+            //.style("border", "solid 1px black")
             .append("g").attr("id", "sankey");
 
         getYearsAvailable(createDiagram);
@@ -260,17 +246,16 @@ enerqi.sankey = function () {
         sankey.layout(300);
 
         /* update links */
-        var links = d3.select(widgetRoot).select("svg").select(".links")
-            .selectAll(".link")
+        var links = d3.select(widgetRoot).select("svg").select(".links").selectAll(".link")
             // The link data elements are identified by the concatenation of the source and target name.
             .data(sankey.links(), function (d) {
                 return d.source.name + d.target.name;
             });
 
         /* transition updated links */
-        links.select(".path0").transition().attr("d", path(0));
-        links.select(".path1").transition().attr("d", path(1));
-        links.select(".path2").transition().attr("d", path(2));
+        links.transition()
+            .attr("d", path)
+            .attr("stroke-width", function(d) { return d.dy; })
 
         /* remove links that are not present in the new data */
         links.exit().remove();
@@ -282,57 +267,46 @@ enerqi.sankey = function () {
         var nodeJoin = d3.select(widgetRoot).select("svg").select(".nodes")
             .selectAll(".node")
             // The node data elements are identified by the name of the node.
-            .data(sankey.nodes().values(), function (d) {
-                return d.name;
-            });
+            .data(sankey.nodes().values(), function (d) { return d.name; });
 
         /* transition updated nodes */
         nodeJoin.transition()
-            .attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
-        nodeJoin.select(".node").transition()
-            .attr("height", function (d) {
-                return d.dy;
-            })
-            .attr("width", sankey.nodeWidth());
-        nodeJoin.select(".energytype").transition()
-            .attr("height", function (d) {
-                return d.dy;
-            })
+            .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .attr("height", function (d) { return d.dy; })
             .attr("width", sankey.nodeWidth());
         /* not creating any new nodes because all possible nodes should have been provided on first loading the tool */
         /* not removing any new nodes because all possible nodes should be displayed even if they don't have any links */
     };
 
-    sankey.redrawDiagram = function () {
-        var links = d3.select(widgetRoot).select("svg").select(".links")
-            .selectAll(".link")
-            // The link data elements are identified by the concatenation of the source and target name.
-            .data(sankey.links(), function (d) {
-                return d.source.name + d.target.name;
-            });
-        /* transition updated links */
-        links.select(".path0").attr("d", path(0));
-        links.select(".path1").attr("d", path(1));
-        links.select(".path2").attr("d", path(2));
-
-        var nodesToUpdate = d3.select(widgetRoot).select("svg").select(".nodes")
-            .selectAll(".node")
-            .data(sankey.nodes().values(), function (d) {
-                return d.name;
-            });
-
-        nodesToUpdate
-            .attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
-        nodesToUpdate.select("rect")
-            .attr("height", function (d) {
-                return d.dy;
-            })
-            .attr("width", sankey.nodeWidth());
-    };
+    //sankey.redrawDiagram = function () {
+    //    var links = d3.select(widgetRoot).select("svg").select(".links")
+    //        .selectAll(".link")
+    //        // The link data elements are identified by the concatenation of the source and target name.
+    //        .data(sankey.links(), function (d) {
+    //            return d.source.name + d.target.name;
+    //        });
+    //    /* transition updated links */
+    //    links.select("path").attr("d", path);
+    //    //links.select(".path0").attr("d", path(0));
+    //    //links.select(".path1").attr("d", path(1));
+    //    //links.select(".path2").attr("d", path(2));
+    //
+    //    var nodesToUpdate = d3.select(widgetRoot).select("svg").select(".nodes")
+    //        .selectAll(".node")
+    //        .data(sankey.nodes().values(), function (d) {
+    //            return d.name;
+    //        });
+    //
+    //    nodesToUpdate
+    //        .attr("transform", function (d) {
+    //            return "translate(" + d.x + "," + d.y + ")";
+    //        });
+    //    nodesToUpdate.select("rect")
+    //        .attr("height", function (d) {
+    //            return d.dy;
+    //        })
+    //        .attr("width", sankey.nodeWidth());
+    //};
 
     sankey.layout = function (iterations) {
         computeNodeLinks();
@@ -657,105 +631,79 @@ enerqi.sankey = function () {
 
     /* Input for this method should be the enter set of a data join */
     function createNewLinks(links) {
-        links = links
-            .append("g")
+
+        links.append("path")
             .attr("class", "link")
-            .attr("fill", function (d) {
+            .attr("d", path)
+            .attr("stroke-width", function(d) { return Math.max(1, d.dy); })
+            .attr("stroke", function (d) {
                 if (d.target.color) return d.target.color;
                 else return d.source.color;
             })
+            .attr("fill", "none")
             .style("opacity", OPACITY.LINK_DEFAULT)
-            .on("mouseenter", function(d) {
-                d3.select(this)
-                    //.transition().duration(TRANSITION_DURATION)
-                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
-            })
-            .on("mouseleave", function(d) {
-                d3.select(this)
-                    //.transition().duration(TRANSITION_DURATION)
-                    .style("opacity", OPACITY.LINK_DEFAULT);
-            });
-
-        links.append("text");
-
-
-        links.append("path").attr("class", "path0").attr("d", path(0));
-        links.append("path").attr("class", "path1").attr("d", path(1))
+            //.sort(function(a, b) { return b.dy - a.dy; })
             .on("mouseenter", function (d) {
                 //if (!mouseDown) {
-                d3.select(this).append("text")
-                    .attr("x", (d.source.x + d.target.x) / 2)
-                    .attr("y", pathtext)
-                    .attr("class", "link-text")
-                    .attr("text-anchor", "middle")
-                    .attr("dy", ".35em")
-                    .attr("pointer_events", "none")
-                    .text(function (d) {
-                        return formatNumber(d.value);
-                    });
+                d3.select(this)
+                    .transition().duration(TRANSITION_DURATION)
+                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
+                    //.append("text")
+                    //.attr("x", (d.source.x + d.target.x) / 2)
+                    //.attr("y", pathtext)
+                    //.attr("class", "link-text")
+                    //.attr("text-anchor", "middle")
+                    //.attr("dy", ".35em")
+                    //.attr("pointer_events", "none")
+                    //.text(function (d) {
+                    //    return formatNumber(d.value);
+                    //});
                 //}
             })
             .on("mouseleave", function (d) {
-                d3.select(this).select(".link-text").remove();
+                d3.select(this)
+                    .style("opacity", OPACITY.LINK_DEFAULT)
+                    //.select(".link-text").remove();
             });
-        links.append("path").attr("class", "path2").attr("d", path(2));
     }
 
     /* Input for this method should be the enter set of a data join */
     function createNewNodes(nodes) {
-        var nodeGroupElement = nodes.append("g")
+        nodes.append("rect")
             .attr("class", "node")
-            .attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            })
-            .style("background-color", "white")
-            .style("opacity", OPACITY.NODE_DEFAULT)
-            .call(d3.behavior.drag()
-                .origin(function (d) {
-                    return d;
-                })
-                .on("dragstart", function () {
-                    this.parentNode.appendChild(this);
-                })
-                .on("drag", dragmove))
-            .on("mouseover", function (node) {
-                restoreLinksAndNodes();
-                highlightConnected(node);
-                fadeUnconnected(node);
-                d3.select(this).style("opacity", OPACITY.NODE_HIGHLIGHT);
-                tooltip
-                    .style("left", node.x + "px")
-                    .style("top", node.y + node.dy + 15 + "px")
-                    //.transition().duration(TRANSITION_DURATION)
-                    .style("opacity", 1).select("#tooltip-text")
-                    .text(function () {
-                        return node.name + "\nFlow: " + formatNumber(node.value);
-                    });
-            })
-            .on("mouseleave", function () {
-                tooltip
-                    .style("opacity", 0);
-                restoreLinksAndNodes();
-            });
-
-        nodeGroupElement.append("rect")
-            .attr("height", function (d) {
-                return d.dy;
-            })
-            .attr("width", function (d) {
-                return d.dx;
-            })
-            .attr("class", function (d) {
-                if (d.color) return "energytype";
-                else return "node";
-            })
-            .attr("stroke", function (d) {
-                if (d.color) return d.color;
-                else return "black";
-            })
+            .attr("height", function(d) {return d.dy;})
+            .attr("width", function (d) { return d.dx;})
+            //.attr("class", function (d) {
+            //    if (d.color) return "energytype";
+            //    else return "node";
+            //})
+            .attr("stroke", function (d) { if(!d.color) return "black";})
             .style("fill", function (d) {
                 if (d.color) return d.color;
                 else return "url(#" + d.name + ")";
+            })
+            .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .style("opacity", OPACITY.NODE_DEFAULT)
+            .call(d3.behavior.drag()
+                .origin(function (d) { return d; })
+                .on("dragstart", function () { this.parentNode.appendChild(this); })
+                .on("drag", dragmove))
+            .on("mouseover", function (node) {
+                restoreLinksAndNodes();
+                fadeUnconnected(node);
+                //tooltip
+                //    .style("left", node.x + "px")
+                //    .style("top", node.y + node.dy + 15 + "px")
+                //    //.transition().duration(TRANSITION_DURATION)
+                //    .style("opacity", 1).select("#tooltip-text")
+                //    .text(function () {
+                //        return node.name + "\nFlow: " + formatNumber(node.value);
+                //    });
+            })
+            .on("mouseleave", function () {
+                //tooltip
+                //    .style("opacity", 0);
+                restoreLinksAndNodes();
             });
 
         function dragmove(d) {
@@ -764,45 +712,26 @@ enerqi.sankey = function () {
             d3.select(this).attr("transform", "translate(" + d.x + "," + d.y + ")");
             sankey.relayout();
 
-            var links = d3.selectAll(".link");
-            links.select(".path0").attr("d", path(0));
-            links.select(".path1").attr("d", path(1));
-            links.select(".path2").attr("d", path(2));
-        }
-
-        function highlightConnected(node) {
-            linkSelection.filter(function (d) {
-                return d.source === node;
-            })
-                .style("opacity", OPACITY.LINK_HIGHLIGHT);
-
-            linkSelection.filter(function (d) {
-                return d.target === node;
-            })
-                .style("opacity", OPACITY.LINK_HIGHLIGHT);
+            linkSelection.attr("d", path);
         }
 
         function restoreLinksAndNodes() {
             linkSelection
-                //.transition().duration(TRANSITION_DURATION)
+                .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.LINK_DEFAULT);
 
             nodeSelection
-                //.transition().duration(TRANSITION_DURATION)
+                .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.NODE_DEFAULT);
         }
 
         function fadeUnconnected(node) {
-            linkSelection.filter(function (d) {
-                return d.source !== node && d.target !== node;
-            })
-                //.transition().duration(TRANSITION_DURATION)
+            linkSelection.filter(function (d) { return d.source !== node && d.target !== node; })
+                .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.LINK_FADED);
 
-            nodeSelection.filter(function (d) {
-                return (d.name === node.name) ? false : !connected(d, node);
-            })
-                //.transition().duration(TRANSITION_DURATION)
+            nodeSelection.filter(function (d) { return (d.name === node.name) ? false : !connected(d, node); })
+                .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.NODE_FADED);
         }
     }

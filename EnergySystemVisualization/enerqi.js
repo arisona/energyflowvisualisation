@@ -1,10 +1,16 @@
 /**
  * Created by Claude on 05.05.2015.
  */
-
 var enerqi = {
     version: "0.1"
 };
+
+var ASPECT = 1.8;
+var MAX_SCENARIOS = 4;
+var MIN_NODE_WIDTH = 10;
+var MIN_SCENARIO_WIDTH = 300;
+var SLIDER_HEIGHT = 100;
+var SCENARIO_MARGIN = 30;
 
 /**
  * The grid in which all scenarios are held. Constructs a grid when called. Needs a div element with class attribute
@@ -13,23 +19,59 @@ var enerqi = {
 enerqi.grid = function() {
     var grid = {};
 
-    // Set how many scenarios should be displayed side-by-side.
-    var nrOfDiagrams = 0;
+    var nrScenarios = 2;
+    var scenarioId = 0;
+    var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'. Replace by smaller area on scenario.
 
-    var maxCols = 2;
-    var maxRows = 2;
-    var maxDiagrams = maxCols * maxRows;
-    var minNodeWidth = 10;
-    var minWidgetWidth = 300;
-    var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'.
-    var sliderHeight = 100;
-    var widgetMargin = 30;
-    var widgetWidth = (window.innerWidth / maxCols) - (widgetMargin * (maxCols + 1));
-    if (widgetWidth < minWidgetWidth) widgetWidth = minWidgetWidth;
-    var widgetHeight = (window.innerHeight / maxRows) - (widgetMargin * (maxRows + 1));
-    var diagramWidth = widgetWidth;
-    var diagramHeight = widgetHeight - headerHeight - sliderHeight;
-    var nodeWidth = minNodeWidth * widgetWidth/minWidgetWidth;
+    var nrCols;
+    var scenarioWidth;
+    var scenarioHeight;
+    // Calculate the best layout for the chosen number of scenarios
+    if (nrScenarios == 1) {
+        nrCols = 1;
+        scenarioWidth = window.innerWidth - SCENARIO_MARGIN*2;
+        if (scenarioWidth/ASPECT > window.innerHeight) {
+            scenarioHeight = window.innerHeight - SCENARIO_MARGIN*2;
+            scenarioWidth = scenarioHeight * ASPECT - SCENARIO_MARGIN*2;
+        } else {
+            scenarioHeight = scenarioWidth/ASPECT - SCENARIO_MARGIN*2;
+        }
+    } else if (nrScenarios == 2) {
+        if (window.innerWidth/window.innerHeight > ASPECT) {
+            // scnecarios will be in one row
+            nrCols = 2;
+            scenarioWidth = window.innerWidth/2 - SCENARIO_MARGIN*3;
+            if (scenarioWidth/ASPECT > window.innerHeight) {
+                scenarioHeight = window.innerHeight - SCENARIO_MARGIN*2;
+                scenarioWidth = scenarioHeight * ASPECT - SCENARIO_MARGIN*3;
+            } else {
+                scenarioHeight = scenarioWidth/ASPECT - SCENARIO_MARGIN*2;
+            }
+        } else {
+            // scenarios will be in one column
+            nrCols = 1;
+            scenarioWidth = window.innerWidth - SCENARIO_MARGIN * 2;
+            if (scenarioWidth / ASPECT * 2 > window.innerHeight) {
+                scenarioHeight = window.innerHeight / 2 - SCENARIO_MARGIN * 3;
+                scenarioWidth = scenarioHeight * ASPECT - SCENARIO_MARGIN * 2;
+            } else {
+                scenarioHeight = scenarioWidth / ASPECT - SCENARIO_MARGIN * 3;
+            }
+        }
+    } else if (nrScenarios > 2) {
+        nrCols = 2;
+        scenarioWidth = window.innerWidth/2 - SCENARIO_MARGIN*3;
+        if (scenarioWidth/ASPECT*2 > window.innerHeight) {
+            scenarioHeight = window.innerHeight/2 - SCENARIO_MARGIN*3;
+            scenarioWidth = scenarioHeight * ASPECT - SCENARIO_MARGIN*3;
+        } else {
+            scenarioHeight = scenarioWidth/ASPECT - SCENARIO_MARGIN*3;
+        }
+    }
+    //if (< minWidgetWidth) widgetWidth = minWidgetWidth;
+    var diagramWidth = scenarioWidth;
+    var diagramHeight = scenarioHeight - headerHeight - SLIDER_HEIGHT;
+    var nodeWidth = MIN_NODE_WIDTH * scenarioWidth/scenarioHeight;
     /**
      * the list of the scenarios in use
      */
@@ -64,29 +106,24 @@ enerqi.grid = function() {
             return widgetObject;
         }
 
-        if (nrOfDiagrams < maxDiagrams) {
             var scenario = enerqi.scenario();
-            scenario.id("scenario" + nrOfDiagrams++);
+            scenario.id("scenario" + scenarioId++);
             scenarios[scenario.id()] = scenario;
 
             scenario.widgetRoot(addWidget(scenario.id())[0]);
             scenario.createSankey(nodeWidth, diagramWidth, diagramHeight);
             scenario.createTimeSlider();
-        } else {
-            alert("can't create more scenarios");
-            return grid;
-        }
     };
 
     function setUpGrid() {
         gridster = $(".gridster").gridster({
-            widget_margins: [widgetMargin, widgetMargin],
-            widget_base_dimensions: [widgetWidth, widgetHeight],
-            max_cols: maxCols,
+            widget_margins: [SCENARIO_MARGIN, SCENARIO_MARGIN],
+            widget_base_dimensions: [scenarioWidth, scenarioHeight],
+            max_cols: nrCols,
             widget_selector: 'div',
             draggable: {
                 handle: 'header'
-            },
+            }
             //resize: {
             //    enabled: true,
             //    stop: function(e, ui, widget) {
@@ -187,10 +224,6 @@ enerqi.scenario = function () {
             .appendTo(document.body)
             .submit()
             .remove();
-    };
-
-    scenario.exportState = function() {
-
     };
 
     return scenario;
