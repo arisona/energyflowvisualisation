@@ -14,16 +14,20 @@ var NODETYPES = {
 };
 
 var OPACITY = {
-    NODE_DEFAULT: 0.7,
+    NODE_DEFAULT: 1,
     NODE_FADED: 0.2,
-    NODE_HIGHLIGHT: 0.8,
     LINK_DEFAULT: 0.6,
-    LINK_FADED: 0.05,
-    LINK_HIGHLIGHT: 0.9
+    LINK_FADED: 0.05
 };
 
 var TRANSITION_DURATION = 400;
 
+
+d3.selection.prototype.moveToFront = function() {
+    return this.each(function(){
+        this.parentNode.appendChild(this);
+    });
+};
 /* Properties of the node objects: */
 // name
 // type, One of the types from enum NODETYPES.
@@ -48,7 +52,9 @@ enerqi.sankey = function () {
         widgetRoot,
         linkSelection,
         nodeSelection,
-        tooltip;
+        sinkNodeSize,
+        maxSinkValue,
+        sinkNodes;
 
     sankey.widgetRoot = function (_) {
         if (!arguments.length) return widgetRoot;
@@ -79,6 +85,10 @@ enerqi.sankey = function () {
         if (!arguments.length) return nodes;
         newNodes.forEach(function (node) {
             initializeNode(node);
+        });
+        sinkNodes = [];
+        newNodes.forEach(function(node) {
+            if (node.type == NODETYPES.SINK) { sinkNodes.push(node); }
         });
         nodes = d3.map(newNodes, function (d) {
             return d.name;
@@ -146,95 +156,75 @@ enerqi.sankey = function () {
         // Set up svg element
         d3.select(widgetRoot).select("svg")
             .attr("width", size[0])
-            .attr("height", size[1])
-            //.style("border", "solid 1px black")
-            .append("g").attr("id", "sankey");
+            .attr("height", size[1]);
 
-        getYearsAvailable(createDiagram);
-
+        getYearsAvailable(receiveYearsAvailable);
         // callback function that receives the available years form the server and reatrieves the energy data for that year.
-        function createDiagram(years) {
-
-            loadEnergyData(years[0], createDiagram);
-
+        function receiveYearsAvailable(years) {
+            loadEnergyData(years[0], receiveDataFromYear);
             // callback function receives the energy data from the server.
-            function createDiagram(graph) {
-                sankey.nodes(graph["nodes"]);
-                sankey.links(graph["links"]);
-                sankey.layout(300);
-                computeConnectedNodes();
+            function receiveDataFromYear(graph) {
+                getMaxSinkValue(receiveMaxSinkValue);
+                // callback function receives maximal sink value from server.
+                function receiveMaxSinkValue(value) {
+                    maxSinkValue = value;
+                    sankey.nodes(graph["nodes"]);
+                    sankey.links(graph["links"]);
+                    sankey.layout(300);
+                    computeConnectedNodes();
+                    createSVGPatterns();
 
-                createSVGPatterns();
+                    /* create links */
+                    linkSelection = d3.select(widgetRoot).select("svg")
+                        .append("g")
+                        .attr("class", "links")
+                        .selectAll(".link")
+                        .data(sankey.links());
 
-                // create the tooltip element
-                tooltip = d3.select(widgetRoot).select("svg").append("div")
-                    .attr("id", "tooltip")
-                    .style("opacity", 0);
+                    createNewLinks(linkSelection.enter());
 
-                tooltip.append("p").attr("id", "tooltip-text");
+                    /* create nodes */
+                    nodeSelection = d3.select(widgetRoot).select("svg")
+                        .append("g")
+                        .attr("class", "nodes")
+                        .selectAll(".node")
+                        .data(sankey.nodes().values());
 
-                /* create links */
-                linkSelection = d3.select(widgetRoot).select("svg")
-                    .append("g")
-                    .attr("class", "links")
-                    .selectAll(".link")
-                    .data(sankey.links());
+                    createNewNodes(nodeSelection.enter());
 
-                createNewLinks(linkSelection.enter());
+                    function createSVGPatterns() {
+                        // create patterns in the chart's defs element.
+                        var patterns = d3.select(widgetRoot).select("svg")
+                            .append("defs").selectAll("pattern")
+                            .data(sankey.nodes().values()).enter()
+                            .append("pattern")
+                            .filter(function (d) {
+                                return d.type != NODETYPES.ENERGYTYPE;
+                            })
+                            .attr("id", function (d) {
+                                return d.name.replace(/\s/g, "-");
+                            })
+                            .attr("patternUnits", 'objectBoundingBox')
+                            .attr("width", 1)
+                            .attr("height", 1)
+                            .attr("preserveAspectRatio", "xMidYMid meet")
+                            .attr("viewBox", "0 0 1 1");
 
-                /* create nodes */
-                nodeSelection = d3.select(widgetRoot).select("svg")
-                    .append("g")
-                    .attr("class", "nodes")
-                    .selectAll(".node")
-                    .data(sankey.nodes().values());
+                        patterns.append("rect")
+                            .attr("x", "-50%")
+                            .attr("y", "-50%")
+                            .attr("width", "100%")
+                            .attr("height", "100%")
+                            .attr("fill", "white");
+                        patterns.append("image")
+                            .attr("xlink:href", function (d) {
+                                return d.imgUrl;
+                            })
+                            .attr("width", 1)
+                            .attr("height", 1)
+                            .attr("fill", "white");
 
-                createNewNodes(nodeSelection.enter());
-
-                function computeConnectedNodes() {
-                    var sourceNode, targetNode;
-                    links.forEach(function (link) {
-                        sourceNode = link.source;
-                        targetNode = link.target;
-                        if (sourceNode.connectedNodes.indexOf(targetNode) < 0) {
-                            sourceNode.connectedNodes.push(targetNode);
-                        }
-                        if (targetNode.connectedNodes.indexOf(sourceNode) < 0) {
-                            targetNode.connectedNodes.push(sourceNode);
-                        }
-                    });
-                }
-
-                function createSVGPatterns() {
-                    // create patterns in the chart's defs element.
-                    var patterns = d3.select(widgetRoot).select("svg").append("defs").selectAll(".pattern")
-                        .data(sankey.nodes().values())
-                        .enter()
-                        .append("pattern")
-                        .attr("id", function (d) {
-                            return d.name;
-                        })
-                        .attr("class", "pattern")
-                        .attr("patternUnits", 'objectBoundingBox')
-                        .attr("width", 1)
-                        .attr("height", 1)
-                        .attr("preserveAspectRatio", "xMidYMid meet")
-                        .attr("viewBox", "0 0 1 1");
-
-                    patterns.append("rect")
-                        .attr("x", "-50%")
-                        .attr("y", "-50%")
-                        .attr("width", "100%")
-                        .attr("height", "100%")
-                        .attr("fill", "white");
-                    patterns.append("image")
-                        .attr("xlink:href", function (d) {
-                            return d.imgUrl;
-                        })
-                        .attr("width", 1)
-                        .attr("height", 1)
-                        .attr("fill", "white");
-
+                    }
                 }
             }
         }
@@ -244,6 +234,7 @@ enerqi.sankey = function () {
         sankey.links(graph["links"]);
         sankey.nodes(graph["nodes"]);
         sankey.layout(300);
+        computeConnectedNodes();
 
         /* update links */
         var links = d3.select(widgetRoot).select("svg").select(".links").selectAll(".link")
@@ -253,10 +244,11 @@ enerqi.sankey = function () {
             });
 
         /* transition updated links */
-        links.transition()
+        links.select("path").transition()
             .attr("d", path)
-            .attr("stroke-width", function(d) { return d.dy; })
+            .attr("stroke-width", function(d) { return d.dy; });
 
+        setLinkText(links.select("text"));
         /* remove links that are not present in the new data */
         links.exit().remove();
 
@@ -309,12 +301,12 @@ enerqi.sankey = function () {
     //};
 
     sankey.layout = function (iterations) {
+        sinkNodeSize = (size[1] - ((sinkNodes.length+1) * nodePadding)) / sinkNodes.length;
         computeNodeLinks();
         computeNodeValues();
         computeNodeBreadths();
         computeNodeDepths(iterations);
         computeLinkDepths();
-        //computeExportNodeBreadths();
         return sankey;
     };
 
@@ -356,11 +348,6 @@ enerqi.sankey = function () {
                 console.log("there are nodes with zero value, we remove them from the list of nodes");
                 nodes.remove(node.name);
             }
-            //if (node.name == "Export") {
-            //    // Remove export node from nodes before breadth and depth are calculated.
-            //    nodes.remove("Export");
-            //    exportNode = node;
-            //}
         });
     }
 
@@ -428,22 +415,24 @@ enerqi.sankey = function () {
             resolveCollisions();
         }
 
+
         function initializeNodeDepth() {
-            // calculate the scaling
-            // TODO incorporate an absolute scaling over all possible scenarios.
-            var ky = d3.min(nodesByBreadth, function (nodes) {
-                return (size[1] - (nodes.length - 1) * nodePadding) / d3.sum(nodes, value);
-            });
+            //var ky = calcScalingFactor();
+            var ky = sinkNodeSize / maxSinkValue;
+            console.log(ky);
+            console.log(sinkNodeSize);
 
             nodesByBreadth.forEach(function (nodes) {
                 nodes.forEach(function (node, i) {
                     node.y = i;
                     node.dy = node.value * ky;
-                    // if node with an image doesn't have minimum height it is assigned the minimum height and the
+                    // if the node is a process and doesn't have minimum height it is assigned the minimum height and the
                     // originally calculated height is saved as an property to the node for later use.
-                    if (node.dy < minNodeHeight && node.type != "energytype") {
-                        node.originalDy = node.dy;
+                    if (node.dy < minNodeHeight && node.type == NODETYPES.PROCESS) {
                         node.dy = minNodeHeight;
+                    }
+                    if (node.type == NODETYPES.SINK) {
+                        node.dy = sinkNodeSize;
                     }
                 });
             });
@@ -452,25 +441,33 @@ enerqi.sankey = function () {
                 link.dy = link.value * ky;
                 // Adjust the links height to the minimum and enlarge the connected nodes if the extra height of the
                 // link exceeds the height of the nodes.
-                if (link.dy < minLinkHeight) {
-                    var oldDy = link.dy;
-                    link.dy = minLinkHeight;
-                    if (!link.source.originalDy) {
-                        link.source.dy += link.dy - oldDy;
-                    } else {
-                        if (link.source.originalDy + (link.dy - oldDy) > link.source.dy) {
-                            link.source.dy += link.dy - oldDy;
-                        }
-                    }
-                    if (!link.target.originalDy) {
-                        link.target.dy += link.dy - oldDy;
-                    } else {
-                        if (link.target.originalDy + (link.dy - oldDy) > link.target.dy) {
-                            link.target.dy += link.dy - oldDy;
-                        }
-                    }
-                }
+                //if (link.dy < minLinkHeight) {
+                //    var oldDy = link.dy;
+                //    link.dy = minLinkHeight;
+                //    if (!link.source.originalDy) {
+                //        link.source.dy += link.dy - oldDy;
+                //    } else {
+                //        if (link.source.originalDy + (link.dy - oldDy) > link.source.dy) {
+                //            link.source.dy += link.dy - oldDy;
+                //        }
+                //    }
+                //    if (!link.target.originalDy) {
+                //        link.target.dy += link.dy - oldDy;
+                //    } else {
+                //        if (link.target.originalDy + (link.dy - oldDy) > link.target.dy) {
+                //            link.target.dy += link.dy - oldDy;
+                //        }
+                //    }
+                //}
             });
+
+            //function calcScalingFactor() {
+            //    var maxSinkValue = 0;
+            //    sinkNodes.forEach(function(node) {
+            //        if (node.value > maxSinkValue) { maxSinkValue = node.value; }
+            //    });
+            //    return sinkNodeSize / maxSinkValue;
+            //}
         }
 
         function spreadOriginNodes() {
@@ -492,20 +489,10 @@ enerqi.sankey = function () {
         }
 
         function spreadSinkNodes() {
-            var sinks = [];
-            nodes.values().forEach(function (node) {
-                if (node.type == "sink") {
-                    sinks.push(node);
-                }
-            });
-            var totalHeight = (sinks.length - 1) * nodePadding;
-            sinks.forEach(function (node) {
-                totalHeight += node.dy;
-            });
-            var atHeight = (size[1] - totalHeight) / 2;
-            sinks.forEach(function (node) {
+            var atHeight = nodePadding;
+            sinkNodes.forEach(function (node) {
                 node.y = atHeight;
-                atHeight += node.dy + nodePadding;
+                atHeight += sinkNodeSize + nodePadding;
             });
         }
 
@@ -625,15 +612,22 @@ enerqi.sankey = function () {
     //    });
     //}
 
-    function formatNumber(number) {
-        return d3.format(">,d")(number);
-    }
-
     /* Input for this method should be the enter set of a data join */
     function createNewLinks(links) {
 
-        links.append("path")
+        var groupElement = links.append("g")
             .attr("class", "link")
+            .on("mouseenter", function (d) {
+                d3.select(this).moveToFront()
+                    .select(".link-text").moveToFront()
+                    .attr("visibility", "visible");
+            })
+            .on("mouseleave", function (d) {
+                d3.select(this).select(".link-text").attr("visibility", "hidden");
+            });
+
+        groupElement
+            .append("path")
             .attr("d", path)
             .attr("stroke-width", function(d) { return Math.max(1, d.dy); })
             .attr("stroke", function (d) {
@@ -642,29 +636,19 @@ enerqi.sankey = function () {
             })
             .attr("fill", "none")
             .style("opacity", OPACITY.LINK_DEFAULT)
-            //.sort(function(a, b) { return b.dy - a.dy; })
             .on("mouseenter", function (d) {
-                //if (!mouseDown) {
-                d3.select(this)
-                    .transition().duration(TRANSITION_DURATION)
-                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
-                    //.append("text")
-                    //.attr("x", (d.source.x + d.target.x) / 2)
-                    //.attr("y", pathtext)
-                    //.attr("class", "link-text")
-                    //.attr("text-anchor", "middle")
-                    //.attr("dy", ".35em")
-                    //.attr("pointer_events", "none")
-                    //.text(function (d) {
-                    //    return formatNumber(d.value);
-                    //});
-                //}
+                d3.select(this).style("opacity", OPACITY.LINK_HIGHLIGHT);
             })
             .on("mouseleave", function (d) {
-                d3.select(this)
-                    .style("opacity", OPACITY.LINK_DEFAULT)
-                    //.select(".link-text").remove();
+                d3.select(this).style("opacity", OPACITY.LINK_DEFAULT);
             });
+
+        var textElements = groupElement
+            .append("text")
+            .attr("class", "link-text")
+            .attr("visibility","hidden");
+
+        setLinkText(textElements);
     }
 
     /* Input for this method should be the enter set of a data join */
@@ -673,14 +657,10 @@ enerqi.sankey = function () {
             .attr("class", "node")
             .attr("height", function(d) {return d.dy;})
             .attr("width", function (d) { return d.dx;})
-            //.attr("class", function (d) {
-            //    if (d.color) return "energytype";
-            //    else return "node";
-            //})
             .attr("stroke", function (d) { if(!d.color) return "black";})
             .style("fill", function (d) {
                 if (d.color) return d.color;
-                else return "url(#" + d.name + ")";
+                else return "url(#" + d.name.replace(/\s/g, "-") + ")";
             })
             .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
             .style("opacity", OPACITY.NODE_DEFAULT)
@@ -688,22 +668,14 @@ enerqi.sankey = function () {
                 .origin(function (d) { return d; })
                 .on("dragstart", function () { this.parentNode.appendChild(this); })
                 .on("drag", dragmove))
-            .on("mouseover", function (node) {
+            .on("mouseenter", function (node) {
                 restoreLinksAndNodes();
                 fadeUnconnected(node);
-                //tooltip
-                //    .style("left", node.x + "px")
-                //    .style("top", node.y + node.dy + 15 + "px")
-                //    //.transition().duration(TRANSITION_DURATION)
-                //    .style("opacity", 1).select("#tooltip-text")
-                //    .text(function () {
-                //        return node.name + "\nFlow: " + formatNumber(node.value);
-                //    });
+                showTextOfConnectedLinks(node);
             })
-            .on("mouseleave", function () {
-                //tooltip
-                //    .style("opacity", 0);
+            .on("mouseleave", function (node) {
                 restoreLinksAndNodes();
+                hideTextOfConnectedLinks(node);
             });
 
         function dragmove(d) {
@@ -712,11 +684,11 @@ enerqi.sankey = function () {
             d3.select(this).attr("transform", "translate(" + d.x + "," + d.y + ")");
             sankey.relayout();
 
-            linkSelection.attr("d", path);
+            linkSelection.select("path").attr("d", path);
         }
 
         function restoreLinksAndNodes() {
-            linkSelection
+            linkSelection.select("path")
                 .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.LINK_DEFAULT);
 
@@ -726,7 +698,7 @@ enerqi.sankey = function () {
         }
 
         function fadeUnconnected(node) {
-            linkSelection.filter(function (d) { return d.source !== node && d.target !== node; })
+            linkSelection.filter(function (d) { return d.source !== node && d.target !== node; }).select("path")
                 .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.LINK_FADED);
 
@@ -734,6 +706,58 @@ enerqi.sankey = function () {
                 .transition().duration(TRANSITION_DURATION)
                 .style("opacity", OPACITY.NODE_FADED);
         }
+
+        function showTextOfConnectedLinks(node) {
+            linkSelection.filter(function(d) {
+                return (node.sourceLinks.indexOf(d) > -1) || (node.targetLinks.indexOf(d) > -1);}).select("text")
+                .attr("visibility", "visible");
+        }
+
+        function hideTextOfConnectedLinks(node) {
+            linkSelection.filter(function(d) {
+                return (node.sourceLinks.indexOf(d) > -1) || (node.targetLinks.indexOf(d) > -1);}).select("text")
+                .attr("visibility", "hidden");
+        }
+    }
+
+    function computeConnectedNodes() {
+        var sourceNode, targetNode;
+        links.forEach(function (link) {
+            sourceNode = link.source;
+            targetNode = link.target;
+            if (sourceNode.connectedNodes.indexOf(targetNode) < 0) {
+                sourceNode.connectedNodes.push(targetNode);
+            }
+            if (targetNode.connectedNodes.indexOf(sourceNode) < 0) {
+                targetNode.connectedNodes.push(sourceNode);
+            }
+        });
+    }
+
+    function setLinkText(textElements) {
+        textElements
+            .attr("text-anchor", function(d) {
+                if (d.target.type == NODETYPES.SINK) { return "end";}
+                if (d.source.type == NODETYPES.ORIGIN) { return "start";}
+            })
+            .attr("x", function(d) {
+                if (d.target.type == NODETYPES.SINK) { return d.target.x; }
+                if (d.source.type == NODETYPES.ORIGIN) { console.log(nodeWidth); return nodeWidth;}
+            })
+            .attr("y", function(d) {
+                if (d.target.type == NODETYPES.SINK) { return d.target.y + d.ty + d.dy/2; }
+                if (d.source.type == NODETYPES.ORIGIN) { return d.source.y + d.sy + d.dy/2;}
+            })
+            .attr("dy", ".35em")
+            .attr("font-size", "14")
+            .attr("pointer_events", "none")
+            .text(function (d) {
+                return formatNumber(d.value);
+            });
+    }
+
+    function formatNumber(number) {
+        return d3.format(">,d")(number);
     }
 
     function center(node) {

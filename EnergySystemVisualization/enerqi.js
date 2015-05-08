@@ -11,6 +11,7 @@ var MIN_NODE_WIDTH = 10;
 var MIN_SCENARIO_WIDTH = 300;
 var SLIDER_HEIGHT = 100;
 var SCENARIO_MARGIN = 30;
+var NODE_PADDING = 20;
 
 /**
  * The grid in which all scenarios are held. Constructs a grid when called. Needs a div element with class attribute
@@ -19,7 +20,7 @@ var SCENARIO_MARGIN = 30;
 enerqi.grid = function() {
     var grid = {};
 
-    var nrScenarios = 2;
+    var nrScenarios = 1;
     var scenarioId = 0;
     var headerHeight = 20; // XXX statically defined in css class 'header.drag-handle'. Replace by smaller area on scenario.
 
@@ -71,7 +72,7 @@ enerqi.grid = function() {
     //if (< minWidgetWidth) widgetWidth = minWidgetWidth;
     var diagramWidth = scenarioWidth;
     var diagramHeight = scenarioHeight - headerHeight - SLIDER_HEIGHT;
-    var nodeWidth = MIN_NODE_WIDTH * scenarioWidth/scenarioHeight;
+    var nodeWidth = scenarioWidth/30;
     /**
      * the list of the scenarios in use
      */
@@ -182,7 +183,7 @@ enerqi.scenario = function () {
     scenario.createSankey = function (nodeWidth, diagramWidth, diagramHeight) {
         sankey = enerqi.sankey()
             .nodeWidth(nodeWidth)
-            .nodePadding(30)
+            .nodePadding(NODE_PADDING)
             .size([diagramWidth, diagramHeight])
             .widgetRoot(widgetRoot);
 

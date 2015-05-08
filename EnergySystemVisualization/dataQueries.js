@@ -5,7 +5,7 @@
 var serverUrl = "http://localhost:8888/energysysvis/index.php";
 var energyDataQuery = "energyData";
 var yearsAvailableQuery = "yearsAvailable";
-var maxTotalValueQuery = "maxTotalValue";
+var maxSinkValueQuery = "maxSinkValue";
 
 function loadEnergyData(year, callback) {
     var query = serverUrl + "?q=" + energyDataQuery + "&y=" + year;
@@ -35,14 +35,14 @@ function getYearsAvailable(callback) {
     })
 }
 
-function getMaxTotalValue(callback) {
-    d3.json(serverUrl + "?q=" + maxTotalValueQuery, function (error, json) {
+function getMaxSinkValue(callback) {
+    d3.json(serverUrl + "?q=" + maxSinkValueQuery, function (error, json) {
         if (error) {
             console.log("Error ocurred while requesting maximum total value: " + error);
             console.log("Returning static value");
             callback(500000);
         } else {
-            callback(json["maxTotalValue"]);
+            callback(json["maxSinkValue"]);
         }
     })
 }

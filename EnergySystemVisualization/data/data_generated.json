@@ -120,248 +120,213 @@
     {
       "source": "District Heat",
       "target": "Households",
-      "value": 18253
+      "value": 20858
     },
     {
       "source": "District Heat",
       "target": "Services",
-      "value": 18252
+      "value": 20858
     },
     {
       "source": "District Heat",
       "target": "Industry",
-      "value": 18252
+      "value": 20857
     },
     {
       "source": "Import",
       "target": "Crude Oil",
-      "value": 20676
+      "value": 25621
     },
     {
       "source": "Import",
       "target": "Wood/Coal/Waste",
-      "value": 20676
-      },
+      "value": 25621
+    },
     {
       "source": "Import",
       "target": "Electricity",
-      "value": 20675
+      "value": 25621
     },
     {
       "source": "Import",
       "target": "Nuclear Fuel",
-      "value": 20675
+      "value": 25621
     },
     {
       "source": "Import",
       "target": "Petroleum ",
-      "value": 20675
+      "value": 25621
     },
     {
       "source": "Import",
       "target": "Natural Gas",
-      "value": 20675
+      "value": 25620
     },
     {
       "source": "Out of Stock",
       "target": "Wood/Coal/Waste",
-      "value": 2816
+      "value": 8592
     },
     {
       "source": "Out of Stock",
       "target": "Petroleum ",
-      "value": 2816
+      "value": 8591
     },
     {
       "source": "Hydropower",
       "target": "Hydro/Nuclear",
-      "value": 59199
+      "value": 63306
     },
     {
       "source": "Crude Oil",
       "target": "Refineries",
-      "value": 10338
+      "value": 12811
     },
     {
       "source": "Crude Oil",
       "target": "Into Stock",
-      "value": 10338
+      "value": 12810
     },
     {
       "source": "Wood/Coal/Waste",
       "target": "Export",
-      "value": 20673
+      "value": 24380
     },
     {
       "source": "Wood/Coal/Waste",
       "target": "Households",
-      "value": 20673
+      "value": 24380
     },
     {
       "source": "Wood/Coal/Waste",
       "target": "Industry",
-      "value": 20673
+      "value": 24380
     },
     {
       "source": "Wood/Coal/Waste",
       "target": "Thermal",
-      "value": 20672
+      "value": 24379
     },
     {
       "source": "Electricity",
       "target": "Export",
-      "value": 18858
+      "value": 22049
     },
     {
       "source": "Electricity",
       "target": "Households",
-      "value": 18858
+      "value": 22049
     },
     {
       "source": "Electricity",
       "target": "Services",
-      "value": 18858
+      "value": 22049
     },
     {
       "source": "Electricity",
       "target": "Industry",
-      "value": 18858
+      "value": 22048
     },
     {
       "source": "Hydro/Nuclear",
       "target": "Electricity",
-      "value": 39937
+      "value": 44464
     },
     {
       "source": "Hydro/Nuclear",
       "target": "District Heat",
-      "value": 39937
+      "value": 44463
     },
     {
       "source": "Production",
       "target": "Wood/Coal/Waste",
-      "value": 59199
+      "value": 63306
     },
     {
       "source": "Production",
       "target": "Hydropower",
-      "value": 59199
+      "value": 63306
     },
     {
       "source": "Refineries",
       "target": "Petroleum ",
-      "value": 10338
+      "value": 12811
     },
     {
       "source": "Nuclear Fuel",
       "target": "Hydro/Nuclear",
-      "value": 20675
+      "value": 25621
     },
     {
       "source": "Natural Gas",
       "target": "Thermal",
-      "value": 4135
+      "value": 5124
     },
     {
       "source": "Natural Gas",
       "target": "Households",
-      "value": 4135
+      "value": 5124
     },
     {
       "source": "Natural Gas",
       "target": "Services",
-      "value": 4135
+      "value": 5124
     },
     {
       "source": "Natural Gas",
       "target": "Industry",
-      "value": 4135
+      "value": 5124
     },
     {
       "source": "Natural Gas",
       "target": "Transport",
-      "value": 4135
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Thermal",
-      "value": 2417
+      "value": 5124
     },
     {
       "source": "Petroleum ",
       "target": "Export",
-      "value": 2417
+      "value": 6718
     },
     {
       "source": "Petroleum ",
       "target": "Non-energetic",
-      "value": 2417
+      "value": 6718
     },
     {
       "source": "Petroleum ",
       "target": "Households",
-      "value": 2417
+      "value": 6718
     },
     {
       "source": "Petroleum ",
       "target": "Transport",
-      "value": 2417
+      "value": 6718
     },
     {
       "source": "Petroleum ",
       "target": "Industry",
-      "value": 2416
+      "value": 6717
     },
     {
       "source": "Petroleum ",
       "target": "Services",
-      "value": 2416
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Export",
-      "value": 2417
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Non-energetic",
-      "value": 2417
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Households",
-      "value": 2417
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Transport",
-      "value": 2417
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Industry",
-      "value": 2416
-    },
-    {
-      "source": "Petroleum ",
-      "target": "Services",
-      "value": 2416
+      "value": 6717
     },
     {
       "source": "Petroleum ",
       "target": "Thermal",
-      "value": 2417
+      "value": 6717
     },
     {
       "source": "Thermal",
       "target": "District Heat",
-      "value": 14820
+      "value": 18110
     },
     {
       "source": "Thermal",
       "target": "Electricity",
-      "value": 14820
+      "value": 18110
     }
   ],
-  "info": [{"year": 1954}]
+  "info": [{"year": 1950}]
 }

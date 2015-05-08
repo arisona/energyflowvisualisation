@@ -14,7 +14,8 @@ public class DataGenerator {
     static Random r = new Random();
     static final int startYear = 1950;
     static final int years = 10;
-    static final String folder = "C:/wamp/www/energysysvis/data/";
+    static final String folder = "C:/xampp/htdocs/energysysvis/data/";
+    static Map<String,Node> sinks;
 
     public static void main(String[] args) {
 
@@ -23,22 +24,25 @@ public class DataGenerator {
         int prod = 100_000;
         int stock = 20_000;
 
-        int maxTotalValue = 0;
+        int maxSinkValue = 0;
 
         for (int i = 0; i < years; i++) {
             imp *= (r.nextFloat() + 0.5);
             prod *= (r.nextFloat() + 0.5);
             stock *= (r.nextFloat() + 0.5);
-            if (imp + prod + stock > maxTotalValue) maxTotalValue = imp + prod + stock;
-            generateData(imp, prod, stock, startYear + i);
+
+            int currMaxSinkValue = generateData(imp, prod, stock, startYear + i);
+            if (currMaxSinkValue > maxSinkValue) {
+                maxSinkValue = currMaxSinkValue;
+            }
             yearsAvailable.add(startYear + i);
         }
 
-        File maxValue = new File(folder + "maxTotalValue.json");
+        File maxValue = new File(folder + "maxSinkValue.json");
         try {
             JsonGenerator gen = Json.createGenerator(new FileOutputStream(maxValue));
             gen.writeStartObject()
-                    .write("maxTotalValue", maxTotalValue)
+                    .write("maxSinkValue", maxSinkValue)
             .writeEnd();
             gen.close();
         } catch (FileNotFoundException e) {
@@ -59,7 +63,7 @@ public class DataGenerator {
         }
     }
 
-    static void generateData(int imp, int prod, int stock, int year) {
+    static int generateData(int imp, int prod, int stock, int year) {
         Map<String,Node> allNodes = setUpGraph(imp, prod, stock);
         for (Node n : allNodes.values()) {
             for (Node t : n.targetNodes) {
@@ -81,7 +85,14 @@ public class DataGenerator {
             }
         }
 
+
         generateJson(calcedNodes, year);
+
+        int currMaxSinkValue = 0;
+        for (Node sink : sinks.values()) {
+            if (sink.value > currMaxSinkValue) currMaxSinkValue = sink.value;
+        }
+        return currMaxSinkValue;
     }
 
     static void generateJson(Map<String, Node> allNodes, int year) {
@@ -146,7 +157,7 @@ public class DataGenerator {
         origins.put("Out of Stock", new Node("Out of Stock", "origin", AttrType.imgUrl, "images/out_of_stock.png",
                 outOfStock));
 
-        Map<String, Node> sinks = new HashMap<>();
+        sinks = new HashMap<>();
         sinks.put("Export", new Node("Export", "sink", AttrType.imgUrl, "images/export.png", 0));
         sinks.put("Into Stock", new Node("Into Stock", "sink", AttrType.imgUrl, "images/into_stock.png", 0));
         sinks.put("Households", new Node("Households", "sink", AttrType.imgUrl, "images/households.png", 0));
