@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>first Example</title>
+    <script type="text/javascript" src="d3.min.js"></script>
+    <script type="text/javascript" src="energytool.js"></script>
+    <script type="text/javascript" src="energytool.sankey.js"></script>
+    <script type="text/javascript" src="energytool.timeslider.js"></script>
+    <script type="text/javascript" src="d3.slider.js"></script>
+    <script type="text/javascript" src="energytool.data-requests.js"></script>
+    <script type="text/javascript" src="jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="jquery.gridster.min.js"></script>
+    <style>
+        @import url(styles/d3.slider.css);
+        @import url(styles/jquery.gridster.min.css);
+    </style>
+</head>
+<body style="align-content: center">
+
+
+<script type="text/javascript" id="code">
+
+    var grid = EnergyTool.grid();
+    var parameters = {};
+    parameters["currentYear"] = 1951;
+    grid.addScenario(parameters);
+    grid.create();
+//    grid.scenarios()[0].copyScenario();
+//    grid.scenarios()[1].copyScenario();
+//    grid.scenarios()[2].copyScenario();
+
+</script>
+</body>
+</html>
+
