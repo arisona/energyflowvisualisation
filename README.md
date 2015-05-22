@@ -3,7 +3,7 @@ A tool for visualization of energy flow for separable energy systems like countr
 
 ## Repository ##
 The repository contains:
-* "EnergySystemVisualization": a WebStorm project with the frontend code
+- "EnergySystemVisualization": a WebStorm project with the frontend code
 * "EnergyDataGenerator": an Intellij project for generating fake energy data which was used for faking the backend
 * "FakeBackend": a php index file and some generated data for running on a server which the frontend can call for getting the (currently fake) data
 
