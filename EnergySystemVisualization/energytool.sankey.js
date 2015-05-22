@@ -28,7 +28,7 @@
  */
 
 /**
- *
+ * Extending the d3 selection object with a function that moves the dom elements of a selection to the front.
  */
 d3.selection.prototype.moveToFront = function() {
     return this.each(function(){

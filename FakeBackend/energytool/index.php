@@ -11,8 +11,8 @@ switch($query) {
 		echo file_get_contents($folder.'yearsAvailable.json');
 		break;
 
-	case "maxTotalValue":
-		echo file_get_contents($folder.'maxTotalValue.json');
+	case "maxSinkValue":
+		echo file_get_contents($folder.'maxSinkValue.json');
 		break;
 
 	default:

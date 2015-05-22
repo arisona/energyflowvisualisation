@@ -27,6 +27,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* The following software uses the javascript frameworks below, all of which are
+ * distributed under the MIT or BSD license:
+ * - d3.js, data-oriented javascript framework, http://d3js.org/
+ * - Sankey plugin for d3.js (modified), http://bost.ocks.org/mike/sankey/, by Mike Bostock, which is based on the
+ *   initial version http://tamc.github.io/Sankey/ by Thomas Counsell.
+ * - d3.slider.js, a slider control using d3.js (modified), https://github.com/sujeetsr/d3.slider by Sujeet Sreenivasan
+ * - jquery.gridster.js, a jQuery plugin for building grid layouts, http://gridster.net/, by Ducksboard
+ * - jquery.js, http://jquery.com/
+ * - bootstrap, framework for developing responsive, mobile first projects on the web, http://getbootstrap.com/
+ */
+
 var EnergyTool = EnergyTool || {version: "0.1"};
 
 
