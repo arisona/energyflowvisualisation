@@ -6,9 +6,9 @@ The repository contains:
 
 * EnergySystemVisualization: a WebStorm project with the frontend code.
 
-* EnergyDataGenerator: an Intellij project for generating fake energy data which was used for faking the backend.
-
 * FakeBackend: a php index file and some generated data for running on a server which the frontend can call for getting the (currently fake) data.
+
+* EnergyDataGenerator: the contents of this Intellij project are only experimental and where used once-only for generating fake energy data providing a data pool for development.
 
 ## Set up ##
 For running the tool start a local server on port 8888 and place the folder "energytool" from the folder "FakeBackend" into your root server directory.
