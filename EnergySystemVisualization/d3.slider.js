@@ -20,10 +20,10 @@ d3.slider = function module() {
         ratios = {
             margin : 0.1,
             width: 0.9,
-            rectHeight: 0.999, // percent of the outer dragger size
+            rectHeight: 1, // percent of the outer dragger size
             tickSize: 0.1,
             draggerInnerSize: 0.5, // percent of the outer dragger
-            draggerOuterSize: 0.2, // percent of the containing div height
+            draggerOuterSize: 0.16, // percent of the containing div height
             textSize: 0.02, // percent of the containing div height
             marginSide: 0.05, // percent of the containting div width
         },
@@ -215,7 +215,7 @@ d3.slider = function module() {
         draggerInnerSize = draggerOuterSize * ratios.draggerInnerSize;
         rectHeight = ratios.rectHeight * draggerOuterSize;
         margin.top = margin.bottom = draggerOuterSize;
-        margin. left = margin.right = ratios.marginSide * size[0];
+        margin.left = margin.right = ratios.marginSide * size[0];
         return slider;
     };
 

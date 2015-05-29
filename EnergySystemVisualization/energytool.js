@@ -40,13 +40,12 @@
 
 var EnergyTool = EnergyTool || {version: "0.1"};
 
-
 /**
- * The grid in which all scenarios are held. Constructs a grid when called. Needs a div element with class attribute
- * @returns {Object} instance of the grid
+ * Sets up and returns the grid object. The grid is the container of scenarios. It is used to add scenarios to it, to
+ * create and show it in the DOM, with all its contents, or to clear it.
+ * @returns {Object} the grid object
  */
 EnergyTool.grid = function() {
-    var SLIDER_HEIGHT = 50;
     var MAX_HEADER_HEIGHT = 20;
     var MAX_SCENARIO_MARGIN = 40;
     var RATIOS = {
@@ -102,9 +101,8 @@ EnergyTool.grid = function() {
      */
     var gridster;
 
-    grid.scenarios = function() {
-        return scenarios;
-    };
+    // XXX textSize should be adjustable.
+    var textSize = 12;
 
     grid.clear = function() {
         gridster = null;
@@ -143,114 +141,144 @@ EnergyTool.grid = function() {
             .data('gridster')
             .disable();
 
-        for (var i = 0; i < nrScenarios; i++) {
-            var widget = addWidget(i)[0];
-            scenarios[i].widgetRoot(widget);
-            scenarios[i].createSankey(diagramWidth, diagramHeight, textSize);
-            scenarios[i].createTimeSlider(sliderWidth, sliderHeight, textSize);
+        getMaxSinkValue(callback);
+
+        function callback(maxSinkValue) {
+            for (var i = 0; i < nrScenarios; i++) {
+                var widget = addWidget(i)[0];
+                scenarios[i].widgetDOM(widget);
+                scenarios[i].createSankey(diagramWidth, diagramHeight, textSize, maxSinkValue);
+                scenarios[i].createTimeSlider(sliderWidth, sliderHeight, textSize);
+            }
         }
 
         function addWidget(i) {
             var widgetDiv = $("<div id=" + i + "/>").appendTo(".gridster");
-            console.log(widgetDiv);
             var widget = gridster.add_widget(widgetDiv);
             widgetDiv = d3.select(widgetDiv[0]);
             widgetDiv.append("svg").attr("class", "sankey");
             widgetDiv.append("div").attr("class", "timeslider");
+            widgetDiv.append("button")
+                .attr("type", "button")
+                .on("click", function() {
+                    grid.copyScenario(i);
+                })
+                .text("Copy");
+            widgetDiv.append("button")
+                .attr("type", "button")
+                .on("click", function() {
+                    grid.removeScenario(i);
+                })
+                .text("Remove");
             return widget;
         }
         return grid;
+
+        /**
+         * Calculate the appropriate layout for the current number of scenarios and the given screen size.
+         */
+        function calculateSizes() {
+            if (nrScenarios <= 1) {
+                scenarioMargin = MAX_SCENARIO_MARGIN;
+                nrCols = 1;
+                scenarioWidth = window.innerWidth - scenarioMargin*2;
+                if (scenarioWidth/RATIOS.ASPECT > window.innerHeight) {
+                    scenarioHeight = window.innerHeight - scenarioMargin*2;
+                    scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin*2;
+                } else {
+                    scenarioHeight = scenarioWidth/RATIOS.ASPECT - scenarioMargin*2;
+                }
+                headerHeight = MAX_HEADER_HEIGHT;
+            } else if (nrScenarios == 2) {
+                scenarioMargin = MAX_SCENARIO_MARGIN / 2;
+                if (window.innerWidth/window.innerHeight > RATIOS.ASPECT) {
+                    // scnecarios will be in one row
+                    nrCols = 2;
+                    scenarioWidth = window.innerWidth/2 - scenarioMargin*3;
+                    if (scenarioWidth/RATIOS.ASPECT > window.innerHeight) {
+                        scenarioHeight = window.innerHeight - scenarioMargin*2;
+                        scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin*3;
+                    } else {
+                        scenarioHeight = scenarioWidth/RATIOS.ASPECT - scenarioMargin*2;
+                    }
+                } else {
+                    // scenarios will be in one column
+                    nrCols = 1;
+                    scenarioWidth = window.innerWidth - scenarioMargin * 2;
+                    if (scenarioWidth / RATIOS.ASPECT * 2 > window.innerHeight) {
+                        scenarioHeight = window.innerHeight / 2 - scenarioMargin * 3;
+                        scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin * 2;
+                    } else {
+                        scenarioHeight = scenarioWidth / RATIOS.ASPECT - scenarioMargin * 3;
+                    }
+                }
+                headerHeight = MAX_HEADER_HEIGHT / 2;
+            } else if (nrScenarios > 2) {
+                scenarioMargin = MAX_SCENARIO_MARGIN / 4;
+                nrCols = 2;
+                scenarioWidth = window.innerWidth/2 - scenarioMargin*3;
+                if (scenarioWidth/RATIOS.ASPECT*2 > window.innerHeight) {
+                    scenarioHeight = window.innerHeight/2 - scenarioMargin*3;
+                    scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin*3;
+                } else {
+                    scenarioHeight = scenarioWidth/RATIOS.ASPECT - scenarioMargin*3;
+                }
+                headerHeight = MAX_HEADER_HEIGHT / 4;
+            }
+            diagramWidth = scenarioWidth;
+            diagramHeight = scenarioHeight * RATIOS.DIAGRAMHEIGHT;
+            sliderWidth = scenarioWidth;
+            sliderHeight = scenarioHeight * RATIOS.SLIDERHEIGHT;
+            //textSize = scenarioHeight * RATIOS.TEXTSIZE;
+        }
     };
 
     /**
      * Creates and adds a scenario to the grids list of scenarios. Doesn't create html elements for it.
      */
-    grid.addScenario = function(parameters, yearsAvailable) {
+    grid.addScenario = function(parameters) {
         var scenario = EnergyTool.scenario();
-        scenario.grid(grid);
         scenario.parameters(parameters);
         scenario.id(nrScenarios++);
-        scenario.yearsAvailable(yearsAvailable);
-
         scenarios[scenario.id()] = scenario;
         return grid;
     };
 
-     /**
-     * Calculate the appropriate layout for the current number of scenarios and the given screen size.
-     */
-    function calculateSizes() {
-        if (nrScenarios <= 1) {
-            scenarioMargin = MAX_SCENARIO_MARGIN;
-            nrCols = 1;
-            scenarioWidth = window.innerWidth - scenarioMargin*2;
-            if (scenarioWidth/RATIOS.ASPECT > window.innerHeight) {
-                scenarioHeight = window.innerHeight - scenarioMargin*2;
-                scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin*2;
-            } else {
-                scenarioHeight = scenarioWidth/RATIOS.ASPECT - scenarioMargin*2;
-            }
-            headerHeight = MAX_HEADER_HEIGHT;
-        } else if (nrScenarios == 2) {
-            scenarioMargin = MAX_SCENARIO_MARGIN / 2;
-            if (window.innerWidth/window.innerHeight > RATIOS.ASPECT) {
-                // scnecarios will be in one row
-                nrCols = 2;
-                scenarioWidth = window.innerWidth/2 - scenarioMargin*3;
-                if (scenarioWidth/RATIOS.ASPECT > window.innerHeight) {
-                    scenarioHeight = window.innerHeight - scenarioMargin*2;
-                    scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin*3;
-                } else {
-                    scenarioHeight = scenarioWidth/RATIOS.ASPECT - scenarioMargin*2;
-                }
-            } else {
-                // scenarios will be in one column
-                nrCols = 1;
-                scenarioWidth = window.innerWidth - scenarioMargin * 2;
-                if (scenarioWidth / RATIOS.ASPECT * 2 > window.innerHeight) {
-                    scenarioHeight = window.innerHeight / 2 - scenarioMargin * 3;
-                    scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin * 2;
-                } else {
-                    scenarioHeight = scenarioWidth / RATIOS.ASPECT - scenarioMargin * 3;
-                }
-            }
-            headerHeight = MAX_HEADER_HEIGHT / 2;
-        } else if (nrScenarios > 2) {
-            scenarioMargin = MAX_SCENARIO_MARGIN / 4;
-            nrCols = 2;
-            scenarioWidth = window.innerWidth/2 - scenarioMargin*3;
-            if (scenarioWidth/RATIOS.ASPECT*2 > window.innerHeight) {
-                scenarioHeight = window.innerHeight/2 - scenarioMargin*3;
-                scenarioWidth = scenarioHeight * RATIOS.ASPECT - scenarioMargin*3;
-            } else {
-                scenarioHeight = scenarioWidth/RATIOS.ASPECT - scenarioMargin*3;
-            }
-            headerHeight = MAX_HEADER_HEIGHT / 4;
+    grid.copyScenario = function(id) {
+        var params = scenarios[id].parameters();
+        var paramsCopy = {};
+        for (var attr in params) {
+            if (params.hasOwnProperty(attr)) paramsCopy[attr] = params[attr];
         }
-        diagramWidth = scenarioWidth;
-        diagramHeight = scenarioHeight * RATIOS.DIAGRAMHEIGHT;
-        sliderWidth = scenarioWidth;
-        sliderHeight = scenarioHeight * RATIOS.SLIDERHEIGHT;
-         textSize = scenarioHeight * RATIOS.TEXTSIZE;
-    }
+        grid.addScenario(paramsCopy);
+        grid.clear();
+        grid.create();
+        return grid;
+    };
+
+    grid.removeScenario = function(id) {
+        scenarios.splice(id, 1);
+        nrScenarios--;
+        grid.clear();
+        grid.create();
+        return grid;
+    };
 
     return grid;
 };
 
 EnergyTool.scenario = function () {
     var scenario = {},
-        yearsAvailable,
         parameters = {},
         sankey,
         timeslider,
-        widgetRoot,
-        grid,
+        widgetDOM,
         id;
 
     /* GETTERS AND SETTERS */
-    scenario.widgetRoot = function (_) {
-        if (!arguments.length) return widgetRoot;
-        widgetRoot = _;
+    scenario.widgetDOM = function (_) {
+        if (!arguments.length) return widgetDOM;
+        widgetDOM = _;
         return scenario;
     };
 
@@ -266,21 +294,9 @@ EnergyTool.scenario = function () {
         return scenario;
     };
 
-    scenario.grid = function (_) {
-        if (!arguments.length) return grid;
-        grid = _;
-        return scenario;
-    };
-
     scenario.parameters = function (_) {
         if (!arguments.length) return parameters;
         parameters = _;
-        return scenario;
-    };
-
-    scenario.yearsAvailable = function(_) {
-        if (!arguments.length) return yearsAvailable;
-        yearsAvailable = _;
         return scenario;
     };
 
@@ -290,14 +306,17 @@ EnergyTool.scenario = function () {
      * @param diagramWidth
      * @param diagramHeight
      * @param textSize
-     * @returns {Object} the sankey diagram object
+     * @returns {Object} this scenario
      */
-    scenario.createSankey = function (diagramWidth, diagramHeight, textSize) {
-        sankey = EnergyTool.sankey()
-            .size([diagramWidth, diagramHeight])
-            .textSize(textSize)
-            .svg(d3.select(widgetRoot).select(".sankey"))
-            .create(parameters);
+    scenario.createSankey = function (diagramWidth, diagramHeight, textSize, maxSinkValue) {
+            sankey = EnergyTool.sankey()
+                .size([diagramWidth, diagramHeight])
+                .textSize(textSize)
+                .svg(d3.select(widgetDOM).select(".sankey"))
+                .maxSinkValue(maxSinkValue);
+
+            loadEnergyData(parameters.currentYear, sankey.create);
+
         return scenario;
     };
 
@@ -307,26 +326,25 @@ EnergyTool.scenario = function () {
      * @param sliderWidth
      * @param sliderHeight
      * @param textSize
-     * @returns {{}}
+     * @returns {Object} this scenario
      */
     scenario.createTimeSlider = function(sliderWidth, sliderHeight, textSize) {
         timeslider = EnergyTool.timeslider()
             .size([sliderWidth, sliderHeight])
             .textSize(textSize)
-            .sliderDiv(d3.select(widgetRoot).select(".timeslider"))
-            .scenario(this)
+            .sliderDiv(d3.select(widgetDOM).select(".timeslider"))
+            .scenario(scenario)
             .create();
         return scenario;
     };
 
-    scenario.copyScenario = function() {
-        grid.clear();
-        grid.addScenario(parameters, yearsAvailable);
-        grid.create();
-        return scenario;
-    };
 
-    // Server-side functionality for this is not working
+    /**
+     * EXPERIMENTAL: SERVER SIDE FUNCTIONALITY NOT IMPLEMENTED
+     * Sends the sankey diagrams svg element to the server for conversion to a PNG.
+     * The server should convert and respond with the PNG for download.
+     * @returns {Object} this scenario
+     */
     scenario.exportSankeyAsPNG = function() {
         var serverUrl = "http://localhost:8888/energysysvis/exportSVG.php";
         var iframeId = "iframeId";     // Change this to fit your code
@@ -335,7 +353,7 @@ EnergyTool.scenario = function () {
             .appendTo(document.body)
             .hide();
         // Create input
-        var input = '<input type="hidden" name="data" value="' + encodeURIComponent($(widgetRoot).find("svg").prop('outerHTML')) + '" />';
+        var input = '<input type="hidden" name="data" value="' + encodeURIComponent($(widgetDOM).find(".sankey").prop('outerHTML')) + '" />';
         // Create form to send request
         $('<form action="' + serverUrl + '" method="' + 'POST' + '" target="' + iframeId + '">' + input + '</form>')
             .appendTo(document.body)

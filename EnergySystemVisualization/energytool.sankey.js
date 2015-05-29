@@ -51,23 +51,26 @@ var NODETYPES = {
 };
 
 /**
- * Opacity values used on the nodes and links html elements.
+ * Sets up and returns the sankey object. The sankey needs
+ * @returns {Object} the sankey object
  */
-var OPACITY = {
-    NODE_DEFAULT: 1,
-    NODE_FADED: 0.2,
-    LINK_DEFAULT: 0.4,
-    LINK_FADED: 0.05,
-    LINK_HIGHLIGHT: 0.9
-};
-
-/**
- * Transition duration of the fading and poping back up of the nodes and links when hovering over a node.
- */
-var TRANSITION_DURATION = 400;
-
-
 EnergyTool.sankey = function () {
+    /**
+     * Opacity values used on the nodes and links html elements.
+     */
+    var OPACITY = {
+        NODE_DEFAULT: 1,
+        NODE_FADED: 0.2,
+        LINK_DEFAULT: 0.4,
+        LINK_FADED: 0.05,
+        LINK_HIGHLIGHT: 0.9
+    };
+
+    /**
+     * Transition duration of the fading and poping back up of the nodes and links when hovering over a node.
+     */
+    var TRANSITION_DURATION = 400;
+
     var sankey = {},
         size,
         nodeWidth,
@@ -85,6 +88,8 @@ EnergyTool.sankey = function () {
         linkSelection,
         /* d3 selection of all node elements */
         nodeSelection;
+
+    // Setters and Getters
 
     sankey.svg = function (_) {
         if (!arguments.length) return svg;
@@ -107,7 +112,9 @@ EnergyTool.sankey = function () {
     sankey.nodes = function (newNodes) {
         if (!arguments.length) return nodes;
         newNodes.forEach(function (node) {
-            initializeNode(node);
+            node.sourceLinks = [];
+            node.targetLinks = [];
+            node.connectedNodes = [];
         });
         sinkNodes = [];
         newNodes.forEach(function(node) {
@@ -136,102 +143,89 @@ EnergyTool.sankey = function () {
     sankey.textSize = function(_) {
         if (!arguments.length) return textSize;
         textSize = _;
+        // XXX Node padding and text size dependency not final.
         nodePadding = textSize + 4;
+        return sankey;
+    };
+
+    sankey.maxSinkValue = function(_) {
+        if (!arguments.length) return maxSinkValue;
+        maxSinkValue = _;
         return sankey;
     };
 
     var path = calcPath();
 
-    var pathtext = function (d) {
-        var ys = d.source.y + d.sy + d.dy / 2;
-        var yt = d.target.y + d.ty + d.dy / 2;
-        return (ys + yt) / 2;
-    };
-
-    sankey.create = function (parameters) {
-        svg
-            .attr("width", size[0])
+    /**
+     *
+     * @param graph
+     * @returns {{}}
+     */
+    sankey.create = function (graph) {
+        svg.attr("width", size[0])
             .attr("height", size[1]);
 
-        if (parameters["currentYear"]) {
-            loadEnergyData(parameters["currentYear"], createDiagram);
-        } else {
-            getYearsAvailable(createDiagramFromYears);
-        }
-        // callback function that receives the available years form the server and reatrieves the energy data for that year.
-        function createDiagramFromYears(years) {
-            loadEnergyData(years[0], createDiagram);
-        }
+        sankey.nodes(graph["nodes"]);
+        sankey.links(graph["links"]);
+        layout(300);
+        computeConnectedNodes();
+        createSVGPatterns();
 
-        function createDiagram(graph) {
-            getMaxSinkValue(receiveMaxSinkValue);
-            // callback function receives maximal sink value from server.
-            function receiveMaxSinkValue(value) {
-                maxSinkValue = value;
-                sankey.nodes(graph["nodes"]);
-                sankey.links(graph["links"]);
-                sankey.layout(300);
-                computeConnectedNodes();
-                createSVGPatterns();
+        /* create links */
+        linkSelection = svg
+            .selectAll(".link")
+            .data(sankey.links());
 
-                /* create links */
-                linkSelection = svg
-                    .selectAll(".link")
-                    .data(sankey.links());
+        createNewLinks(linkSelection.enter());
 
-                createNewLinks(linkSelection.enter());
+        /* create nodes */
+        nodeSelection = svg
+            .append("g")
+            .attr("class", "nodes")
+            .selectAll(".node")
+            .data(sankey.nodes().values());
 
-                /* create nodes */
-                nodeSelection = svg
-                    .append("g")
-                    .attr("class", "nodes")
-                    .selectAll(".node")
-                    .data(sankey.nodes().values());
+        createNewNodes(nodeSelection.enter());
 
-                createNewNodes(nodeSelection.enter());
+        function createSVGPatterns() {
+            // create patterns in the chart's defs element.
+            var patterns = svg
+                .append("defs").selectAll("pattern")
+                .data(sankey.nodes().values()).enter()
+                .append("pattern")
+                .filter(function (d) {
+                    return d.type != NODETYPES.ENERGYTYPE;
+                })
+                .attr("id", function (d) {
+                    return d.name.replace(/\s/g, "-");
+                })
+                .attr("patternUnits", 'objectBoundingBox')
+                .attr("width", 1)
+                .attr("height", 1)
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .attr("viewBox", "0 0 1 1");
 
-                function createSVGPatterns() {
-                    // create patterns in the chart's defs element.
-                    var patterns = svg
-                        .append("defs").selectAll("pattern")
-                        .data(sankey.nodes().values()).enter()
-                        .append("pattern")
-                        .filter(function (d) {
-                            return d.type != NODETYPES.ENERGYTYPE;
-                        })
-                        .attr("id", function (d) {
-                            return d.name.replace(/\s/g, "-");
-                        })
-                        .attr("patternUnits", 'objectBoundingBox')
-                        .attr("width", 1)
-                        .attr("height", 1)
-                        .attr("preserveAspectRatio", "xMidYMid meet")
-                        .attr("viewBox", "0 0 1 1");
-
-                    patterns.append("rect")
-                        .attr("x", "-50%")
-                        .attr("y", "-50%")
-                        .attr("width", "100%")
-                        .attr("height", "100%")
-                        .attr("fill", "white");
-                    patterns.append("image")
-                        .attr("xlink:href", function (d) {
-                            return d.imgUrl;
-                        })
-                        .attr("width", 1)
-                        .attr("height", 1)
-                        .attr("fill", "white");
-
-                }
-            }
+            patterns.append("rect")
+                .attr("x", "-50%")
+                .attr("y", "-50%")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("fill", "white");
+            patterns.append("image")
+                .attr("xlink:href", function (d) {
+                    return d.imgUrl;
+                })
+                .attr("width", 1)
+                .attr("height", 1)
+                .attr("fill", "white");
         }
         return sankey;
     };
 
-    sankey.updateDiagram = function (graph) {
+    sankey.update = function (graph) {
         sankey.links(graph["links"]);
         sankey.nodes(graph["nodes"]);
-        sankey.layout(300);
+        layout(300);
         computeConnectedNodes();
 
         /* update links */
@@ -271,7 +265,7 @@ EnergyTool.sankey = function () {
         return sankey;
     };
 
-    sankey.layout = function (iterations) {
+    function layout(iterations) {
         sinkNodeSize = (size[1] - ((sinkNodes.length+1) * nodePadding)) / sinkNodes.length;
         computeNodeLinks();
         computeNodeValues();
@@ -281,7 +275,7 @@ EnergyTool.sankey = function () {
         return sankey;
     };
 
-    sankey.relayout = function (iterations) {
+    function relayout (iterations) {
         if (arguments.length) {
             computeNodeBreadths();
             computeNodeDepths(iterations);
@@ -538,24 +532,6 @@ EnergyTool.sankey = function () {
         }
     }
 
-    //function computeExportNodeBreadths() {
-    //    exportLinks.forEach(function(link) {
-    //        //var newNode = jQuery.extend(true, {}, exportNode);
-    //        var newNode = Object.create(exportNode);
-    //        exportNode.dy = 10;
-    //        console.log(exportNode);
-    //        //var newNode = JSON.parse( JSON.stringify(exportNode) );
-    //        newNode.x = link.source.x + 50;
-    //        newNode.y = size[1] - nodePadding;
-    //        newNode.dy = 10;
-    //        newNode.name = "Export" + link.target.name;
-    //        nodes.set(newNode.name, newNode);
-    //        // create a node
-    //        // compute it's position
-    //        // compute the links height.
-    //    });
-    //}
-
     /* Input for this method should be the enter set of a data join */
     function createNewLinks(enterSelection) {
 
@@ -600,7 +576,6 @@ EnergyTool.sankey = function () {
             .attr("visibility","hidden");
 
         adjustLinkTexts(links);
-
     }
 
     /* Input for this method should be the enter set of a data join */
@@ -645,7 +620,7 @@ EnergyTool.sankey = function () {
             d.x = Math.max(0, Math.min(size[0] - d.dx, d3.event.x));
             d.y = Math.max(0, Math.min(size[1] - d.dy, d3.event.y));
             d3.select(this).select("rect").attr("transform", "translate(" + d.x + "," + d.y + ")");
-            sankey.relayout();
+            relayout();
             linkSelection.select("path").attr("d", path);
             adjustLinkTexts(linkSelection);
             adjustNodeTexts(d3.select(this));
@@ -763,15 +738,6 @@ EnergyTool.sankey = function () {
 
     function connected(n1, n2) {
         return n1.connectedNodes.indexOf(n2) >= 0;
-    }
-
-    /**
-     * Set up the properties of the node
-     */
-    function initializeNode(node) {
-        node.sourceLinks = [];
-        node.targetLinks = [];
-        node.connectedNodes = [];
     }
 
     function calcPath() {

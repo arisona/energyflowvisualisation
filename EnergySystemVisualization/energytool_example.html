@@ -15,6 +15,10 @@
     <style>
         @import url(styles/d3.slider.css);
         @import url(styles/jquery.gridster.min.css);
+
+        body {
+            font-family: Roboto, sans-serif;
+        }
     </style>
 </head>
 <body style="align-content: center">
@@ -24,12 +28,12 @@
 
     var grid = EnergyTool.grid();
     var parameters = {};
-    parameters["currentYear"] = 1951;
+    parameters.currentYear = 1951;
     grid.addScenario(parameters);
+    var parameters2 = {};
+    parameters2.currentYear = 1952;
+    grid.addScenario(parameters2);
     grid.create();
-//    grid.scenarios()[0].copyScenario();
-//    grid.scenarios()[1].copyScenario();
-//    grid.scenarios()[2].copyScenario();
 
 </script>
 </body>

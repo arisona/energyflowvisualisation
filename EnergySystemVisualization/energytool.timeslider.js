@@ -32,7 +32,6 @@ EnergyTool.timeslider = function() {
     var size = [];
     var handleHeight;
     var sliderBarHeight;
-    var yearsAvailable;
     var sliderDiv;
     var scenario;
     var textSize;
@@ -64,12 +63,7 @@ EnergyTool.timeslider = function() {
     };
 
     timeslider.create = function () {
-        if (yearsAvailable) {
-            createTimeSlider(yearsAvailable);
-        } else {
-            getYearsAvailable(createTimeSlider);
-        }
-
+        getYearsAvailable(createTimeSlider);
         function createTimeSlider(years) {
 
             var slider = d3.slider()
@@ -79,14 +73,14 @@ EnergyTool.timeslider = function() {
                 .ticks(10)
                 .tickFormat(d3.format())
                 .stepValues(years)
-                .value(parameters["currentYear"])
+                .value(scenario.parameters().currentYear)
                 .callback(callback);
 
             sliderDiv.call(slider);
 
             function callback(slider) {
-                loadEnergyData(slider.value(), scenario.sankey().updateDiagram);
-                scenario.parameters["currentYear"] = slider.value();
+                loadEnergyData(slider.value(), scenario.sankey().update);
+                scenario.parameters().currentYear = slider.value();
             }
         }
         return timeslider;
