@@ -27,6 +27,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Sets up and returns the grid object. The grid is the container of scenarios. It is used to add scenarios to it, to
+ * create and show it in the DOM, with all its contents, or to clear it.
+ * @returns {Object} the grid object
+ */
+
+/**
+ * Sets up and returns the timeslider object. The timeslider needs to be given a width and height a div where it's DOM
+ * elements can live in, the text size for the tick text and the scenario which created this timeslider. Offers a create
+ * method with which it's layout is calculated and it's DOM elements are created.
+ * @returns {Object} the timeslider
+ */
 EnergyTool.timeslider = function() {
     var timeslider = {};
     var size = [];
@@ -63,6 +75,7 @@ EnergyTool.timeslider = function() {
     };
 
     timeslider.create = function () {
+        // First needs to get the years that are available (for which there is energy data) from the backend.
         getYearsAvailable(createTimeSlider);
         function createTimeSlider(years) {
 
@@ -79,6 +92,8 @@ EnergyTool.timeslider = function() {
             sliderDiv.call(slider);
 
             function callback(slider) {
+                // Sets the update method of the containing scenario's sankey as the callback function, when loading
+                // new energy data on changing the slider position.
                 loadEnergyData(slider.value(), scenario.sankey().update);
                 scenario.parameters().currentYear = slider.value();
             }

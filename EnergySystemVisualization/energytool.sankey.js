@@ -36,25 +36,25 @@ d3.selection.prototype.moveToFront = function() {
     });
 };
 
-/**
- * The possible node types.
- * ORIGIN: the nodes that have only target links.
- * ENERGYTYPE: the nodes that represent an energy type.
- * PROCESS: the nodes that represent stages in which the energytypes are processed.
- * SINK: the nodes that have only source links.
- */
-var NODETYPES = {
-    ORIGIN: "origin",
-    ENERGYTYPE: "energytype",
-    PROCESS: "process",
-    SINK: "sink"
-};
 
 /**
- * Sets up and returns the sankey object. The sankey needs
+ * Sets up and returns the sankey object. Before the sankey can be used/created it needs to be given a width and a
+ * height for the layout, a svg element where it's DOM elements can live in, a maximum sink value (for calculating the
+ * scaling of nodes and links) and a text size. The sankey can be created and update and will handle the layouting and
+ * drawing of it's DOM elements.
  * @returns {Object} the sankey object
  */
 EnergyTool.sankey = function () {
+    /**
+     * The possible node types.
+     */
+    var NODETYPES = {
+        ORIGIN: "origin",
+        ENERGYTYPE: "energytype",
+        PROCESS: "process",
+        SINK: "sink"
+    };
+
     /**
      * Opacity values used on the nodes and links html elements.
      */
@@ -64,6 +64,10 @@ EnergyTool.sankey = function () {
         LINK_DEFAULT: 0.4,
         LINK_FADED: 0.05,
         LINK_HIGHLIGHT: 0.9
+    };
+
+    var RATIOS = {
+        NODEWIDTH : 0.02 // node width depending on the width of the diagram (size[0])
     };
 
     /**
@@ -80,17 +84,16 @@ EnergyTool.sankey = function () {
         textSize,
         nodes = [],
         links = [],
-        /* list of the sink nodes */
+        // list of the sink nodes
         sinkNodes,
-        /* d3 selection of the svg element in which this sankey is drawn. */
+        // d3 selection of the svg element in which this sankey is drawn
         svg,
-        /* d3 selection of all link elements */
+        // d3 selection of all link elements
         linkSelection,
-        /* d3 selection of all node elements */
+        // d3 selection of all node elements
         nodeSelection;
 
-    // Setters and Getters
-
+    // SETTERS AND GETTERS
     sankey.svg = function (_) {
         if (!arguments.length) return svg;
         svg = _;
@@ -109,6 +112,12 @@ EnergyTool.sankey = function () {
         return sankey;
     };
 
+    /**
+     * Sets this sankey's nodes to the given nodes and initializes their properties. Creates the list of sink nodes
+     * that are found in the given nodes.
+     * @param newNodes the nodes
+     * @returns {Object} this sankey
+     */
     sankey.nodes = function (newNodes) {
         if (!arguments.length) return nodes;
         newNodes.forEach(function (node) {
@@ -132,18 +141,28 @@ EnergyTool.sankey = function () {
         return sankey;
     };
 
+    /**
+     * Sets the sizes (width and height) to the provided ones. Calculates the width of all nodes from the
+     * @param _ array containing width and height
+     * @returns {Object} this sankey
+     */
     sankey.size = function (_) {
         if (!arguments.length) return size;
         size = _;
-        // XXX Calculate the node width, node padding
-        nodeWidth = 0.02*size[0];
+        nodeWidth = RATIOS.NODEWIDTH * size[0];
         return sankey;
     };
 
+    /**
+     * ATTENTION: The text size provided here is not used on the texts of sankey at the moment. The size in the global
+     * styling rule set by the grid is used. But the size is needed to calculate the correct node padding.
+     * Sets the text size used in this sankey. Sets the necessary node padding dependent the text size.
+     * @param _ array containing width and height
+     * @returns {Object} this sankey
+     */
     sankey.textSize = function(_) {
         if (!arguments.length) return textSize;
         textSize = _;
-        // XXX Node padding and text size dependency not final.
         nodePadding = textSize + 4;
         return sankey;
     };
@@ -157,9 +176,10 @@ EnergyTool.sankey = function () {
     var path = calcPath();
 
     /**
-     *
-     * @param graph
-     * @returns {{}}
+     * Assigns the nodes and links from the given graph to this sankey, calculates the layout, sets up and draws
+     * the DOM elements for this sankey.
+     * @param graph the energy data as JSON. For the format of the data see separate code documentation.
+     * @returns {Object} this sankey
      */
     sankey.create = function (graph) {
         svg.attr("width", size[0])
@@ -213,7 +233,7 @@ EnergyTool.sankey = function () {
                 .attr("fill", "white");
             patterns.append("image")
                 .attr("xlink:href", function (d) {
-                    return d.imgUrl;
+                    return serverUrl + d.imgUrl;
                 })
                 .attr("width", 1)
                 .attr("height", 1)
@@ -222,6 +242,12 @@ EnergyTool.sankey = function () {
         return sankey;
     };
 
+    /**
+     * Updates the already existing data of this sankey with the newly provided data, recalculates the layout and
+     * transitions the DOM elements to the new layout.
+     * @param graph the energy data as JSON. For the format of the data see separate code documentation.
+     * @returns {Object} this sankey
+     */
     sankey.update = function (graph) {
         sankey.links(graph["links"]);
         sankey.nodes(graph["nodes"]);
@@ -532,12 +558,16 @@ EnergyTool.sankey = function () {
         }
     }
 
-    /* Input for this method should be the enter set of a data join */
+    /**
+     * Creates new link DOM elements for all the data in the given enter selection.
+     * @param enterSelection the enter set of a data join from link data
+     */
     function createNewLinks(enterSelection) {
 
         var links = enterSelection.append("g")
             .attr("class", "link")
             .on("mouseenter", function (d) {
+                restoreLinks();
                 d3.select(this).selectAll("text")
                     .attr("visibility", "visible");
                 d3.select(this).select("path").transition().duration(0)
@@ -545,6 +575,7 @@ EnergyTool.sankey = function () {
                 d3.select(this).moveToFront();
             })
             .on("mouseleave", function (d) {
+                restoreLinks();
                 d3.select(this).selectAll("text")
                     .attr("visibility", "hidden");
                 d3.select(this).select("path")
@@ -576,9 +607,18 @@ EnergyTool.sankey = function () {
             .attr("visibility","hidden");
 
         adjustLinkTexts(links);
+
+        function restoreLinks() {
+            linkSelection
+                .select("path")
+                .style("opacity", OPACITY.LINK_DEFAULT);
+        }
     }
 
-    /* Input for this method should be the enter set of a data join */
+    /**
+     * Creates new node DOM elements for all the data in the given enter selection.
+     * @param enterSelection the enter set of a data join from node data
+     */
     function createNewNodes(enterSelection) {
         var nodes = enterSelection.append("g")
             .attr("class", "node")

@@ -38,6 +38,7 @@
  * - bootstrap, framework for developing responsive, mobile first projects on the web, http://getbootstrap.com/
  */
 
+
 var EnergyTool = EnergyTool || {version: "0.1"};
 
 /**
@@ -48,9 +49,15 @@ var EnergyTool = EnergyTool || {version: "0.1"};
 EnergyTool.grid = function() {
     var MAX_HEADER_HEIGHT = 20;
     var MAX_SCENARIO_MARGIN = 40;
+    // Ratios used for calculating the sizes of scenario components like the sankey diagram or the control buttons.
     var RATIOS = {
+        // these first for need to add up to 1
         SLIDERHEIGHT : 0.1,
-        DIAGRAMHEIGHT : 0.9,
+        DIAGRAMHEIGHT : 0.825,
+        CONTROLSSIZE : 0.05,
+        GLYPHICONSIZE : 0.025,
+
+        // Aspect ratio is hardcoded, since the sankey diagrams are best displayed in approximately this ratio.
         ASPECT : 1.8,
         TEXTSIZE : 0.02
     };
@@ -75,21 +82,23 @@ EnergyTool.grid = function() {
      * @type {number}
      */
     var nrCols = 0;
+
     /**
-     * Sizes and margins of each scenario. Scenarios have same sizes for better comparability.
+     * Sizes and margins of each scenario. All scenarios have same sizes for better comparability.
      */
     var scenarioWidth,
         scenarioHeight,
         scenarioMargin;
-    /**
-    * Height of the header element which is placed at the top of each scenario
-    */
-    var headerHeight;
+
     var diagramWidth,
         diagramHeight;
 
     var sliderHeight,
         sliderWidth;
+
+    var controlsSize,
+        glyphiconSize;
+
     /**
      * The list of the scenarios in use.
      * @type {Array}
@@ -104,16 +113,27 @@ EnergyTool.grid = function() {
     // XXX textSize should be adjustable.
     var textSize = 12;
 
+    /**
+     * Removes the grid's DOM and sets the gridster object to null.
+     * @returns {Object} this grid
+     */
     grid.clear = function() {
         gridster = null;
         d3.select(".gridster").remove();
         return grid;
     };
 
+    /**
+     * Calculates sizes depending on number of scenarios. Creates css styling rule for the calculated text size for the
+     * whole document. Creates the DOM elements for the grid and it's cells. Calls the creation of the scenario's sankey
+     * and time slider.
+     * @returns {Object} this grid
+     */
     grid.create = function() {
         calculateSizes();
 
-        // Create a styling that sets the font size for the whole document.
+        // Create a styling that sets the font size for the whole document and the styling of the glyphs used in the
+        // controls.
         var style = document.getElementById("style-for-text-size");
         if (!style) {
             style = document.createElement('style');
@@ -121,7 +141,10 @@ EnergyTool.grid = function() {
             style.type = 'text/css';
             document.getElementsByTagName('head')[0].appendChild(style);
         }
-        style.innerHTML = 'text { font-size: ' + textSize + 'px }';
+        style.innerHTML = 'text { font-size: ' + textSize + 'px; }' +
+            '.glyphicon { font-size:' + glyphiconSize + 'px; ' +
+            ' display: block; top: 0px; }';
+
 
         // Create new div for the gridster to live in, if none present.
         if (d3.select(".gridster").empty()) {
@@ -141,41 +164,76 @@ EnergyTool.grid = function() {
             .data('gridster')
             .disable();
 
+        // Async call to get the maximum sink value needed to initialize the sankey diagram correctly.
         getMaxSinkValue(callback);
 
+        return grid;
+
+        /**
+         * Creates grid cells for every scenario and creates all the parts in it (sankey, time slider).
+         * @param maxSinkValue the value of the sink with the maximum vlaue that appears in the energy data (calculated
+         * in the backend)
+         */
         function callback(maxSinkValue) {
             for (var i = 0; i < nrScenarios; i++) {
-                var widget = addWidget(i)[0];
-                scenarios[i].widgetDOM(widget);
+                var widget = addCell(i)[0];
+                scenarios[i].gridCellDOM(widget);
                 scenarios[i].createSankey(diagramWidth, diagramHeight, textSize, maxSinkValue);
                 scenarios[i].createTimeSlider(sliderWidth, sliderHeight, textSize);
             }
         }
 
-        function addWidget(i) {
+        /**
+         * Creates and adds a new cell to the gridster grid.
+         * @param i the ID of the scenario for which to create the new grid cell.
+         * @returns {HTMLElement} the newly created grid cell
+         */
+        function addCell(i) {
             var widgetDiv = $("<div id=" + i + "/>").appendTo(".gridster");
             var widget = gridster.add_widget(widgetDiv);
             widgetDiv = d3.select(widgetDiv[0]);
-            widgetDiv.append("svg").attr("class", "sankey");
-            widgetDiv.append("div").attr("class", "timeslider");
-            widgetDiv.append("button")
+            var controlsDiv = widgetDiv.append("div")
+                .style("text-align", "right")
+                .style("padding-right", "5%");
+
+            controlsDiv.append("button")
                 .attr("type", "button")
+                .attr("aria-label", "Left Align")
+                .attr("class", "btn btn-default btn-sm")
+                .style("margin", "5px")
+                .style("height", controlsSize + "px")
+                .style("width", controlsSize + "px")
                 .on("click", function() {
                     grid.copyScenario(i);
                 })
-                .text("Copy");
-            widgetDiv.append("button")
+                .append("span")
+                .attr("class", "glyphicon glyphicon-duplicate")
+                //.style("left", "-5px")
+                .attr("aria-hidden", "true");
+
+            controlsDiv.append("button")
                 .attr("type", "button")
+                .attr("aria-label", "Left Align")
+                .attr("class", "btn btn-default btn-sm")
+                .style("margin", "5px")
+                .style("height", controlsSize + "px")
+                .style("width", controlsSize + "px")
                 .on("click", function() {
                     grid.removeScenario(i);
                 })
-                .text("Remove");
+                .append("span")
+                .attr("class", "glyphicon glyphicon-trash")
+                .attr("aria-hidden", "true");
+            widgetDiv.append("svg").attr("class", "sankey");
+            widgetDiv.append("div").attr("class", "timeslider");
+
             return widget;
         }
-        return grid;
 
         /**
          * Calculate the appropriate layout for the current number of scenarios and the given screen size.
+         * Function allows four scenarios to fit into the window. If more scenarios are added they are appended below
+         * the existing four and scrolling is required to display them.
          */
         function calculateSizes() {
             if (nrScenarios <= 1) {
@@ -230,13 +288,18 @@ EnergyTool.grid = function() {
             sliderWidth = scenarioWidth;
             sliderHeight = scenarioHeight * RATIOS.SLIDERHEIGHT;
             //textSize = scenarioHeight * RATIOS.TEXTSIZE;
+            controlsSize = scenarioHeight * RATIOS.CONTROLSSIZE;
+            glyphiconSize = scenarioHeight * RATIOS.GLYPHICONSIZE;
         }
     };
 
+
     /**
      * Creates and adds a scenario to the grids list of scenarios. Doesn't create html elements for it.
+     * @param parameters an object containing parameter settings that this scenario will represent.
+     * @returns {Object} this grid
      */
-    grid.addScenario = function(parameters) {
+     grid.addScenario = function(parameters) {
         var scenario = EnergyTool.scenario();
         scenario.parameters(parameters);
         scenario.id(nrScenarios++);
@@ -244,6 +307,12 @@ EnergyTool.grid = function() {
         return grid;
     };
 
+    /**
+     * Copies the parameters object of the scenario with the given ID and adds a new scenario with these parameters to
+     * the grid.
+     * @param id the ID of the scenario to be copied
+     * @returns {Object}
+     */
     grid.copyScenario = function(id) {
         var params = scenarios[id].parameters();
         var paramsCopy = {};
@@ -256,6 +325,11 @@ EnergyTool.grid = function() {
         return grid;
     };
 
+    /**
+     * Removes the scenario with the given ID from the grid.
+     * @param id the ID of the scenario to be removed
+     * @returns {Object}
+     */
     grid.removeScenario = function(id) {
         scenarios.splice(id, 1);
         nrScenarios--;
@@ -267,6 +341,11 @@ EnergyTool.grid = function() {
     return grid;
 };
 
+/**
+ * Sets up and returns a scenario object. Every scenario is the container for the sankey diagram, time slider and
+ * possibly other things. It also holds a parameters object with parameter settings like the current year.
+ * @returns {Object} the scenario object
+ */
 EnergyTool.scenario = function () {
     var scenario = {},
         parameters = {},
@@ -276,7 +355,7 @@ EnergyTool.scenario = function () {
         id;
 
     /* GETTERS AND SETTERS */
-    scenario.widgetDOM = function (_) {
+    scenario.gridCellDOM = function (_) {
         if (!arguments.length) return widgetDOM;
         widgetDOM = _;
         return scenario;

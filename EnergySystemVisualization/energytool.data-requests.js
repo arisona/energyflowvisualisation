@@ -27,13 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var serverUrl = "http://localhost:8888/energytool/index.php";
+var serverUrl = "http://localhost:8888/energytool/";
+var index = serverUrl + "index.php";
 var energyDataQuery = "energyData";
 var yearsAvailableQuery = "yearsAvailable";
 var maxSinkValueQuery = "maxSinkValue";
 
+/**
+ * Requests the energy data (as JSON) for the given year and provides the callback function with it.
+ * @param year the year for which data should be retrieved
+ * @param callback the callback function to be provided with the data
+ */
 function loadEnergyData(year, callback) {
-    var query = serverUrl + "?q=" + energyDataQuery + "&y=" + year;
+    var query = index + "?q=" + energyDataQuery + "&y=" + year;
     d3.json(query, function (error, json) {
         if (error) {
             alert("Error ocurred while requesting the energy data");
@@ -43,8 +49,12 @@ function loadEnergyData(year, callback) {
     })
 }
 
+/**
+ * Requests a list of all years that are available for the scenarios and provides the callback function with it.
+ * @param callback the callback function to be provided with the data
+ */
 function getYearsAvailable(callback) {
-    d3.json(serverUrl + "?q=" + yearsAvailableQuery, function (error, json) {
+    d3.json(index + "?q=" + yearsAvailableQuery, function (error, json) {
         if (error) {
             alert("Error ocurred while requesting the years available");
         } else {
@@ -53,8 +63,12 @@ function getYearsAvailable(callback) {
     })
 }
 
+/**
+ * Requests the maximal value that any sink node can have and provides the callback function with it.
+ * @param callback the callback function to be provided with the data
+ */
 function getMaxSinkValue(callback) {
-    d3.json(serverUrl + "?q=" + maxSinkValueQuery, function (error, json) {
+    d3.json(index + "?q=" + maxSinkValueQuery, function (error, json) {
         if (error) {
             alert("Error ocurred while requesting energy data");
         } else {

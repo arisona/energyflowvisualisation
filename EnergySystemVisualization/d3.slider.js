@@ -199,7 +199,7 @@ d3.slider = function module() {
                 .attr("width", scale(value));
         }
 
-        // only call the callback function if the dragger changed position from one tick to another.
+        // Claude Mueller: only call the callback function if the dragger changed position from one tick to another.
         if (callbackFn && value != oldValue) {
             callbackFn(slider);
         }
@@ -207,6 +207,12 @@ d3.slider = function module() {
 
 // Getter/setter functions
 
+    /**
+     * Sets the size property of this slider and calculates the depending sizes for DOM elements used for the slider.
+     * @param _ the size array containing the width and the height
+     * @returns {*} this slider
+     * @author Claude Mueller
+     */
     slider.size = function (_) {
         if (!arguments.length) return size;
         size = _;
