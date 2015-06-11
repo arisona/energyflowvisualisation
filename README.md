@@ -13,8 +13,8 @@ The repository contains:
 ## Set up ##
 For running the tool start a local server on port 8888 and place the folder "energytool" from the folder "FakeBackend" into your root server directory.
 Run the energytool_example.html or run the porject from within WebStorm.
+The tool has only been developed and tested in Chrome.
 
 ## Credits ##
 Claude Mueller
-
 Olivia Kaufmann

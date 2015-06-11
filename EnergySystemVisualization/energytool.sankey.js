@@ -84,13 +84,13 @@ EnergyTool.sankey = function () {
         textSize,
         nodes = [],
         links = [],
-        // list of the sink nodes
+    // list of the sink nodes
         sinkNodes,
-        // d3 selection of the svg element in which this sankey is drawn
+    // d3 selection of the svg element in which this sankey is drawn
         svg,
-        // d3 selection of all link elements
+    // d3 selection of all link elements
         linkSelection,
-        // d3 selection of all node elements
+    // d3 selection of all node elements
         nodeSelection;
 
     // SETTERS AND GETTERS
@@ -187,7 +187,7 @@ EnergyTool.sankey = function () {
 
         sankey.nodes(graph["nodes"]);
         sankey.links(graph["links"]);
-        layout(300);
+        layout(100);
         computeConnectedNodes();
         createSVGPatterns();
 
@@ -251,7 +251,7 @@ EnergyTool.sankey = function () {
     sankey.update = function (graph) {
         sankey.links(graph["links"]);
         sankey.nodes(graph["nodes"]);
-        layout(300);
+        layout(100);
         computeConnectedNodes();
 
         /* update links */
@@ -334,9 +334,9 @@ EnergyTool.sankey = function () {
                 d3.sum(node.targetLinks, value)
             );
             if (node.value == 0) {
-                // XXX We wanted to still display nodes without any value, but we can't calculate a position for them
-                // if they don't have any in coming or out going links.
-                console.log("there are nodes with zero value, we remove them from the list of nodes");
+                // XXX The goal was to always display all nodes that appear in any possible scenario, even if the nodes
+                // don't have any incoming or outgoing flows in the current scenario.
+                // This is not implemented. The nodes without any value are simply removed from the list of nodes.
                 nodes.remove(node.name);
             }
         });
@@ -380,6 +380,8 @@ EnergyTool.sankey = function () {
         function scaleNodeBreadths(kx) {
             nodes.values().forEach(function (node) {
                 node.x *= kx;
+                if (node.x == 0)
+                    node.x = 1; // because border of the node is not cut of otherwise
             });
         }
     }
@@ -417,7 +419,7 @@ EnergyTool.sankey = function () {
                     node.dy = node.value * ky;
                     // if the node is a process and doesn't have minimum height it is assigned the minimum height and the
                     // originally calculated height is saved as an property to the node for later use.
-                    if (node.dy < nodeWidth && node.type == NODETYPES.PROCESS) {
+                    if (node.dy < nodeWidth && (node.type == NODETYPES.PROCESS || node.type == NODETYPES.ORIGIN)) {
                         node.dy = nodeWidth;
                     }
                     if (node.type == NODETYPES.SINK) {
@@ -463,7 +465,7 @@ EnergyTool.sankey = function () {
         function relaxLeftToRight(alpha) {
             nodesByBreadth.forEach(function (nodes) {
                 nodes.forEach(function (node) {
-                    if (node.type == "energytype" || node.type == "process") {
+                    if (node.type == NODETYPES.ENERGYTYPE || node.type == NODETYPES.PROCESS) {
                         var y = d3.sum(node.targetLinks, weightedSource) / d3.sum(node.targetLinks, value);
                         node.y += (y - center(node)) * alpha;
                     }
@@ -478,7 +480,7 @@ EnergyTool.sankey = function () {
         function relaxRightToLeft(alpha) {
             nodesByBreadth.slice().reverse().forEach(function (nodes) {
                 nodes.forEach(function (node) {
-                    if (node.type == "energytype" || node.type == "process") {
+                    if (node.type == NODETYPES.ENERGYTYPE || node.type == NODETYPES.PROCESS) {
                         var y = d3.sum(node.sourceLinks, weightedTarget) / d3.sum(node.sourceLinks, value);
                         node.y += (y - center(node)) * alpha;
                     }
@@ -566,21 +568,20 @@ EnergyTool.sankey = function () {
 
         var links = enterSelection.append("g")
             .attr("class", "link")
-            .on("mouseenter", function (d) {
-                restoreLinks();
+            .on("mouseenter", function (link) {
+                restoreLinksAndNodes();
+                fadeUnconnected(link);
                 d3.select(this).selectAll("text")
                     .attr("visibility", "visible");
-                d3.select(this).select("path").transition().duration(0)
-                    .style("opacity", OPACITY.LINK_HIGHLIGHT);
                 d3.select(this).moveToFront();
+                showTextOfConnectedNodes(link);
             })
-            .on("mouseleave", function (d) {
-                restoreLinks();
+            .on("mouseleave", function (link) {
+                restoreLinksAndNodes();
                 d3.select(this).selectAll("text")
                     .attr("visibility", "hidden");
-                d3.select(this).select("path")
-                    .style("opacity", OPACITY.LINK_DEFAULT);
                 d3.select(".nodes").moveToFront();
+                hideTextOfConnectedNodes(link);
             });
 
         links
@@ -608,10 +609,36 @@ EnergyTool.sankey = function () {
 
         adjustLinkTexts(links);
 
-        function restoreLinks() {
+        function restoreLinksAndNodes() {
             linkSelection
-                .select("path")
+                .transition().duration(TRANSITION_DURATION).select("path")
                 .style("opacity", OPACITY.LINK_DEFAULT);
+
+            nodeSelection
+                .transition().duration(TRANSITION_DURATION)
+                .style("opacity", OPACITY.NODE_DEFAULT);
+        }
+
+        function fadeUnconnected(link) {
+            linkSelection.filter(function (d) { return d !== link; }).select("path")
+                .transition().duration(TRANSITION_DURATION)
+                .style("opacity", OPACITY.LINK_FADED);
+
+            nodeSelection.filter(function (d) { return d.name !== link.source.name && d.name !== link.target.name; })
+                .transition().duration(TRANSITION_DURATION)
+                .style("opacity", OPACITY.NODE_FADED);
+        }
+
+        function showTextOfConnectedNodes(link) {
+            nodeSelection.filter(function(d) { return link.source.name === d.name || link.target.name === d.name ; })
+                .select(".value-text")
+                .attr("visibility", "visible");
+        }
+
+        function hideTextOfConnectedNodes(link) {
+            nodeSelection.filter(function(d) { return link.source.name === d.name || link.target.name === d.name ; })
+                .select(".value-text")
+                .attr("visibility", "hidden");
         }
     }
 
@@ -637,13 +664,15 @@ EnergyTool.sankey = function () {
                 .origin(function (d) { return d; })
                 .on("dragstart", function () { this.parentNode.appendChild(this); })
                 .on("drag", dragmove)
-            );
+        );
 
         nodes.append("rect")
             .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
             .attr("height", function(d) {return d.dy;})
             .attr("width", function (d) { return d.dx;})
-            .attr("stroke", function (d) { if(!d.color) return "black";})
+            .attr("stroke", function (d) {
+                //if(!d.color)
+                return "black";})
             .style("fill", function (d) {
                 if (d.color) return d.color;
                 else return "url(#" + d.name.replace(/\s/g, "-") + ")";
@@ -651,7 +680,10 @@ EnergyTool.sankey = function () {
             .style("opacity", OPACITY.NODE_DEFAULT);
 
         nodes.append("text")
-            .attr("class", "node-text")
+            .attr("class", "value-text")
+            .attr("visibility", "hidden");
+        nodes.append("text")
+            .attr("class", "name-text")
             .attr("visibility", "hidden");
 
         adjustNodeTexts(nodes);
@@ -704,12 +736,16 @@ EnergyTool.sankey = function () {
         }
 
         function showNodeText(node) {
-            node.select(".node-text")
+            node.select(".value-text")
+                .attr("visibility", "visible");
+            node.select(".name-text")
                 .attr("visibility", "visible");
         }
 
         function hideNodeText(node) {
-            node.select(".node-text")
+            node.select(".value-text")
+                .attr("visibility", "hidden");
+            node.select(".name-text")
                 .attr("visibility", "hidden");
         }
     }
@@ -729,7 +765,23 @@ EnergyTool.sankey = function () {
     }
 
     function adjustNodeTexts(nodes) {
-        nodes.select(".node-text")
+        nodes.select(".value-text")
+            .attr("text-anchor", function(d) {
+                if (d.type == NODETYPES.ORIGIN) return "start";
+                else if (d.type == NODETYPES.SINK) return "end";
+                else return "middle";
+            })
+            .attr("x", function(d) {
+                if (d.type == NODETYPES.ORIGIN) return d.x;
+                else if (d.type == NODETYPES.SINK) return d.x + d.dx;
+                else return d.x + d.dx / 2;
+            })
+            .attr("y", function(d) { return d.y + d.dy; })
+            .attr("dy", textSize * 0.9)
+            //.style("font-size", textSize)
+            .text(function (d) { return formatNumber(d.value); });
+
+        nodes.select(".name-text")
             .attr("text-anchor", function(d) {
                 if (d.type == NODETYPES.ORIGIN) return "start";
                 else if (d.type == NODETYPES.SINK) return "end";
@@ -743,7 +795,7 @@ EnergyTool.sankey = function () {
             .attr("y", function(d) { return d.y; })
             .attr("dy", "-2")
             //.style("font-size", textSize)
-            .text(function (d) { return formatNumber(d.value); });
+            .text(function (d) { return d.name; });
     }
 
     function adjustLinkTexts(links) {
